@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">ConciseImageEditor</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="image_editor_tab_word">文字</string>
+    <string name="image_editor_tab_sticker">贴纸</string>
+    <string name="image_editor_tab_filter">滤镜</string>
+
+    <string-array name="font_colors_name">
+        <item>红</item>
+        <item>橙</item>
+        <item>黄</item>
+        <item>绿</item>
+        <item>蓝</item>
+        <item>靛</item>
+        <item>紫</item>
+        <item>黑</item>
+        <item>白</item>
+    </string-array>
+    <!--红：255，0，0-->
+    <!--橙: 255,125,0-->
+    <!--黄：255，255，0-->
+    <!--绿：0，255，0-->
+    <!--蓝：0，0，255-->
+    <!--靛: 0,255,255-->
+    <!--紫: 255,0,255-->
+</resources>

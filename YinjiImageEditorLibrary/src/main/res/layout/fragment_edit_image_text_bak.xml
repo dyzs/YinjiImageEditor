@@ -1,0 +1,94 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/ll_top_item_frag_eit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:id="@+id/iv_text_mode"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <EditText
+            android:id="@+id/et_input_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray"
+            />
+        <ImageView
+            android:id="@+id/iv_text_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_textSize_frag_eit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="大小："
+            android:textSize="14sp"
+            />
+        <SeekBar
+            android:visibility="visible"
+            android:id="@+id/text_size_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:progress="50"
+            android:max="100" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_textColor_frag_eit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="颜色："
+            android:textSize="14sp"
+            />
+        <SeekBar
+            android:visibility="visible"
+            android:id="@+id/text_color_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:progress="100"
+            android:max="100" />
+    </LinearLayout>
+
+    <!--字体选择-->
+</LinearLayout>
+
+
+

@@ -1,0 +1,87 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fl_image_editor_base_layout"
+    >
+    <LinearLayout
+        android:id="@+id/ll_ui_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#343535"
+        >
+        <!--<Button-->
+        <!--android:onClick="openNative"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="打开相机"-->
+        <!--/>-->
+        <include layout="@layout/layout_image_editor_toolbar"/>
+        <!--<View-->
+        <!--android:background="@drawable/shape_divider_common"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp"/>-->
+
+        <FrameLayout
+            android:id="@+id/fl_main_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+            <ImageView
+                android:id="@+id/iv_main_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                android:layout_gravity="center"
+                />
+            <RelativeLayout
+                android:visibility="invisible"
+                android:id="@+id/rl_work_panel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center"
+                >
+            </RelativeLayout>
+            <!--Add RecycleView  android:background="@mipmap/pic_bg_ch_style"-->
+        </FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_filter_list"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:scrollbars="none"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_sticker_list"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:scrollbars="none"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:visibility="invisible"
+            />
+        <include layout="@layout/layout_image_editor_bottom_toolbar"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_base_edit_panel"
+        android:visibility="visible"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+</FrameLayout>

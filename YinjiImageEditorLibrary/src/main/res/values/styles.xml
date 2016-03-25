@@ -1,0 +1,67 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <style name="image_editor_tab_bottom">
+        <item name="android:textSize">@dimen/image_editor_bottom_tab_font_size</item>
+        <item name="android:textColor">@color/image_editor_bottom_text_color</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingTop">@dimen/image_editor_bottom_tab_padding_up</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">fill_parent</item>
+        <!-- 去按钮立体效果 -->
+        <item name="android:button">@null</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawablePadding">@dimen/image_editor_bottom_tab_padding_drawable</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+
+    <style name="dialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit_anim</item>
+    </style>
+
+
+    <style name="MyDialog" parent="@android:style/Theme.Holo.DialogWhenLarge">
+        <item name="android:windowFrame">@android:color/transparent</item>
+        <!-- 边框 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- 半透明 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 背景透明 -->
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <!-- 点击空白处不消失 -->
+    </style>
+
+    <!--new add date:0228-->
+
+    <style name="dialog_common" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/holo_blue_dark</item>
+    </style>
+
+    <style name="quick_option_dialog" parent="@style/dialog_common">
+        <item name="android:windowFrame">@null</item><!-- 边框 -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/holo_blue_bright</item>
+        <item name="android:windowAnimationStyle">@style/dialog_animation</item>
+        <item name="android:backgroundDimEnabled">false</item><!--activity不变暗-->
+    </style>
+
+    <style name="dialog_animation" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/text_edit_panel_enter_anim</item>
+        <item name="@android:windowExitAnimation">@anim/text_edit_panel_out_anim</item>
+    </style>
+
+</resources>

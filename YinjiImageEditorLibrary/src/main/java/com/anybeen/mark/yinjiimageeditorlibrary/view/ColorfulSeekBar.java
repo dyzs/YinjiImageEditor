@@ -1,4 +1,4 @@
-package com.dyzs.yinjiimageeditorlibrary.view;
+package com.anybeen.mark.yinjiimageeditorlibrary.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,7 @@ import android.view.View;
 
 /**
  * Created by maidou on 2016/3/22.
+ * wait to do
  */
 public class ColorfulSeekBar extends View{
     private int mViewWidth;

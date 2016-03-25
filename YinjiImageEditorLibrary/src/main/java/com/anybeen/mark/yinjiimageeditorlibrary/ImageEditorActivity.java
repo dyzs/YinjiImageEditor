@@ -247,6 +247,11 @@ public class ImageEditorActivity extends Activity {
         rb_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * wait TODO
+                 * 加入一个 sharedPrefs 参数，保存到本地中，保存 edit_panel 的高度，下次打开图片编辑，
+                 * 初始化 edit_panel 放在 onCreate 中
+                 */
                 CommonUtils.hitKeyboardOpenOrNot(mContext);
                 if (isFirstAddMtv) {    // 表示第一次添加 mtv 文本
                     isFirstAddMtv = false;

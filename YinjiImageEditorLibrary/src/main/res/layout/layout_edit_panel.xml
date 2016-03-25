@@ -12,6 +12,10 @@
         <!--android:layout_height="0dp"-->
         <!--android:layout_weight="1"-->
         <!--/>-->
+    <View
+        android:background="@drawable/shape_divider_common"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
     <LinearLayout
         android:id="@+id/ll_edit_panel_head"
         android:layout_width="match_parent"
@@ -26,7 +30,7 @@
         >
         <ImageView
             android:id="@+id/iv_edit_panel_key_board_options"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@mipmap/btn_image_editor_tab_word_pressed"

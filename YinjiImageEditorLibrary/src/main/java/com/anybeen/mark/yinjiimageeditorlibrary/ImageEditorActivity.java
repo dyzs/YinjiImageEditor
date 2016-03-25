@@ -3,6 +3,7 @@ package com.anybeen.mark.yinjiimageeditorlibrary;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -100,6 +101,8 @@ public class ImageEditorActivity extends Activity {
     private CustomSeekBar ep_CsbFontColor;      // 字体颜色 seek bar
     private ImageView ep_IvColorShow;           // 颜色展示
     private RadioGroup ep_rgFontGroup;          // 字体选择
+    private int currentFontCheckedId = -1;
+
     // edit panel params
 
 
@@ -315,8 +318,13 @@ public class ImageEditorActivity extends Activity {
                 ep_CsbFontColor.setProgress(m.getColorSeekBarProgress());
                 // ep_CsbFontColor.setProgress();
                 ep_FontSize.setProgress(DensityUtils.px2dp(mContext, m.getTextSize()));
-                // TODO 添加字体
-                // rg_font_group
+                // ep_rgFontGroup
+                String fontName = m.getTypefaceName();
+                for (int i = 0; i < ep_rgFontGroup.getChildCount(); i++) {
+                    if (ep_rgFontGroup.getChildAt(i).getTag().equals(fontName)) {
+                        ((SelectableView) (ep_rgFontGroup.getChildAt(i))).setChecked(true);
+                    }
+                }
             }
         }
     }
@@ -947,12 +955,12 @@ public class ImageEditorActivity extends Activity {
                     return;
                 }
                 Typeface typeface = selectableView.getFontType();
-//                if (typeface != null) {
-//                    changeTypeface(typeface, selectableView.getTag().toString());
-//                    currentFontCheckedId = checkedId;
-//                } else {
-//                    showDownloadFontDialog("3M", selectableView, rg_font_group);
-//                }
+                if (typeface != null) {
+                    changeTypeface(typeface, selectableView.getTag().toString());
+                    currentFontCheckedId = checkedId;
+                } else {
+                    showDownloadFontDialog("3M", selectableView, ep_rgFontGroup);
+                }
             }
         });
     }
@@ -1043,5 +1051,107 @@ public class ImageEditorActivity extends Activity {
         lp.rightMargin = frameLayout.getWidth() - mtv.getMeasuredWidth();
         mtv.setLayoutParams(lp);
     }
+
+
+
+    //------------ 字体选择的所有操作方式
+    /**
+     * @param typeface 选中的字体
+     */
+    private void changeTypeface(Typeface typeface, String fontName) {
+        if (mMtvLists.size() <= 0) return;
+        for (MovableTextView2 mtv:mMtvLists) {
+            if (mtv.isSelected()) {
+                mtv.setTypefaceName(fontName);
+                mtv.setTypeface(typeface);
+                // 修改字体的时候也重新设置参数
+                resetLayoutParams(mtv, false, 0, 0);
+            }
+        }
+    }
+
+    /**
+     * @details CP from PhotoEditBaseController
+     * @param fontSize
+     * @param selectableView
+     * @param rg_font_group
+     */
+    private void showDownloadFontDialog(String fontSize, final SelectableView selectableView, final RadioGroup rg_font_group) {
+//        new MaterialDialog.Builder(ImageEditorActivity.this)
+//                .title(R.string.no_font_file_title)
+//                .content(ImageEditorActivity.this.getResources().getString(R.string.no_font_file_content))
+//                .positiveText("下载")
+//                .negativeText("算了")
+//                .callback(new MaterialDialog.ButtonCallback() {
+//                    @Override
+//                    public void onPositive(MaterialDialog dialog) {
+//                        super.onPositive(dialog);
+//                        if (!CommonUtils.isNetAvailable(ImageEditorActivity.this)) {
+//                            ToastUtil.makeText(ImageEditorActivity.this, getResources().getString(R.string.net_unavailable));
+//                            return;
+//                        }
+//                        selectableView.downloadFont(new SelectableView.OnDownloadCompleteListener() {
+//                            @Override
+//                            public void onDownloadComplete() {
+//                                Typeface typeface = selectableView.getFontType();
+//                                if (typeface != null) {
+//                                    selectableView.invalidate();
+//                                    selectableView.initView();
+//                                    selectableView.setChecked(true);
+//                                    changeTypeface(typeface, selectableView.getTag().toString());
+//                                    currentFontCheckedId = rg_font_group.getCheckedRadioButtonId();
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onNegative(MaterialDialog dialog) {
+//                        super.onNegative(dialog);
+//                        rg_font_group.check(currentFontCheckedId);
+//                    }
+//                })
+//                .cancelListener(new DialogInterface.OnCancelListener() {
+//                    @Override
+//                    public void onCancel(DialogInterface dialog) {
+//                        rg_font_group.check(currentFontCheckedId);
+//                    }
+//                })
+//                .show();
+                new ProgressDialog.Builder(ImageEditorActivity.this)
+                .setTitle(R.string.no_font_file_title)
+                .setMessage(ImageEditorActivity.this.getResources().getString(R.string.no_font_file_content))
+                .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!CommonUtils.isNetAvailable(ImageEditorActivity.this)) {
+                            ToastUtil.makeText(ImageEditorActivity.this, getResources().getString(R.string.net_unavailable));
+                            return;
+                        }
+                        selectableView.downloadFont(new SelectableView.OnDownloadCompleteListener() {
+                            @Override
+                            public void onDownloadComplete() {
+                                Typeface typeface = selectableView.getFontType();
+                                if (typeface != null) {
+                                    selectableView.invalidate();
+                                    selectableView.initView();
+                                    selectableView.setChecked(true);
+                                    changeTypeface(typeface, selectableView.getTag().toString());
+                                    currentFontCheckedId = rg_font_group.getCheckedRadioButtonId();
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("算了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        rg_font_group.check(currentFontCheckedId);
+                    }
+                })
+                .show();
+    }
+
+    // 字体选择的所有操作方式---------done
 
 }

@@ -25,4 +25,9 @@
     <!--蓝：0，0，255-->
     <!--靛: 0,255,255-->
     <!--紫: 255,0,255-->
+
+    <!-- 字体选择的 -->
+    <string name="no_font_file_title">添加字体</string>
+    <string name="no_font_file_content">是否下载字体？建议在WiFi环境中下载</string>
+    <string name="net_unavailable">网络不可用哦……</string>
 </resources>

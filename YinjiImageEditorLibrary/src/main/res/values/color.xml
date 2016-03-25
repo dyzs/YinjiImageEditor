@@ -42,4 +42,8 @@
         <item>#000000</item>
         <item>#FFFFFF</item>
     </array>
+
+    <!-- selectView params -->
+    <color name="common_red">#bd081c</color>
+    <color name="grey_bg">#f2f2f2</color>
 </resources>

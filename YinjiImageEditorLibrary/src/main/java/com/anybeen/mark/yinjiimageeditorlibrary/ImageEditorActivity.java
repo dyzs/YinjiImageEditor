@@ -45,6 +45,7 @@ import com.anybeen.mark.yinjiimageeditorlibrary.utils.ToastUtil;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.CarrotEditText;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.CustomSeekBar;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.MovableTextView2;
+import com.anybeen.mark.yinjiimageeditorlibrary.view.SelectableView;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.StickerView;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
@@ -92,12 +93,13 @@ public class ImageEditorActivity extends Activity {
     // edit panel params
     private LinearLayout ll_base_edit_panel;
     private LinearLayout edit_panel;            // 文字编辑面板，使用 LayoutInflate
-    private ImageView ep_KeyboardOptions;
-    private CarrotEditText ep_OperateText;
-    private Button ep_BtnComplete;
-    private SeekBar ep_FontSize;
-    private CustomSeekBar ep_CsbFontColor;
-    private ImageView ep_IvColorShow;
+    private ImageView ep_KeyboardOptions;       // 键盘切换显示与隐藏
+    private CarrotEditText ep_OperateText;      // 文本编辑框
+    private Button ep_BtnComplete;              // 完成按钮
+    private SeekBar ep_FontSize;                // 字体大小
+    private CustomSeekBar ep_CsbFontColor;      // 字体颜色 seek bar
+    private ImageView ep_IvColorShow;           // 颜色展示
+    private RadioGroup ep_rgFontGroup;          // 字体选择
     // edit panel params
 
 
@@ -204,7 +206,7 @@ public class ImageEditorActivity extends Activity {
                         ep_FontSize = (SeekBar) edit_panel.findViewById(R.id.sb_edit_panel_font_size);
                         ep_IvColorShow = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_color_show);
                         ep_CsbFontColor = (CustomSeekBar) edit_panel.findViewById(R.id.csb_edit_panel_font_color);
-
+                        ep_rgFontGroup = (RadioGroup) edit_panel.findViewById(R.id.rg_font_group);
 
                         // 获取编辑 panel 的头高度
                         LinearLayout ll_edit_panel_head = (LinearLayout) edit_panel.findViewById(R.id.ll_edit_panel_head);
@@ -313,6 +315,8 @@ public class ImageEditorActivity extends Activity {
                 ep_CsbFontColor.setProgress(m.getColorSeekBarProgress());
                 // ep_CsbFontColor.setProgress();
                 ep_FontSize.setProgress(DensityUtils.px2dp(mContext, m.getTextSize()));
+                // TODO 添加字体
+                // rg_font_group
             }
         }
     }
@@ -907,14 +911,12 @@ public class ImageEditorActivity extends Activity {
 
             }
         });
-
+        // 空实现点击方法，拦截面板点击事件，防止出现编辑面板低下的RadioGroup控件的焦点抢夺
         edit_panel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 空实现点击方法，拦截面板点击事件，防止出现编辑面板低下的RadioGroup控件的焦点抢夺
             }
         });
-
 
         ep_OperateText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -934,6 +936,23 @@ public class ImageEditorActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        ep_rgFontGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                SelectableView selectableView = (SelectableView) group.findViewById(checkedId);
+                if (selectableView == null || selectableView.isDownloading() || !selectableView.isChecked()) {
+                    return;
+                }
+                Typeface typeface = selectableView.getFontType();
+//                if (typeface != null) {
+//                    changeTypeface(typeface, selectableView.getTag().toString());
+//                    currentFontCheckedId = checkedId;
+//                } else {
+//                    showDownloadFontDialog("3M", selectableView, rg_font_group);
+//                }
             }
         });
     }

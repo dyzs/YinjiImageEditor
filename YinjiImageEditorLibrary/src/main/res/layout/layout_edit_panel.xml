@@ -160,7 +160,7 @@
                 android:text="字体选择："
                 android:textSize="15sp"
                 android:textColor="@android:color/white" />
-
+            <include layout="@layout/pop_font_select" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_typeface_list"
                 android:layout_width="match_parent"

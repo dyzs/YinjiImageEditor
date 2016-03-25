@@ -831,7 +831,7 @@ public class ImageEditorActivity extends Activity {
      */
     private int[] colorValues = {R.color.rainbow_red, R.color.rainbow_orange, R.color.rainbow_yellow,
             R.color.rainbow_green, R.color.rainbow_blue, R.color.rainbow_cyan,
-            R.color.rainbow_purple, R.color.rainbow_black, R.color.rainbow_white};    // 红橙黄绿蓝靛紫黑白
+            R.color.rainbow_purple, R.color.rainbow_white, R.color.rainbow_black};    // 红橙黄绿蓝靛紫黑白
     private void initDataToSeekBar() {
         ArrayList<ProgressItem> progressItemList;
         ProgressItem mProgressItem;

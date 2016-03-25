@@ -12,13 +12,17 @@ import android.widget.FrameLayout;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.DensityUtils;
+import com.anybeen.mark.yinjiimageeditorlibrary.utils.LogUtil;
+import com.anybeen.mark.yinjiimageeditorlibrary.utils.ToastUtil;
 
 
 /**
  * Created by maidou on 2016/2/19.
+ * @details 新增移除图片的位置限制
  */
 public class MovableTextView2 extends EditText{
     private Context mContext;
+    private int mParentWidth, mParentHeight;
     public MovableTextView2(Context context) {
         this(context, null);
     }
@@ -50,7 +54,7 @@ public class MovableTextView2 extends EditText{
         this.setColorG(255);
         this.setColorB(255);
         this.setMaxEms(12);
-        this.setColorSeekBarProgress(89);   // progress 对应颜色的 seekBar 的值，因为 colorSeekBar 并没有颜色，只是显示的一张颜色背景
+        this.setColorSeekBarProgress(79);   // progress 对应颜色的 seekBar 的值，因为 colorSeekBar 并没有颜色，只是显示的一张颜色背景
     }
 
     public enum OperateState{
@@ -100,6 +104,19 @@ public class MovableTextView2 extends EditText{
 //            if( l < 0 || r > mParentWidth || t < 0 || b > mParentHeight){
 //                break;
 //            }
+            int width = getWidth();
+            int height = getHeight();
+            int limitLeft = -(width / 2);        // 限制范围
+            int limitTop = -(height);
+            int limitRight = (width / 2);
+            int limitBottom = (height);
+            // 如果 left 超出了当前的宽度的一半，则不继续移动
+            if (l < limitLeft || t < limitTop || r > mParentWidth + limitRight || b > mParentHeight + limitBottom) {
+//                this.layout(limitLeft, t, r, b);
+                // LogUtil.w(MovableTextView2.this, "不可继续移动");
+                break;
+            }
+
             this.layout(l, t, r, b);
             startX = movingX;
             startY = movingY;
@@ -270,13 +287,20 @@ public class MovableTextView2 extends EditText{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        // 计算得到父控件的宽高
+        FrameLayout fl = (FrameLayout) this.getParent();
+        mParentWidth = fl.getWidth();
+        mParentHeight = fl.getHeight();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-
+        // 计算得到父控件的宽高
+//        FrameLayout fl = (FrameLayout) this.getParent();
+//        mParentWidth = fl.getWidth();
+//        mParentHeight = fl.getHeight();
     }
 
 

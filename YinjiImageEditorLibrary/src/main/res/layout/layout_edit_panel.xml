@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@android:color/transparent"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <!--<View-->
@@ -22,7 +22,6 @@
         android:paddingBottom="5dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@android:color/holo_red_light"
         android:visibility="visible"
         >
         <ImageView
@@ -61,7 +60,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@android:color/holo_red_light"
         android:layout_gravity="bottom"
         android:visibility="visible"
         android:orientation="vertical">
@@ -75,9 +73,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10.0dip"
-                android:textSize="15sp"
-                android:text="字号："
-                android:textColor="@color/white" />
+                style="@style/image_edit_panel_text_size"
+                android:text="字号：" />
             <SeekBar
                 android:id="@+id/sb_edit_panel_font_size"
                 android:layout_width="fill_parent"
@@ -103,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10.0dip"
-                android:textSize="15sp"
                 android:text="颜色："
-                android:textColor="@color/white" />
+                style="@style/image_edit_panel_text_size"
+                />
 
             <!--<ListView-->
                 <!--android:id="@+id/lv_edit_panel_font_color"-->
@@ -144,7 +141,9 @@
                 android:layout_height="20.0dip"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/style_color_border" />
+                android:src="@drawable/style_color_border"
+
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
@@ -158,8 +157,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10.0dip"
                 android:text="字体选择："
-                android:textSize="15sp"
-                android:textColor="@android:color/white" />
+                style="@style/image_edit_panel_text_size"
+                />
             <include layout="@layout/pop_font_select" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_typeface_list"

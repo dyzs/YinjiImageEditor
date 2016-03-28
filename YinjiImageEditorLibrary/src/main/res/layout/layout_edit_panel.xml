@@ -48,13 +48,13 @@
             />
         <TextView
             android:id="@+id/iv_edit_panel_complete"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:text="完成"
-            android:textColor="@android:color/black"
+            style="@style/image_edit_panel_text_size"
             android:clickable="true"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:background="@drawable/shape_rectangle_btn"
             />
     </LinearLayout>

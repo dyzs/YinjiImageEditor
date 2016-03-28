@@ -30,6 +30,9 @@
         <clip>
             <shape>
                 <corners android:radius="5dip" />
+                <stroke
+                    android:width="1px"
+                    android:color="#000000" />
                 <gradient
                     android:startColor="#999"
                     android:centerColor="#999"

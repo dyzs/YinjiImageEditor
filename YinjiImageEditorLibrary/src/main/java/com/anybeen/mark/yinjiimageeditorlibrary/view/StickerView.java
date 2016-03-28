@@ -33,7 +33,7 @@ public class StickerView extends ImageView {
     private Rect dst_delete;
     private Rect dst_resize;
     private Rect dst_flipV;
-    private Rect dst_top;
+    private Rect dst_top;               // 原功能作废，也改成删除
     private int deleteBitmapWidth;
     private int deleteBitmapHeight;
     private int resizeBitmapWidth;
@@ -145,25 +145,26 @@ public class StickerView extends ImageView {
             canvas.save();
             canvas.drawBitmap(mBitmap, matrix, null);
             //删除在右上角
-            dst_delete.left = (int) (f3 - deleteBitmapWidth / 2);
-            dst_delete.right = (int) (f3 + deleteBitmapWidth / 2);
-            dst_delete.top = (int) (f4 - deleteBitmapHeight / 2);
-            dst_delete.bottom = (int) (f4 + deleteBitmapHeight / 2);
+//            dst_delete.left = (int) (f3 - deleteBitmapWidth / 2);
+//            dst_delete.right = (int) (f3 + deleteBitmapWidth / 2);
+//            dst_delete.top = (int) (f4 - deleteBitmapHeight / 2);
+//            dst_delete.bottom = (int) (f4 + deleteBitmapHeight / 2);
             //拉伸等操作在右下角
             dst_resize.left = (int) (f7 - resizeBitmapWidth / 2);
             dst_resize.right = (int) (f7 + resizeBitmapWidth / 2);
             dst_resize.top = (int) (f8 - resizeBitmapHeight / 2);
             dst_resize.bottom = (int) (f8 + resizeBitmapHeight / 2);
-            //垂直镜像在左上角
-            dst_top.left = (int) (f1 - flipVBitmapWidth / 2);
-            dst_top.right = (int) (f1 + flipVBitmapWidth / 2);
-            dst_top.top = (int) (f2 - flipVBitmapHeight / 2);
-            dst_top.bottom = (int) (f2 + flipVBitmapHeight / 2);
             //水平镜像在左下角
-            dst_flipV.left = (int) (f5 - topBitmapWidth / 2);
-            dst_flipV.right = (int) (f5 + topBitmapWidth / 2);
-            dst_flipV.top = (int) (f6 - topBitmapHeight / 2);
-            dst_flipV.bottom = (int) (f6 + topBitmapHeight / 2);
+//            dst_flipV.left = (int) (f5 - flipVBitmapWidth / 2);
+//            dst_flipV.right = (int) (f5 + flipVBitmapWidth / 2);
+//            dst_flipV.top = (int) (f6 - flipVBitmapHeight / 2);
+//            dst_flipV.bottom = (int) (f6 + flipVBitmapHeight / 2);
+            //垂直镜像在左上角
+            dst_top.left = (int) (f1 - topBitmapWidth / 2);
+            dst_top.right = (int) (f1 + topBitmapWidth / 2);
+            dst_top.top = (int) (f2 - topBitmapHeight / 2);
+            dst_top.bottom = (int) (f2 + topBitmapHeight / 2);
+
             if (isInEdit) {
 
                 canvas.drawLine(f1, f2, f3, f4, localPaint);
@@ -171,9 +172,9 @@ public class StickerView extends ImageView {
                 canvas.drawLine(f5, f6, f7, f8, localPaint);
                 canvas.drawLine(f5, f6, f1, f2, localPaint);
 
-                canvas.drawBitmap(deleteBitmap, null, dst_delete, null);
+                // canvas.drawBitmap(deleteBitmap, null, dst_delete, null);
                 canvas.drawBitmap(resizeBitmap, null, dst_resize, null);
-                canvas.drawBitmap(flipVBitmap, null, dst_flipV, null);
+                // canvas.drawBitmap(flipVBitmap, null, dst_flipV, null);
                 canvas.drawBitmap(topBitmap, null, dst_top, null);
             }
 
@@ -270,19 +271,20 @@ public class StickerView extends ImageView {
             }
         }
 
-        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_top_enable);
-        deleteBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete);
-        flipVBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_flip);
+//        deleteBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete);
         resizeBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_resize);
+//        flipVBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_flip);
+        // icon_top_enable
+        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete);
 
-        deleteBitmapWidth = (int) (deleteBitmap.getWidth() * BITMAP_SCALE);
-        deleteBitmapHeight = (int) (deleteBitmap.getHeight() * BITMAP_SCALE);
+//        deleteBitmapWidth = (int) (deleteBitmap.getWidth() * BITMAP_SCALE);
+//        deleteBitmapHeight = (int) (deleteBitmap.getHeight() * BITMAP_SCALE);
 
         resizeBitmapWidth = (int) (resizeBitmap.getWidth() * BITMAP_SCALE);
         resizeBitmapHeight = (int) (resizeBitmap.getHeight() * BITMAP_SCALE);
 
-        flipVBitmapWidth = (int) (flipVBitmap.getWidth() * BITMAP_SCALE);
-        flipVBitmapHeight = (int) (flipVBitmap.getHeight() * BITMAP_SCALE);
+//        flipVBitmapWidth = (int) (flipVBitmap.getWidth() * BITMAP_SCALE);
+//        flipVBitmapHeight = (int) (flipVBitmap.getHeight() * BITMAP_SCALE);
 
         topBitmapWidth = (int) (topBitmap.getWidth() * BITMAP_SCALE);
         topBitmapHeight = (int) (topBitmap.getHeight() * BITMAP_SCALE);
@@ -311,11 +313,14 @@ public class StickerView extends ImageView {
                     isHorizonMirror = !isHorizonMirror;
                     invalidate();
                 } else if (isInButton(event, dst_top)) {
-                    //置顶
-                    bringToFront();
                     if (operationListener != null) {
-                        operationListener.onTop(this);
+                        operationListener.onDeleteClick();
                     }
+//                    //置顶
+//                    bringToFront();
+//                    if (operationListener != null) {
+//                        operationListener.onTop(this);
+//                    }
                 } else if (isInBitmap(event)) {
                     isInSide = true;
                     lastX = event.getX(0);

@@ -39,6 +39,7 @@ import com.anybeen.mark.yinjiimageeditorlibrary.entity.ProgressItem;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.ColorUtil;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.CommonUtils;
+import com.anybeen.mark.yinjiimageeditorlibrary.utils.Const;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.DensityUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.FileUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.FontMatrixUtils;
@@ -182,7 +183,7 @@ public class ImageEditorActivity extends Activity {
 //            filePath = mCurrDataInfo.metaDataPictureInfo.oriPicturePath;
         }
         loadImage(filePath);
-        System.out.println("=======" + filePath);
+//        System.out.println("=======" + filePath);
 //        loadImage(filePath);
 //        mainBitmap = loadImage();
 //        mainBitmap = BitmapUtils.loadImage(this, mCurrImgId, imageWidth, imageHeight);
@@ -195,7 +196,7 @@ public class ImageEditorActivity extends Activity {
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
-                System.out.println("keyboard open");
+//                System.out.println("keyboard open");
                 mCurKeyboardState = KeyboardState.STATE_OPEN;
                 if (height != 0) {
                     if (createMtvOnLoading && openKeyboardOnLoading) {
@@ -237,14 +238,14 @@ public class ImageEditorActivity extends Activity {
 
             @Override
             public void keyBoardHide(int height) {
-                System.out.println("keyboard hide");
+//                System.out.println("keyboard hide");
                 mCurKeyboardState = KeyboardState.STATE_HIDE;
             }
         });
 
 
         bt_save.setOnClickListener(new SaveClickListener());
-        // main_radio.setOnCheckedChangeListener(new CurrentRadioGroupOnCheckChangeListener());
+        // main_radio.setOnCheckedChangeListener(new RadioGroupOnCheckChangeListener());
         rb_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -322,7 +323,6 @@ public class ImageEditorActivity extends Activity {
                 ep_OperateText.setSelection(m.getText().length());   // 设置光标的位置
                 ep_IvColorShow.setBackgroundColor(m.getCurrentTextColor());
                 ep_CsbFontColor.setProgress(m.getColorSeekBarProgress());
-                // ep_CsbFontColor.setProgress();
                 ep_FontSize.setProgress(DensityUtils.px2dp(mContext, m.getTextSize()));
                 // ep_rgFontGroup
                 String fontName = m.getTypefaceName();
@@ -351,7 +351,6 @@ public class ImageEditorActivity extends Activity {
     }
     private ProgressDialog loadDialog;
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ProgressDialog dialog;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -530,7 +529,7 @@ public class ImageEditorActivity extends Activity {
             }
         }
     }
-     */
+    */
 
 
     // inner class start 滤镜的处理方法，暂时不用
@@ -607,7 +606,7 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
-    private final class FilterTask extends AsyncTask<String, Void, Bitmap> {
+    private class FilterTask extends AsyncTask<String, Void, Bitmap> {
         private ProgressDialog loadDialog;
         public FilterTask() {
             super();
@@ -640,7 +639,9 @@ public class ImageEditorActivity extends Activity {
             super.onCancelled();
             loadDialog.dismiss();
         }
-    }// end inner class
+    }
+
+    // filter class end............................
 
     /**
      * @details 计算得到原图图片相对于屏幕的缩放比例和最后缩放后的留白区域
@@ -840,14 +841,12 @@ public class ImageEditorActivity extends Activity {
     /**
      * 初始化颜色 seekBar 控件的值
      */
-    private int[] colorValues = {R.color.rainbow_red, R.color.rainbow_orange, R.color.rainbow_yellow,
-            R.color.rainbow_green, R.color.rainbow_blue, R.color.rainbow_cyan,
-            R.color.rainbow_purple, R.color.rainbow_white, R.color.rainbow_black};    // 红橙黄绿蓝靛紫黑白
+    private int[] colorValues = Const.COLOR_VALUES;
     private void initDataToSeekBar() {
         ArrayList<ProgressItem> progressItemList;
         ProgressItem mProgressItem;
         float totalSpan = 9;
-        float[] colorSpan = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+        float[] colorSpan = Const.COLOR_SPAN;
         progressItemList = new ArrayList<>();
         for (int i = 0; i < colorSpan.length; i++) {
             mProgressItem = new ProgressItem();
@@ -980,7 +979,7 @@ public class ImageEditorActivity extends Activity {
      * 完成按钮的点击操作
      */
     private void operateComplete() {
-        ToastUtil.makeText(mContext, "文本控件事件被拦截了");
+//        ToastUtil.makeText(mContext, "文本控件事件被拦截了");
         MovableTextView2 delMtv = null;
         int listSize = mMtvLists.size();
         for(int i = 0; i < listSize; i++) {
@@ -1026,7 +1025,6 @@ public class ImageEditorActivity extends Activity {
     }
 
     /**
-     * 重置参数
      * @param mtv
      * @param isEditStateReload
      * @param top
@@ -1053,8 +1051,6 @@ public class ImageEditorActivity extends Activity {
         mtv.setLayoutParams(lp);
     }
 
-
-    //------------ 字体选择的所有操作方式
     /**
      * @param typeface 选中的字体
      */

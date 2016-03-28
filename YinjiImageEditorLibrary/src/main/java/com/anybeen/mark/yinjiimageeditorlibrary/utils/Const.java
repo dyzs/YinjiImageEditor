@@ -1,6 +1,8 @@
 package com.anybeen.mark.yinjiimageeditorlibrary.utils;
 import android.os.Environment;
 
+import com.anybeen.mark.yinjiimageeditorlibrary.R;
+
 import java.io.File;
 
 /**
@@ -49,4 +51,11 @@ public interface Const {
     //字体文件下载
     String INTENT_ACTION_FONT_DOWNLOAD = "com.anybeen.mark.app.font.download";
 
+
+    // seek bar progress
+    int[] COLOR_VALUES = {R.color.rainbow_red, R.color.rainbow_orange, R.color.rainbow_yellow,
+            R.color.rainbow_green, R.color.rainbow_blue, R.color.rainbow_cyan,
+            R.color.rainbow_purple, R.color.rainbow_white, R.color.rainbow_black};    // 红橙黄绿蓝靛紫黑白
+
+    float[] COLOR_SPAN = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 }

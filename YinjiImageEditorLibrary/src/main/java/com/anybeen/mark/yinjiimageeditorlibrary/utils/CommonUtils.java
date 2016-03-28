@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 
+import com.anybeen.mark.yinjiimageeditorlibrary.R;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.MovableTextView2;
 
 import java.io.File;

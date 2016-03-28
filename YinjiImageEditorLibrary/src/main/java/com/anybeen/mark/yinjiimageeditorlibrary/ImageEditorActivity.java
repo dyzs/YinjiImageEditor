@@ -735,8 +735,7 @@ public class ImageEditorActivity extends Activity {
         canvas.scale(scale, scale);
         canvas.translate(-leaveW, -leaveH);
         // 保存文本
-        saveBeautyWords(canvas, scale, leaveW, leaveH);
-
+        saveBeautySentences(canvas, scale, leaveW, leaveH);
 
         // 保存贴纸
         saveSticker(canvas);
@@ -746,14 +745,11 @@ public class ImageEditorActivity extends Activity {
         iv_main_image.setImageBitmap(copyBitmap);
         ToastUtil.makeText(mContext, "保存图片成功~~~~~~~" + imagePath);
     }
-    private void saveBeautyWords(Canvas canvas, float scale, float leaveW, float leaveH) {
+    private void saveBeautySentences(Canvas canvas, float scale, float leaveW, float leaveH) {
         if (mMtvLists == null || mMtvLists.size() <= 0) {
             return;
         }
-//        // 在保存之前先执行完成逻辑
-//        if (mMtvLists != null && mMtvLists.size() > 0) {
         operateComplete();
-//        }
         Paint mPaint = new Paint();     // 初始化画笔
         mPaint.setAntiAlias(true);      // 设置消除锯齿
         ArrayList<CarrotInfo> carrotInfoArrayList = new ArrayList<>();
@@ -843,18 +839,7 @@ public class ImageEditorActivity extends Activity {
      */
     private int[] colorValues = Const.COLOR_VALUES;
     private void initDataToSeekBar() {
-        ArrayList<ProgressItem> progressItemList;
-        ProgressItem mProgressItem;
-        float totalSpan = 9;
-        float[] colorSpan = Const.COLOR_SPAN;
-        progressItemList = new ArrayList<>();
-        for (int i = 0; i < colorSpan.length; i++) {
-            mProgressItem = new ProgressItem();
-            mProgressItem.progressItemPercentage = ((colorSpan[i] / totalSpan) * 100);
-            mProgressItem.color = colorValues[i];
-            progressItemList.add(mProgressItem);
-        }
-        ep_CsbFontColor.initData(progressItemList);
+        ep_CsbFontColor.initData(CommonUtils.getProgressItemList(colorValues));
         ep_CsbFontColor.invalidate();
     }
 
@@ -975,11 +960,7 @@ public class ImageEditorActivity extends Activity {
         });
     }
 
-    /**
-     * 完成按钮的点击操作
-     */
     private void operateComplete() {
-//        ToastUtil.makeText(mContext, "文本控件事件被拦截了");
         MovableTextView2 delMtv = null;
         int listSize = mMtvLists.size();
         for(int i = 0; i < listSize; i++) {
@@ -1024,12 +1005,6 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
-    /**
-     * @param mtv
-     * @param isEditStateReload
-     * @param top
-     * @param left
-     */
     private void resetLayoutParams(MovableTextView2 mtv, boolean isEditStateReload, int top, int left) {
         mtv.measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -1066,11 +1041,6 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
-    /**
-     * @param fontSize
-     * @param selectableView
-     * @param rg_font_group
-     */
     private void showDownloadFontDialog(String fontSize, final SelectableView selectableView, final RadioGroup rg_font_group) {
 //        new MaterialDialog.Builder(ImageEditorActivity.this)
 //                .title(R.string.no_font_file_title)
@@ -1146,7 +1116,4 @@ public class ImageEditorActivity extends Activity {
                 })
                 .show();
     }
-
-    // 字体选择的所有操作方式---------done
-
 }

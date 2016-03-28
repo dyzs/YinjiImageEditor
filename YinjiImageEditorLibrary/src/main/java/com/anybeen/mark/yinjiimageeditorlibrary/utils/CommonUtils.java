@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
+import com.anybeen.mark.yinjiimageeditorlibrary.entity.ProgressItem;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.MovableTextView2;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -206,5 +208,21 @@ public class CommonUtils {
             }
         }
         return typeface;
+    }
+
+
+    public static ArrayList<ProgressItem> getProgressItemList(int[] colorValues) {
+        ArrayList<ProgressItem> progressItemList;
+        ProgressItem mProgressItem;
+        float totalSpan = 9;        // 颜色个数
+        float[] colorSpan = Const.COLOR_SPAN;
+        progressItemList = new ArrayList<>();
+        for (int i = 0; i < colorSpan.length; i++) {
+            mProgressItem = new ProgressItem();
+            mProgressItem.progressItemPercentage = ((colorSpan[i] / totalSpan) * 100);
+            mProgressItem.color = colorValues[i];
+            progressItemList.add(mProgressItem);
+        }
+        return progressItemList;
     }
 }

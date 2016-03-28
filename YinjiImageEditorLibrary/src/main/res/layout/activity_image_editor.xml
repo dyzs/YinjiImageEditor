@@ -19,10 +19,6 @@
         <!--android:text="打开相机"-->
         <!--/>-->
         <include layout="@layout/layout_image_editor_toolbar"/>
-        <View
-            android:background="@drawable/shape_divider_common"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
 
         <FrameLayout
             android:id="@+id/fl_main_content"

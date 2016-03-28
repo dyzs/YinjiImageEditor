@@ -1,12 +1,14 @@
 package com.anybeen.mark.yinjiimageeditorlibrary.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
@@ -224,5 +226,28 @@ public class CommonUtils {
             progressItemList.add(mProgressItem);
         }
         return progressItemList;
+    }
+
+
+    public static float[] calcScaleAndLeaveSize(Bitmap copyBitmap, ImageView iv_main_image) {
+        float[] scaleAndLeaveSize = new float[3];
+        float svWidth = iv_main_image.getWidth() * 1.0f;
+        float svHeight = iv_main_image.getHeight() * 1.0f;
+        float copyBitWidth = copyBitmap.getWidth() * 1.0f;
+        float copyBitHeight = copyBitmap.getHeight() * 1.0f;
+
+        float scaleX = copyBitWidth / svWidth;
+        float scaleY = copyBitHeight / svHeight;
+        float scale = scaleX > scaleY ? scaleX:scaleY;
+        float leaveW = 0.0f, leaveH = 0.0f;     // 留白区域
+        if (scaleX > scaleY) {
+            leaveH = (svHeight -  copyBitHeight / scale) / 2;
+        } else {
+            leaveW = (svWidth - copyBitWidth / scale) / 2;
+        }
+        scaleAndLeaveSize[0] = scale;       // 表示图片与屏幕的缩放比
+        scaleAndLeaveSize[1] = leaveW;      // 表示图片的X轴留白区域
+        scaleAndLeaveSize[2] = leaveH;      // 表示图片的Y轴留白区域
+        return scaleAndLeaveSize;
     }
 }

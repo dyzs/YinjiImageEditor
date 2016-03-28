@@ -47,7 +47,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_filter_list"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:scrollbars="none"
             android:gravity="center"
             android:layout_gravity="bottom"
@@ -57,7 +57,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_sticker_list"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:scrollbars="none"
             android:gravity="center"
             android:layout_gravity="bottom"
@@ -70,7 +70,7 @@
 
     <LinearLayout
         android:id="@+id/ll_base_edit_panel"
-        android:visibility="visible"
+        android:visibility="gone"
         android:orientation="vertical"
         android:background="@android:color/transparent"
         android:layout_width="match_parent"

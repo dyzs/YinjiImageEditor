@@ -70,12 +70,15 @@ public class CustomSeekBar extends SeekBar {
 			int progressBarHeight = getHeight();
 			int thumbOffset = getThumbOffset();
 			int lastProgressX = dotWidth / 2;	// 0
+
+
 			Rect rect = new Rect();
 			Paint rectPaint = new Paint();
 			rectPaint.setStyle(Paint.Style.STROKE);
 			rectPaint.setColor(Color.BLACK);
 			rectPaint.setTextSize(1);
-			rect.set(lastProgressX,
+			// + DensityUtils.dp2px(getContext(), 5) / 2 + 1
+			rect.set(lastProgressX,// 表示 corners 的半径
 					thumbOffset / 2,
 					progressBarWidth - dotWidth / 2 + 1,
 					progressBarHeight - thumbOffset / 2 + 1

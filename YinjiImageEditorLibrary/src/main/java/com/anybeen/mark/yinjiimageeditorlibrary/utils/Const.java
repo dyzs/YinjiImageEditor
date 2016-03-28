@@ -58,4 +58,28 @@ public interface Const {
             R.color.rainbow_purple, R.color.rainbow_white, R.color.rainbow_black};    // 红橙黄绿蓝靛紫黑白
 
     float[] COLOR_SPAN = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+
+
+
+    // count 7
+    String[] STICKERS_NAME = {"晨", "希望", "惊", "咆哮", "闪亮", "图记", "朕已阅"};
+
+    int[] STICKERS_VALUES = {
+            R.mipmap.pic_sticker_chen,
+            R.mipmap.pic_sticker_hope,
+            R.mipmap.pic_sticker_jing,
+            R.mipmap.pic_sticker_paoxiao,
+            R.mipmap.pic_sticker_shanliang,
+            R.mipmap.pic_sticker_tuji,
+            R.mipmap.pic_sticker_zhenyiyue
+    };
+
+    String[] STICKERS_NAME_PINGYIN = {
+
+    };
+
+
+
+
 }

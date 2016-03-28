@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,10 +31,10 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.anybeen.mark.yinjiimageeditorlibrary.adapter.StickerAdapter;
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.CarrotInfo;
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.ImageDataInfo;
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.MatrixInfo;
-import com.anybeen.mark.yinjiimageeditorlibrary.entity.ProgressItem;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.ColorUtil;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.CommonUtils;
@@ -51,9 +50,6 @@ import com.anybeen.mark.yinjiimageeditorlibrary.view.SelectableView;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.StickerView;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageEditorActivity extends Activity {
@@ -67,7 +63,8 @@ public class ImageEditorActivity extends Activity {
     private ImageView bt_save;
     // mainContent
     private ImageView iv_main_image;
-    private RecyclerView mRecyclerView_filter_list;
+    private RecyclerView mRvFilter;
+    private RecyclerView mRvSticker;
     // bottomToolbar
     private RadioGroup main_radio;
     private RadioButton rb_word;
@@ -154,21 +151,38 @@ public class ImageEditorActivity extends Activity {
         // topBar
         bt_save = (ImageView) findViewById(R.id.bt_save);
         // mainContent
-        mRecyclerView_filter_list = (RecyclerView) findViewById(R.id.rv_filter_list);
-        mRecyclerView_filter_list.setHasFixedSize(true);
-        int spacingInPixels = 10; //getResources().getDimensionPixelSize(R.dimen.space);
-        mRecyclerView_filter_list.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView_filter_list.setLayoutManager(layoutManager);
-
-        mRecyclerView_filter_list.setAdapter(new FilterAdapter(this));
 
         iv_main_image = (ImageView) findViewById(R.id.iv_main_image);
         // bottomToolbar
         main_radio = (RadioGroup) findViewById(R.id.main_radio);
         rb_word = (RadioButton) findViewById(R.id.rb_word);
         rb_sticker = (RadioButton) findViewById(R.id.rb_sticker);
+
+
+        // recycle view 处理滤镜
+        mRvFilter = (RecyclerView) findViewById(R.id.rv_filter_list);
+        mRvFilter.setHasFixedSize(true);
+        int spacingInPixels = 10; //getResources().getDimensionPixelSize(R.dimen.space);
+        mRvFilter.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRvFilter.setLayoutManager(layoutManager);
+        mRvFilter.setAdapter(new FilterAdapter(this));
+        // recycle view 处理贴纸
+        mRvSticker = (RecyclerView) findViewById(R.id.rv_sticker_list);
+        mRvSticker.setHasFixedSize(true);
+        LinearLayoutManager lmSticker = new LinearLayoutManager(mContext);
+        lmSticker.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRvSticker.setLayoutManager(lmSticker);
+        StickerAdapter sa = new StickerAdapter(this);
+        sa.setSil(new StickerAdapter.StickerIndexListener() {
+            @Override
+            public void onStickerIndex(int position) {
+                ToastUtil.makeText(mContext, "position:" + position);
+                addStickerView(position);
+            }
+        });
+        mRvSticker.setAdapter(sa);
 
     }
     private void loadBitmap() {
@@ -265,7 +279,11 @@ public class ImageEditorActivity extends Activity {
         rb_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addStickerView();
+                if (mRvSticker.getVisibility() == View.INVISIBLE) {
+                    mRvSticker.setVisibility(View.VISIBLE);
+                } else {
+                    mRvSticker.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
@@ -458,9 +476,10 @@ public class ImageEditorActivity extends Activity {
 
 
     //添加表情
-    private void addStickerView() {
+    private void addStickerView(int stickerIndex) {
+        if (mStickerViews.size() > 5) {return;}
         final StickerView stickerView = new StickerView(this);
-        stickerView.setImageResource(R.mipmap.ic_cat);
+        stickerView.setImageResource(Const.STICKERS_VALUES[stickerIndex]);
         // maidou add
         // stickerView.setBitmapReloadMatrix(reloadMatrix);
         stickerView.setOperationListener(new StickerView.OperationListener() {
@@ -489,7 +508,6 @@ public class ImageEditorActivity extends Activity {
         });
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         fl_main_content.addView(stickerView, lp);
-        mStickerViews.add(stickerView);
         setCurrentEdit(stickerView);
         mStickerViews.add(stickerView);
     }
@@ -646,24 +664,7 @@ public class ImageEditorActivity extends Activity {
      */
     private void calcScaleAndLeaveSize() {
         if (copyBitmap == null) {return;}
-        scaleAndLeaveSize = new float[3];
-        float svWidth = iv_main_image.getWidth() * 1.0f;
-        float svHeight = iv_main_image.getHeight() * 1.0f;
-        float copyBitWidth = copyBitmap.getWidth() * 1.0f;
-        float copyBitHeight = copyBitmap.getHeight() * 1.0f;
-
-        float scaleX = copyBitWidth / svWidth;
-        float scaleY = copyBitHeight / svHeight;
-        float scale = scaleX > scaleY ? scaleX:scaleY;
-        float leaveW = 0.0f, leaveH = 0.0f;     // 留白区域
-        if (scaleX > scaleY) {
-            leaveH = (svHeight -  copyBitHeight / scale) / 2;
-        } else {
-            leaveW = (svWidth - copyBitWidth / scale) / 2;
-        }
-        scaleAndLeaveSize[0] = scale;       // 表示图片与屏幕的缩放比
-        scaleAndLeaveSize[1] = leaveW;      // 表示图片的X轴留白区域
-        scaleAndLeaveSize[2] = leaveH;      // 表示图片的Y轴留白区域
+        scaleAndLeaveSize = CommonUtils.calcScaleAndLeaveSize(copyBitmap, iv_main_image);
     }
 
     /**
@@ -672,10 +673,11 @@ public class ImageEditorActivity extends Activity {
     private void reloadStickerMore() {
         ArrayList<MatrixInfo> matrixInfoLists = FileUtils.readFileToMatrixInfoLists();
         if (matrixInfoLists == null)return;
-        for (MatrixInfo matrixInfo: matrixInfoLists) {
+        for (int i = 0; i < matrixInfoLists.size(); i++) {
+            MatrixInfo matrixInfo = matrixInfoLists.get(i);
             float[] floats = matrixInfo.floatArr;
             final StickerView stickerView = new StickerView(this);
-            stickerView.setImageResource(R.mipmap.ic_cat);
+            stickerView.setImageResource(Const.STICKERS_VALUES[i]);
             stickerView.reloadBitmapAfterOnDraw(floats);
             stickerView.setOperationListener(new StickerView.OperationListener() {
                 @Override

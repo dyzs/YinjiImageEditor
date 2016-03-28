@@ -20,8 +20,8 @@
         android:id="@+id/ll_edit_panel_head"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:paddingLeft="6dp"
-        android:paddingRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:orientation="horizontal"
@@ -143,6 +143,11 @@
                 android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
                 android:thumbOffset="12dp"
                 />
+            <!--
+            android:progressDrawable="@drawable/style_color_border"
+            android:progressDrawable="@android:color/transparent"
+            android:progressDrawable="@drawable/shape_color_seek_bar_transparent"
+            -->
             <ImageView
                 android:id="@+id/iv_edit_panel_color_show"
                 android:layout_width="20.0dip"
@@ -166,21 +171,6 @@
                 android:text="字体选择："
                 style="@style/image_edit_panel_text_size"
                 />
-            <!--<SeekBar-->
-                <!--android:id="@+id/sss"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:maxHeight="10dp"-->
-                <!--android:minHeight="10dp"-->
-                <!--android:paddingLeft="10.0dip"-->
-                <!--android:paddingRight="10.0dip"-->
-                <!--android:progress="26"-->
-                <!--android:max="50"-->
-                <!--android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"-->
-                <!--android:thumbOffset="12dp"-->
-                <!--android:progressDrawable="@drawable/style_seek_bar"-->
-                <!--/>-->
             <include layout="@layout/pop_font_select" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_typeface_list"

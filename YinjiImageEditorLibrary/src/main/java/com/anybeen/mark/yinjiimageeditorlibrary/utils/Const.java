@@ -44,7 +44,9 @@ public interface Const {
 
     /**字体相关文件在SD卡上的路径*/
     String FONT_PATH = Environment.getExternalStorageDirectory()+ File.separator+"anybeen"+File.separator+"font";
-
+    /**字体文件下载路径头*/
+    public static final String FONT_DOWNLOAD_URL = "http://www.anybeen.com/font_down";
     //字体文件下载
     String INTENT_ACTION_FONT_DOWNLOAD = "com.anybeen.mark.app.font.download";
+
 }

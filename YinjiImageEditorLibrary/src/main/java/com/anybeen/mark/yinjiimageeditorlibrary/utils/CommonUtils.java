@@ -178,6 +178,7 @@ public class CommonUtils {
                 }
             }
         } catch (Exception e) {
+            System.out.println("==>" + e.getMessage());
             return false;
         }
         return false;

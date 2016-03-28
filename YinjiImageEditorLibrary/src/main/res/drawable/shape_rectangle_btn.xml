@@ -3,14 +3,15 @@
     <padding
         android:bottom="7dp"
         android:left="15dp"
-        android:right="10dp"
+        android:right="15dp"
         android:top="7dp" />
     <!-- 设置圆角矩形 -->
-    <corners android:radius="15dp" />
+    <corners android:radius="5dp" />
 
     <stroke
         android:width="1px"
         android:color="#000000" />
+
 
     <solid android:color="#FFFFFF" />
 

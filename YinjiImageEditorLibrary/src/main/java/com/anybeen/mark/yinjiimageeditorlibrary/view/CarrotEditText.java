@@ -3,6 +3,7 @@ package com.anybeen.mark.yinjiimageeditorlibrary.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -30,14 +31,16 @@ public class CarrotEditText extends EditText{
     private void init(Context context) {
         // this.setBackgroundResource(R.mipmap.btn_beautiful_text_button_background_normal);
         // this.setGravity(Gravity.CENTER_VERTICAL);
-        this.setTextColor(Color.WHITE);
+        this.setTextColor(Color.GRAY);
+        this.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
         this.setLines(1);
         deleteIcon = getResources().getDrawable(R.mipmap.icon_delete);
         deleteIcon.setBounds(
                 0,
                 0,
-                DensityUtils.px2dp(getContext(), 70),
-                DensityUtils.px2dp(getContext(), 70)
+                DensityUtils.dp2px(getContext(), DensityUtils.px2dp(getContext(), 50)),
+                DensityUtils.dp2px(getContext(), DensityUtils.px2dp(getContext(), 50))
                 //deleteIcon.getIntrinsicHeight() + (int) DensityUtils.px2dp(getContext(), 5)
         );
         setCompoundDrawables(null, null, deleteIcon, null);

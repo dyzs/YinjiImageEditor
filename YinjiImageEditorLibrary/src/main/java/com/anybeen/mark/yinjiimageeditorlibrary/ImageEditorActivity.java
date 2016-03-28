@@ -51,6 +51,8 @@ import com.anybeen.mark.yinjiimageeditorlibrary.view.SelectableView;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.StickerView;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -98,13 +100,12 @@ public class ImageEditorActivity extends Activity {
     private LinearLayout edit_panel;            // 文字编辑面板，使用 LayoutInflate
     private ImageView ep_KeyboardOptions;       // 键盘切换显示与隐藏
     private CarrotEditText ep_OperateText;      // 文本编辑框
-    private Button ep_BtnComplete;              // 完成按钮
+    private TextView ep_BtnComplete;            // 完成按钮
     private SeekBar ep_FontSize;                // 字体大小
     private CustomSeekBar ep_CsbFontColor;      // 字体颜色 seek bar
     private ImageView ep_IvColorShow;           // 颜色展示
     private RadioGroup ep_rgFontGroup;          // 字体选择
     private int currentFontCheckedId = -1;
-
     // edit panel params
 
 
@@ -145,7 +146,6 @@ public class ImageEditorActivity extends Activity {
 
 
     private void initView() {
-
         fl_main_content = (FrameLayout) findViewById(R.id.fl_main_content);
         // edit_panel 的父容器
         ll_base_edit_panel = (LinearLayout) findViewById(R.id.ll_base_edit_panel);
@@ -183,8 +183,6 @@ public class ImageEditorActivity extends Activity {
 //            filePath = mCurrDataInfo.metaDataPictureInfo.oriPicturePath;
         }
         loadImage(filePath);
-//        System.out.println("=======" + filePath);
-//        loadImage(filePath);
 //        mainBitmap = loadImage();
 //        mainBitmap = BitmapUtils.loadImage(this, mCurrImgId, imageWidth, imageHeight);
 //        copyBitmap = mainBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -207,7 +205,7 @@ public class ImageEditorActivity extends Activity {
 
                         ep_KeyboardOptions = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_key_board_options);
                         ep_OperateText = (CarrotEditText) edit_panel.findViewById(R.id.et_edit_panel_text);
-                        ep_BtnComplete = (Button) edit_panel.findViewById(R.id.iv_edit_panel_complete);
+                        ep_BtnComplete = (TextView) edit_panel.findViewById(R.id.iv_edit_panel_complete);
                         ep_FontSize = (SeekBar) edit_panel.findViewById(R.id.sb_edit_panel_font_size);
                         ep_IvColorShow = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_color_show);
                         ep_CsbFontColor = (CustomSeekBar) edit_panel.findViewById(R.id.csb_edit_panel_font_color);

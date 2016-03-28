@@ -22,8 +22,8 @@
         android:layout_height="60dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="visible"
@@ -40,21 +40,22 @@
         <com.anybeen.mark.yinjiimageeditorlibrary.view.CarrotEditText
             android:id="@+id/et_edit_panel_text"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:imeOptions="flagNoExtractUi"
             android:gravity="center_vertical"
             android:background="@drawable/shape_corner_carrot_edit_text"
             android:layout_weight="1"
             />
-        <Button
+        <TextView
             android:id="@+id/iv_edit_panel_complete"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:text="完成"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:background="@drawable/btn_beautiful_text_button_background_selector"
+            android:textColor="@android:color/black"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:background="@drawable/shape_rectangle_btn"
             />
     </LinearLayout>
 

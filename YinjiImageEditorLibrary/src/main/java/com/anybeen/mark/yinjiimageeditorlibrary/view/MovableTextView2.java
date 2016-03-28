@@ -18,7 +18,6 @@ import com.anybeen.mark.yinjiimageeditorlibrary.utils.ToastUtil;
 
 /**
  * Created by maidou on 2016/2/19.
- * @details 新增移除图片的位置限制
  */
 public class MovableTextView2 extends EditText{
     private Context mContext;
@@ -40,8 +39,6 @@ public class MovableTextView2 extends EditText{
         );
         this.setLayoutParams(layoutParams);
         this.setBackgroundDrawable(getResources().getDrawable(R.drawable.pic_bg_edit_text_9patch_3x3));
-//        this.setHint("在此输入标注文字");
-//        this.setHintTextColor(Color.WHITE);
         this.setBackgroundResource(R.drawable.shape_dotted);
         this.setText("在此输入标注文字");
         this.setTextColor(Color.WHITE);

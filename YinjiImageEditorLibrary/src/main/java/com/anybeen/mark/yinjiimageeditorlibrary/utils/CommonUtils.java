@@ -1,6 +1,7 @@
 package com.anybeen.mark.yinjiimageeditorlibrary.utils;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
@@ -182,5 +183,27 @@ public class CommonUtils {
             return false;
         }
         return false;
+    }
+
+    /**
+     * @details 通过字体名称获取字体
+     * @param fontName
+     * @return
+     */
+    public static Typeface getTypeface(String fontName) {
+        Typeface typeface = null;
+        if (fontName.equals("default")) {
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
+        } else {
+            File file = new File(Const.FONT_PATH + File.separator + fontName);
+            if (file.exists()) {
+                try {
+                    typeface = Typeface.createFromFile(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return typeface;
     }
 }

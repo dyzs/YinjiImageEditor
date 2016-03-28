@@ -50,6 +50,7 @@ import com.anybeen.mark.yinjiimageeditorlibrary.view.SelectableView;
 import com.anybeen.mark.yinjiimageeditorlibrary.view.StickerView;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ImageEditorActivity extends Activity {
@@ -272,7 +273,7 @@ public class ImageEditorActivity extends Activity {
         ll_base_edit_panel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operateCarrotComplete();
+                operateComplete();
             }
         });
     }
@@ -405,8 +406,13 @@ public class ImageEditorActivity extends Activity {
         ep_OperateText.setSelection(newAddMtv.getText().length());   // 设置光标的位置
         ep_IvColorShow.setBackgroundColor(newAddMtv.getCurrentTextColor());
         ep_CsbFontColor.setProgress(newAddMtv.getColorSeekBarProgress());
-        // ep_CsbFontColor.setProgress();
         ep_FontSize.setProgress(DensityUtils.px2dp(mContext, newAddMtv.getTextSize()));
+        String fontName = newAddMtv.getTypefaceName();
+        for (int i = 0; i < ep_rgFontGroup.getChildCount(); i++) {
+            if (ep_rgFontGroup.getChildAt(i).getTag().equals(fontName)) {
+                ((SelectableView) (ep_rgFontGroup.getChildAt(i))).setChecked(true);
+            }
+        }
 
         fl_main_content.addView(newAddMtv);
         mMtvLists.add(newAddMtv);
@@ -745,7 +751,7 @@ public class ImageEditorActivity extends Activity {
         }
 //        // 在保存之前先执行完成逻辑
 //        if (mMtvLists != null && mMtvLists.size() > 0) {
-        operateCarrotComplete();
+        operateComplete();
 //        }
         Paint mPaint = new Paint();     // 初始化画笔
         mPaint.setAntiAlias(true);      // 设置消除锯齿
@@ -894,7 +900,7 @@ public class ImageEditorActivity extends Activity {
         ep_BtnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operateCarrotComplete();
+                operateComplete();
             }
         });
 
@@ -973,7 +979,7 @@ public class ImageEditorActivity extends Activity {
     /**
      * 完成按钮的点击操作
      */
-    private void operateCarrotComplete() {
+    private void operateComplete() {
         ToastUtil.makeText(mContext, "文本控件事件被拦截了");
         MovableTextView2 delMtv = null;
         int listSize = mMtvLists.size();
@@ -991,16 +997,6 @@ public class ImageEditorActivity extends Activity {
             m.setSelected(false);
         }
         hideEditPanelAndCloseKeyboard();
-    }
-
-    @Deprecated
-    private MovableTextView2 getOperateMtv() {
-        for (MovableTextView2 mtv : mMtvLists) {
-            if (mtv.isSelected()) {
-                return mtv;
-            }
-        }
-        return null;
     }
 
 
@@ -1058,7 +1054,6 @@ public class ImageEditorActivity extends Activity {
     }
 
 
-
     //------------ 字体选择的所有操作方式
     /**
      * @param typeface 选中的字体
@@ -1076,7 +1071,6 @@ public class ImageEditorActivity extends Activity {
     }
 
     /**
-     * @details CP from PhotoEditBaseController
      * @param fontSize
      * @param selectableView
      * @param rg_font_group

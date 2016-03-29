@@ -8,7 +8,6 @@
 
     <style name="image_editor_tab_bottom">
         <item name="android:textSize">@dimen/image_editor_bottom_tab_font_size</item>
-        <item name="android:textColor">@color/image_editor_bottom_text_color</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:background">@android:color/transparent</item>

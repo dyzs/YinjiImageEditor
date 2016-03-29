@@ -34,7 +34,7 @@ import android.widget.TextView;
 import com.anybeen.mark.yinjiimageeditorlibrary.adapter.StickerAdapter;
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.CarrotInfo;
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.ImageDataInfo;
-import com.anybeen.mark.yinjiimageeditorlibrary.entity.MatrixInfo;
+import com.anybeen.mark.yinjiimageeditorlibrary.entity.StickerInfo;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.ColorUtil;
 import com.anybeen.mark.yinjiimageeditorlibrary.utils.CommonUtils;
@@ -678,19 +678,19 @@ public class ImageEditorActivity extends Activity {
      * @details 重新载入多个贴纸
      */
     private void reloadSticker() {
-        ArrayList<MatrixInfo> matrixInfoLists = FileUtils.readFileToMatrixInfoLists();
-        if (matrixInfoLists == null)return;
-        for (int i = 0; i < matrixInfoLists.size(); i++) {
-            MatrixInfo matrixInfo = matrixInfoLists.get(i);
-            float[] floats = matrixInfo.floatArr;
+        ArrayList<StickerInfo> stickerInfoLists = FileUtils.readFileToStickerInfoLists();
+        if (stickerInfoLists == null)return;
+        for (int i = 0; i < stickerInfoLists.size(); i++) {
+            StickerInfo stickerInfo = stickerInfoLists.get(i);
+            float[] floats = stickerInfo.floatArr;
             final StickerView stickerView = new StickerView(this);
-            stickerView.setImageResource(matrixInfo.resId);     //Const.STICKERS_VALUES[matrixInfo.index]
+            stickerView.setImageResource(Const.STICKERS_VALUES[stickerInfo.index]);
             stickerView.reloadBitmapAfterOnDraw(floats);
-            stickerView.setSaveIndex(matrixInfo.index);
-            stickerView.setSaveNameCh(matrixInfo.nameCh);
-            stickerView.setSaveNameEn(matrixInfo.nameEn);
-            stickerView.setSaveFileAbsPath(matrixInfo.fileAbsPath);
-            stickerView.setSaveResId(matrixInfo.resId);
+            stickerView.setSaveIndex(stickerInfo.index);
+            stickerView.setSaveNameCh(stickerInfo.nameCh);
+            stickerView.setSaveNameEn(stickerInfo.nameEn);
+            stickerView.setSaveFileAbsPath(stickerInfo.fileAbsPath);
+            stickerView.setSaveResId(stickerInfo.resId);
             stickerView.setOperationListener(new StickerView.OperationListener() {
                 @Override
                 public void onDeleteClick() {
@@ -831,21 +831,21 @@ public class ImageEditorActivity extends Activity {
         if (mStickerViews == null || mStickerViews.size() <= 0) {
             return;
         }
-        ArrayList<MatrixInfo> matrixInfoArrayList = new ArrayList<>();
-        MatrixInfo matrixInfo;
+        ArrayList<StickerInfo> stickerInfoArrayList = new ArrayList<>();
+        StickerInfo stickerInfo;
         for(StickerView sv:mStickerViews) {
             canvas.drawBitmap(sv.getBitmap(), sv.saveMatrix(), null);
-            matrixInfo = new MatrixInfo();
-            matrixInfo.floatArr = sv.saveMatrixFloatArray();
-            matrixInfo.index = sv.getSaveIndex();
-            matrixInfo.nameCh = sv.getSaveNameCh();
-            matrixInfo.nameEn = sv.getSaveNameEn();
-            matrixInfo.fileAbsPath = sv.getSaveFileAbsPath();
-            matrixInfo.resId = sv.getSaveResId();
-            matrixInfoArrayList.add(matrixInfo);
+            stickerInfo = new StickerInfo();
+            stickerInfo.floatArr = sv.saveMatrixFloatArray();
+            stickerInfo.index = sv.getSaveIndex();
+            stickerInfo.nameCh = sv.getSaveNameCh();
+            stickerInfo.nameEn = sv.getSaveNameEn();
+            stickerInfo.fileAbsPath = sv.getSaveFileAbsPath();
+            stickerInfo.resId = sv.getSaveResId();
+            stickerInfoArrayList.add(stickerInfo);
 //            fl_main_content.removeView(sv);
         }
-        FileUtils.saveSerializableMatrixLists(matrixInfoArrayList);
+        FileUtils.saveSerializableStickerLists(stickerInfoArrayList);
         System.out.println("保存贴纸成功~~~~~~~");
 //        mStickerViews.clear();
 //        mStickerViews = null;

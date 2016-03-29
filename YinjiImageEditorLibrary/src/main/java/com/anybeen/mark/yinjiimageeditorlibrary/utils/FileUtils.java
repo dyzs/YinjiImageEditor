@@ -6,7 +6,7 @@ import android.os.Environment;
 
 
 import com.anybeen.mark.yinjiimageeditorlibrary.entity.CarrotInfo;
-import com.anybeen.mark.yinjiimageeditorlibrary.entity.MatrixInfo;
+import com.anybeen.mark.yinjiimageeditorlibrary.entity.StickerInfo;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -187,19 +187,16 @@ public class FileUtils {
 
 
     /**
-     * @details 保存多个贴纸的矩阵信息
-     * @param matrixInfoArrayList
+     * @details 保存多个贴纸的信息
+     * @param stickerInfoArrayList
      */
-    public static void saveSerializableMatrixLists(ArrayList<MatrixInfo> matrixInfoArrayList) {
-        if (matrixInfoArrayList == null || matrixInfoArrayList.size() <= 0) return;
+    public static void saveSerializableStickerLists(ArrayList<StickerInfo> stickerInfoArrayList) {
+        if (stickerInfoArrayList == null || stickerInfoArrayList.size() <= 0) return;
         String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
         try {
             FileOutputStream fs = new FileOutputStream(sd + "/" + "matrix.txt");
             ObjectOutputStream os = new ObjectOutputStream(fs);
-            os.writeObject(matrixInfoArrayList);
-//            for (MatrixInfo matrixInfo : matrixInfoArrayList) {
-//                os.writeObject(matrixInfo);
-//            }
+            os.writeObject(stickerInfoArrayList);
             os.flush();
             os.close();
         } catch (Exception ex) {
@@ -211,51 +208,15 @@ public class FileUtils {
      * @details 从文件中读取多个贴纸的矩阵信息
      * @return MatrixInfoLists
      */
-    public static ArrayList<MatrixInfo> readFileToMatrixInfoLists() {
-        ArrayList<MatrixInfo> lists;
+    public static ArrayList<StickerInfo> readFileToStickerInfoLists() {
+        ArrayList<StickerInfo> lists;
         String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
         try {
             FileInputStream fs = new FileInputStream(sd + "/" + "matrix.txt");
             ObjectInputStream ois = new ObjectInputStream(fs);
-            lists = (ArrayList<MatrixInfo>) ois.readObject();
+            lists = (ArrayList<StickerInfo>) ois.readObject();
             ois.close();
             return lists;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
-
-    /**
-     * @details 保存单个贴纸的矩阵信息到文件中
-     * @param matrixInfo
-     */
-    public static void saveSerializableMatrix(MatrixInfo matrixInfo) {
-        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
-        try {
-            FileOutputStream fs = new FileOutputStream(sd + "/" + "matrix.txt");
-            ObjectOutputStream os = new ObjectOutputStream(fs);
-            os.writeObject(matrixInfo);
-            os.flush();
-            os.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * @details 从文件中读取单个贴纸的矩阵信息
-     * @return {@link MatrixInfo}
-     */
-    public static MatrixInfo readFileToMatrixInfo() {
-        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
-        try {
-            FileInputStream fs = new FileInputStream(sd + "/" + "matrix.txt");
-            ObjectInputStream ois = new ObjectInputStream(fs);
-            MatrixInfo matrixInfo = (MatrixInfo) ois.readObject();
-            ois.close();
-            return matrixInfo;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

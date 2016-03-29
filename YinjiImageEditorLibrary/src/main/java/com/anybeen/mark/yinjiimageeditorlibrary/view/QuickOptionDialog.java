@@ -52,13 +52,13 @@ public class QuickOptionDialog extends Dialog implements View.OnClickListener {
         System.out.println("QuickOptionDialog inflate layout");
         // 564px 转 dp
         isShowContentPanel = false;
-        View contentView = getLayoutInflater().inflate(R.layout.layout_edit_panel, null);
+        View contentView = getLayoutInflater().inflate(R.layout.layout_image_editor_edit_panel, null);
         et_input_text = (EditText) contentView.findViewById(R.id.et_input_text);
         et_input_text.setOnFocusChangeListener(new FocusChangeListener());
 
-        ll_edit_panel_content = (LinearLayout) contentView.findViewById(R.id.ll_edit_panel_content);
-        iv_mode = (ImageView) contentView.findViewById(R.id.iv_mode);
-        iv_mode.setOnClickListener(this);
+//        ll_edit_panel_content = (LinearLayout) contentView.findViewById(R.id.ll_edit_panel_content);
+//        iv_mode = (ImageView) contentView.findViewById(R.id.iv_mode);
+//        iv_mode.setOnClickListener(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.setContentView(contentView);

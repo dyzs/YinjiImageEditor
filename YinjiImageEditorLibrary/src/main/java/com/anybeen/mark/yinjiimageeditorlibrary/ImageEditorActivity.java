@@ -215,7 +215,7 @@ public class ImageEditorActivity extends Activity {
                     if (createMtvOnLoading && openKeyboardOnLoading) {
                         keyboardHeight = height;
                         SystemClock.sleep(300);
-                        edit_panel = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_edit_panel, null);
+                        edit_panel = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_image_editor_edit_panel, null);
                         ll_base_edit_panel.addView(edit_panel);
 
                         ep_KeyboardOptions = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_key_board_options);

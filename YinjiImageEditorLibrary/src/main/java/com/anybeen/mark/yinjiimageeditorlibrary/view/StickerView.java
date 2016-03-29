@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -117,7 +118,7 @@ public class StickerView extends ImageView {
         dst_flipV = new Rect();
         dst_top = new Rect();
         localPaint = new Paint();
-        localPaint.setColor(getResources().getColor(R.color.black));
+        localPaint.setColor(Color.BLACK);
         localPaint.setAntiAlias(true);
         localPaint.setDither(true);
         localPaint.setStyle(Paint.Style.STROKE);
@@ -643,5 +644,54 @@ public class StickerView extends ImageView {
     public void setInEdit(boolean isInEdit) {
         this.isInEdit = isInEdit;
         invalidate();
+    }
+
+
+
+    // maidou add
+    private int saveIndex;             // 保存贴纸的索引，reload使用
+    private String saveNameCh;         // 保存中文名称
+    private String saveNameEn;         // 保存英文名称或者拼音
+    private String saveFileAbsPath;    // 表示可能存在贴纸从文件夹中读取
+    private int saveResId;             // 资源 id  example:  R.id.pic_icon
+
+    public int getSaveIndex() {
+        return saveIndex;
+    }
+
+    public void setSaveIndex(int saveIndex) {
+        this.saveIndex = saveIndex;
+    }
+
+    public String getSaveNameCh() {
+        return saveNameCh;
+    }
+
+    public void setSaveNameCh(String saveNameCh) {
+        this.saveNameCh = saveNameCh;
+    }
+
+    public String getSaveNameEn() {
+        return saveNameEn;
+    }
+
+    public void setSaveNameEn(String saveNameEn) {
+        this.saveNameEn = saveNameEn;
+    }
+
+    public String getSaveFileAbsPath() {
+        return saveFileAbsPath;
+    }
+
+    public void setSaveFileAbsPath(String saveFileAbsPath) {
+        this.saveFileAbsPath = saveFileAbsPath;
+    }
+
+    public int getSaveResId() {
+        return saveResId;
+    }
+
+    public void setSaveResId(int saveResId) {
+        this.saveResId = saveResId;
     }
 }

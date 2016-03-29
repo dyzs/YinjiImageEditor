@@ -11,8 +11,8 @@ import java.io.Serializable;
  */
 public class MatrixInfo implements Serializable{
     public int index;               // 表示贴纸的索引值
-    public String nameCH;           // 中文名称
-    public String nameEN;           // 拼音或英文名称
+    public String nameCh;           // 中文名称
+    public String nameEn;           // 拼音或英文名称
     public String fileAbsPath;      // 表示可能存在贴纸从文件夹中读取
     public int resId;               // 资源 id  example:  R.id.pic_icon
 

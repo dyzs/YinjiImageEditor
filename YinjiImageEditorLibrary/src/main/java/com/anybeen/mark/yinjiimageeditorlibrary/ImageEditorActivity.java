@@ -136,7 +136,7 @@ public class ImageEditorActivity extends Activity {
 
         handleListener();
 
-        reloadStickerMore();
+        reloadSticker();
 
         reloadCarrot();
     }
@@ -179,6 +179,7 @@ public class ImageEditorActivity extends Activity {
             @Override
             public void onStickerIndex(int position) {
                 ToastUtil.makeText(mContext, "position:" + position);
+                mRvSticker.setVisibility(View.INVISIBLE);
                 addStickerView(position);
             }
         });
@@ -506,6 +507,12 @@ public class ImageEditorActivity extends Activity {
                 mStickerViews.add(mStickerViews.size(), stickerTemp);
             }
         });
+        stickerView.setSaveIndex(stickerIndex);
+        stickerView.setSaveNameCh(Const.STICKERS_NAME[stickerIndex]);
+        stickerView.setSaveNameEn(Const.STICKERS_NAME_EN[stickerIndex]);
+        stickerView.setSaveFileAbsPath(Const.STICKER_FILE_ABS_PATH[stickerIndex]);
+        stickerView.setSaveResId(Const.STICKERS_VALUES[stickerIndex]);
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         fl_main_content.addView(stickerView, lp);
         setCurrentEdit(stickerView);
@@ -670,15 +677,20 @@ public class ImageEditorActivity extends Activity {
     /**
      * @details 重新载入多个贴纸
      */
-    private void reloadStickerMore() {
+    private void reloadSticker() {
         ArrayList<MatrixInfo> matrixInfoLists = FileUtils.readFileToMatrixInfoLists();
         if (matrixInfoLists == null)return;
         for (int i = 0; i < matrixInfoLists.size(); i++) {
             MatrixInfo matrixInfo = matrixInfoLists.get(i);
             float[] floats = matrixInfo.floatArr;
             final StickerView stickerView = new StickerView(this);
-            stickerView.setImageResource(Const.STICKERS_VALUES[i]);
+            stickerView.setImageResource(matrixInfo.resId);     //Const.STICKERS_VALUES[matrixInfo.index]
             stickerView.reloadBitmapAfterOnDraw(floats);
+            stickerView.setSaveIndex(matrixInfo.index);
+            stickerView.setSaveNameCh(matrixInfo.nameCh);
+            stickerView.setSaveNameEn(matrixInfo.nameEn);
+            stickerView.setSaveFileAbsPath(matrixInfo.fileAbsPath);
+            stickerView.setSaveResId(matrixInfo.resId);
             stickerView.setOperationListener(new StickerView.OperationListener() {
                 @Override
                 public void onDeleteClick() {
@@ -825,6 +837,11 @@ public class ImageEditorActivity extends Activity {
             canvas.drawBitmap(sv.getBitmap(), sv.saveMatrix(), null);
             matrixInfo = new MatrixInfo();
             matrixInfo.floatArr = sv.saveMatrixFloatArray();
+            matrixInfo.index = sv.getSaveIndex();
+            matrixInfo.nameCh = sv.getSaveNameCh();
+            matrixInfo.nameEn = sv.getSaveNameEn();
+            matrixInfo.fileAbsPath = sv.getSaveFileAbsPath();
+            matrixInfo.resId = sv.getSaveResId();
             matrixInfoArrayList.add(matrixInfo);
 //            fl_main_content.removeView(sv);
         }

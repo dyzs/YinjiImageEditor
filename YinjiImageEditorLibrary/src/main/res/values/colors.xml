@@ -2,14 +2,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="gray_background">#ffececec</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="red">#E51A18</color>
     <color name="line_color">#523E2E</color>
-
-    <color name="search_tab_normal">#363636</color>
-    <color name="search_tab_select">#E82926</color>
-    <color name="menu_item_text_color">#E60200</color>
 
 
     <color name="black_semi_transparent">#B2000000</color>
@@ -20,8 +13,6 @@
     <color name="pink_pressed">#ec407a</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
-
-
 
     <!--useful-->
     <color name="rainbow_red">#FF0000</color>

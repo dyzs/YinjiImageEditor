@@ -63,7 +63,25 @@ public interface Const {
 
 
     // count 7
-    String[] STICKERS_NAME = {"晨", "希望", "惊", "咆哮", "闪亮", "图记", "朕已阅"};
+    String[] STICKERS_NAME = {
+            "晨",
+            "希望",
+            "惊",
+            "咆哮",
+            "闪亮",
+            "图记",
+            "朕已阅"
+    };
+
+    String[] STICKERS_NAME_EN = {
+            "morning",
+            "hope",
+            "surprise",
+            "roar",
+            "blink",
+            "graphics",
+            "majesty_read"
+    };
 
     int[] STICKERS_VALUES = {
             R.mipmap.pic_sticker_chen,
@@ -75,8 +93,14 @@ public interface Const {
             R.mipmap.pic_sticker_zhenyiyue
     };
 
-    String[] STICKERS_NAME_PINGYIN = {
-
+    String[] STICKER_FILE_ABS_PATH = {
+            "11",
+            "22",
+            "33",
+            "44",
+            "55",
+            "66",
+            "77",
     };
 
 

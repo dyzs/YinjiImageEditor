@@ -20,7 +20,7 @@
             android:layout_marginLeft="10.0dip"
             android:textSize="15sp"
             android:text="字号："
-            android:textColor="@color/white" />
+            android:textColor="@android:color/white" />
         <SeekBar
             android:id="@+id/sb_fontSize"
             android:layout_width="fill_parent"
@@ -46,7 +46,7 @@
             android:layout_marginLeft="10.0dip"
             android:textSize="15sp"
             android:text="颜色："
-            android:textColor="@color/white" />
+            android:textColor="@android:color/white" />
         <!--app:colors="@array/material_colors"-->
         <com.dyzs.conciseimageeditor.view.ColorSeekBar
             android:id="@+id/csb_FontColor"
@@ -76,7 +76,7 @@
             android:layout_marginLeft="10.0dip"
             android:text="字体选择："
             android:textSize="15sp"
-            android:textColor="@color/white" />
+            android:textColor="@android:color/white" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_typeface_list"
             android:layout_width="match_parent"

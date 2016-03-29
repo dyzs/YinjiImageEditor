@@ -22,10 +22,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.anybeen.mark.yinjiimageeditorlibrary.ImageEditorActivity"/>
+        <activity android:name="com.anybeen.mark.imageeditor.ImageEditorActivity"/>
 
         <!-- 字体下载服务 -->
-        <service android:name="com.anybeen.mark.yinjiimageeditorlibrary.component.DownloadService" >
+        <service android:name="com.anybeen.mark.imageeditor.component.DownloadService" >
             <intent-filter>
                 <action android:name="com.anybeen.mark.app.font.download" />
             </intent-filter>

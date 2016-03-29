@@ -13,7 +13,7 @@
         <!--android:layout_weight="1"-->
         <!--/>-->
     <View
-        android:background="@drawable/shape_divider_common"
+        android:background="@drawable/shape_divider_common_image_editor"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"/>
     <LinearLayout
@@ -37,7 +37,7 @@
             />
         <!--android:imeOptions="flagNoExtractUi" 表示不挤压界面-->
         <!--android:background="@drawable/shape_corner_carrot_edit_text"-->
-        <com.anybeen.mark.yinjiimageeditorlibrary.view.CarrotEditText
+        <com.anybeen.mark.imageeditor.view.CarrotEditText
             android:id="@+id/et_edit_panel_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -128,7 +128,7 @@
                 <!--android:maxHeight="10.0dip"-->
                 <!--android:minHeight="10.0dip"-->
                 <!--/>-->
-            <com.anybeen.mark.yinjiimageeditorlibrary.view.CustomSeekBar
+            <com.anybeen.mark.imageeditor.view.CustomSeekBar
                 android:id="@+id/csb_edit_panel_font_color"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -171,7 +171,7 @@
                 android:text="字体选择："
                 style="@style/image_edit_panel_text_size"
                 />
-            <include layout="@layout/pop_font_select" />
+            <include layout="@layout/layout_image_editor_pop_font_select" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_typeface_list"
                 android:layout_width="match_parent"

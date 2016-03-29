@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 
-import com.anybeen.mark.yinjiimageeditorlibrary.ImageEditorActivity;
+import com.anybeen.mark.imageeditor.ImageEditorActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener{
     private static final int ON_ALBUM_RESULT = 1001;

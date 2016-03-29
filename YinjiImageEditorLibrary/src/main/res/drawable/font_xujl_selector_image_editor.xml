@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<!--默认字体选择器-->
+    <item android:drawable="@mipmap/font_xujl_checked_image_editor"
+        android:state_checked="true"/>
+    <item android:drawable="@mipmap/font_xujl_enable_image_editor"
+        android:state_selected="true"
+        />
+    <item android:drawable="@mipmap/font_xujl_disable_image_editor"
+        android:state_selected="false"
+        />
+
+</selector>

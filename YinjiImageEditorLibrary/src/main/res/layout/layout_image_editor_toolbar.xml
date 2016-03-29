@@ -9,7 +9,7 @@
         android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/btn_back_selector" />
+        android:src="@drawable/btn_image_editor_back_selector" />
 
     <ImageView
         android:id="@+id/bt_save"
@@ -17,10 +17,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/btn_save_selector" />
+        android:background="@drawable/btn_image_editor_save_selector" />
 
     <View
-        android:background="@drawable/shape_divider_common"
+        android:background="@drawable/shape_divider_common_image_editor"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"/>
 </RelativeLayout>

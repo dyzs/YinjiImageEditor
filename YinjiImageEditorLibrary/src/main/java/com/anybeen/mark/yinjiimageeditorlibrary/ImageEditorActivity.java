@@ -931,7 +931,7 @@ public class ImageEditorActivity extends Activity {
 
             }
         });
-        // 空实现点击方法，拦截面板点击事件，防止出现编辑面板低下的RadioGroup控件的焦点抢夺
+
         edit_panel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -989,7 +989,7 @@ public class ImageEditorActivity extends Activity {
             mMtvLists.remove(delMtv);
             fl_main_content.removeView(delMtv);
         }
-        // 清理所有选中状态
+        // 删除所有选中状态
         for (MovableTextView2 m : mMtvLists) {
             m.setSelected(false);
         }
@@ -997,9 +997,6 @@ public class ImageEditorActivity extends Activity {
     }
 
 
-    /**
-     * @details 切换键盘
-     */
     private void operateKeyboardState() {
         if (mCurKeyboardState == KeyboardState.STATE_OPEN) {
             mCurKeyboardState = KeyboardState.STATE_HIDE;
@@ -1009,9 +1006,6 @@ public class ImageEditorActivity extends Activity {
         CommonUtils.hitKeyboardOpenOrNot(mContext);
     }
 
-    /**
-     * @details 同时关闭编辑panel和软键盘
-     */
     private void hideEditPanelAndCloseKeyboard() {
         if (ll_base_edit_panel.getVisibility() == View.VISIBLE) {
             ll_base_edit_panel.setVisibility(View.INVISIBLE);
@@ -1043,9 +1037,6 @@ public class ImageEditorActivity extends Activity {
         mtv.setLayoutParams(lp);
     }
 
-    /**
-     * @param typeface 选中的字体
-     */
     private void changeTypeface(Typeface typeface, String fontName) {
         if (mMtvLists.size() <= 0) return;
         for (MovableTextView2 mtv:mMtvLists) {

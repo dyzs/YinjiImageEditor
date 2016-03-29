@@ -10,13 +10,12 @@ import java.io.Serializable;
  * @details 用来保存贴纸的三阶矩阵的信息，把三阶矩阵拆分成 9 个 float 值并通过序列化保存。
  */
 public class MatrixInfo implements Serializable{
-    public int index;               // 表示贴纸的索引值
-    public String nameCh;           // 中文名称
-    public String nameEn;           // 拼音或英文名称
-    public String fileAbsPath;      // 表示可能存在贴纸从文件夹中读取
-    public int resId;               // 资源 id  example:  R.id.pic_icon
-
-    public float[] floatArr;
+    public int      index           = 0;    // 表示贴纸的索引值
+    public String   nameCh          = "";   // 中文名称
+    public String   nameEn          = "";   // 拼音或英文名称
+    public String   fileAbsPath     = "";   // 表示可能存在贴纸从文件夹中读取
+    public int      resId           = 0;    // 资源 id  example:  R.id.pic_icon
+    public float[]  floatArr;
     public JSONObject buildMatrix2JSONObject() throws JSONException {
         JSONObject matrixJSON = new JSONObject();
         float[] arr = floatArr;

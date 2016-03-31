@@ -41,7 +41,6 @@ public class CarrotEditText extends EditText{
                 0,
                 DensityUtils.dp2px(getContext(), DensityUtils.px2dp(getContext(), 50)),
                 DensityUtils.dp2px(getContext(), DensityUtils.px2dp(getContext(), 50))
-                //deleteIcon.getIntrinsicHeight() + (int) DensityUtils.px2dp(getContext(), 5)
         );
         setCompoundDrawables(null, null, deleteIcon, null);
     }

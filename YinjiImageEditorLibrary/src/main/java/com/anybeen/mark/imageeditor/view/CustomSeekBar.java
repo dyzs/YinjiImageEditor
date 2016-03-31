@@ -43,30 +43,30 @@ public class CustomSeekBar extends SeekBar {
 		this.mProgressItemsList = progressItemsList;
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec,
 			int heightMeasureSpec) {
 		// TODO Auto-generated method stub
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		if (firstCalc) {
-			dot = getThumb();
-			BitmapDrawable bd = (BitmapDrawable) dot;
-			Bitmap bitmap = bd.getBitmap();
-			dotWidth = bitmap.getWidth();
-			dotHeight = bitmap.getHeight();
-			System.out.println("---->" + bitmap.getWidth() + "-->" + bitmap.getHeight());
-			firstCalc = !firstCalc;
-		}
+//		if (firstCalc) {
+//			dot = getThumb();
+//			BitmapDrawable bd = (BitmapDrawable) dot;
+//			Bitmap bitmap = bd.getBitmap();
+//			dotWidth = bitmap.getWidth();
+//			dotHeight = bitmap.getHeight();
+//			System.out.println("---->" + bitmap.getWidth() + "-->" + bitmap.getHeight());
+//			firstCalc = !firstCalc;
+//		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (mProgressItemsList.size() > 0) {
 			int progressBarWidth = getWidth();
 			int progressBarHeight = getHeight();
-			int thumbOffset = getThumbOffset();
-			int lastProgressX = dotWidth / 2;	// 0
+			int thumbOffset = getMinimumHeight();//getThumbOffset();
+			int lastProgressX = 0;
 
 
 			Rect rect = new Rect();
@@ -74,10 +74,9 @@ public class CustomSeekBar extends SeekBar {
 			rectPaint.setStyle(Paint.Style.STROKE);
 			rectPaint.setColor(Color.BLACK);
 			rectPaint.setTextSize(1);
-			// + DensityUtils.dp2px(getContext(), 5) / 2 + 1
-			rect.set(lastProgressX,// 表示 corners 的半径
+			rect.set(lastProgressX - 1,
 					thumbOffset / 2,
-					progressBarWidth - dotWidth / 2 + 1,
+					progressBarWidth + 1,
 					progressBarHeight - thumbOffset / 2 + 1
 			);
 			// 绘制矩形边框
@@ -102,7 +101,7 @@ public class CustomSeekBar extends SeekBar {
 						progressItem.color));
 
 				progressItemWidth = (int) (progressItem.progressItemPercentage
-						* progressBarWidth / 100) - SplitDot;
+						* progressBarWidth / 100);// - SplitDot;
 
 				progressItemRight = lastProgressX + progressItemWidth;
 
@@ -112,17 +111,18 @@ public class CustomSeekBar extends SeekBar {
 					progressItemRight = progressBarWidth;
 				}
 				Rect progressRect = new Rect();
-				if (i == 8) {
-					progressRect.set(lastProgressX,
-							thumbOffset / 2,
-							progressItemRight - dotWidth / 2,
-							progressBarHeight - thumbOffset / 2);
-				} else {
+//				if (i == 8) {
+//					progressRect.set(lastProgressX,
+//							thumbOffset / 2,
+//							progressItemRight - dotWidth / 2,
+//							progressBarHeight - thumbOffset / 2);
+//				}
+//				else {
 					progressRect.set(lastProgressX,
 							thumbOffset / 2,
 							progressItemRight,
 							progressBarHeight - thumbOffset / 2);
-				}
+//				}
 				canvas.drawRect(progressRect, progressPaint);
 				lastProgressX = progressItemRight;
 			}

@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.anybeen.mark.imageeditor.adapter.StickerAdapter;
 import com.anybeen.mark.imageeditor.entity.CarrotInfo;
 import com.anybeen.mark.imageeditor.entity.StickerInfo;
+import com.anybeen.mark.imageeditor.utils.AnimUtils;
 import com.anybeen.mark.imageeditor.utils.BitmapUtils;
 import com.anybeen.mark.imageeditor.utils.ColorUtil;
 import com.anybeen.mark.imageeditor.utils.CommonUtils;
@@ -49,6 +50,7 @@ import com.anybeen.mark.imageeditor.utils.DensityUtils;
 import com.anybeen.mark.imageeditor.utils.FileUtils;
 import com.anybeen.mark.imageeditor.view.MovableTextView2;
 import com.anybeen.mark.imageeditor.view.SelectableView;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ public class ImageEditorActivity extends Activity {
     public static final String FILE_PATH = "albumPhotoAbsolutePath";
     public static final String IS_NEW = "isNewAddPhoto";
     private ImageDataInfo mCurrDataInfo;
+    private boolean stickerListShowUp = false;
+    private boolean editPanelShowUp = false;
 
 
     private Context mContext;
@@ -140,9 +144,13 @@ public class ImageEditorActivity extends Activity {
         reloadSticker();
 
         reloadCarrot();
+
+        registerAnim();
     }
 
-
+    private void registerAnim() {
+        mRvSticker.setTranslationX(BitmapUtils.getScreenPixels(mContext).widthPixels);
+    }
     private void initView() {
         fl_main_content = (FrameLayout) findViewById(R.id.fl_main_content);
         // edit_panel 的父容器
@@ -179,8 +187,8 @@ public class ImageEditorActivity extends Activity {
         sa.setSil(new StickerAdapter.StickerIndexListener() {
             @Override
             public void onStickerIndex(int position) {
-                ToastUtil.makeText(mContext, "position:" + position);
-                mRvSticker.setVisibility(View.INVISIBLE);
+                stickerListShowUp = false;
+                AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
                 addStickerView(position);
             }
         });
@@ -276,11 +284,8 @@ public class ImageEditorActivity extends Activity {
         rb_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mRvSticker.getVisibility() == View.INVISIBLE) {
-                    mRvSticker.setVisibility(View.VISIBLE);
-                } else {
-                    mRvSticker.setVisibility(View.INVISIBLE);
-                }
+                stickerListShowUp = !stickerListShowUp;
+                AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
             }
         });
 

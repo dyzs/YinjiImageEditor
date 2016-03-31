@@ -104,6 +104,7 @@ public interface Const {
     };
 
 
-
+//    int KEYBOARD_STATE_OPEN = 1;
+//    int KEYBOARD_STATE_HIDE = 0;
 
 }

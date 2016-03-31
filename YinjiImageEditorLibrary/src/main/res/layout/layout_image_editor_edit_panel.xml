@@ -5,13 +5,6 @@
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <!--<View-->
-        <!--android:id="@+id/v_edit_panel_transparent"-->
-        <!--android:background="@android:color/darker_gray"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--/>-->
     <View
         android:background="@drawable/shape_divider_common_image_editor"
         android:layout_width="match_parent"
@@ -19,11 +12,11 @@
     <LinearLayout
         android:id="@+id/ll_edit_panel_head"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="visible"
@@ -88,11 +81,11 @@
                 android:layout_weight="1.0"
                 android:maxHeight="10dp"
                 android:minHeight="10dp"
-                android:paddingLeft="10.0dip"
+                android:paddingLeft="0.0dip"
                 android:paddingRight="10.0dip"
                 android:max="50"
                 android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
-                android:thumbOffset="12dp"
+                android:thumbOffset="0.0dip"
                 android:progressDrawable="@drawable/style_seek_bar"
                 />
         </LinearLayout>
@@ -110,38 +103,20 @@
                 android:text="颜色："
                 style="@style/image_edit_panel_text_size"
                 />
-
-            <!--<ListView-->
-                <!--android:id="@+id/lv_edit_panel_font_color"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--/>-->
-
-            <!--字体颜色-->
-            <!--app:colors="@array/material_colors"-->
-            <!--<com.dyzs.conciseimageeditor.view.ColorSeekBar-->
-                <!--android:id="@+id/csb_edit_panel_font_color"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1.0"-->
-                <!--android:maxHeight="10.0dip"-->
-                <!--android:minHeight="10.0dip"-->
-                <!--/>-->
             <com.anybeen.mark.imageeditor.view.CustomSeekBar
                 android:id="@+id/csb_edit_panel_font_color"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:maxHeight="10dp"
-                android:minHeight="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:maxHeight="12dp"
+                android:minHeight="12dp"
+                android:paddingLeft="0.0dip"
+                android:paddingRight="0.0dip"
                 android:max="89"
                 android:progress="0"
-                android:progressDrawable="@android:color/transparent"
                 android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
-                android:thumbOffset="12dp"
+                android:thumbOffset="2.0dip"
+                android:progressDrawable="@android:color/transparent"
                 />
             <!--
             android:progressDrawable="@drawable/style_color_border"

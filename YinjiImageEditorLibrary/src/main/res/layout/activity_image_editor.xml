@@ -62,7 +62,7 @@
             android:gravity="center"
             android:layout_gravity="bottom"
             android:background="@android:color/transparent"
-            android:visibility="invisible"
+            android:visibility="visible"
             />
         <include layout="@layout/layout_image_editor_bottom_toolbar"/>
 

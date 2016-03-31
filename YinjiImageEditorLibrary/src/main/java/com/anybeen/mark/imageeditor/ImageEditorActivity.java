@@ -238,9 +238,9 @@ public class ImageEditorActivity extends Activity {
                         edit_panel.setLayoutParams(lps);
                         ll_base_edit_panel.setVisibility(View.VISIBLE);
 
-                        addMovableTextView();
                         initDataToSeekBar();
                         handleEditPanelEvent();
+                        addMovableTextView();
 
                         createMtvOnLoading = false;
                         openKeyboardOnLoading = false;
@@ -263,11 +263,6 @@ public class ImageEditorActivity extends Activity {
         rb_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 * wait TODO
-                 * 加入一个 sharedPrefs 参数，保存到本地中，保存 edit_panel 的高度，下次打开图片编辑，
-                 * 初始化 edit_panel 放在 onCreate 中
-                 */
                 CommonUtils.hitKeyboardOpenOrNot(mContext);
                 if (isFirstAddMtv) {    // 表示第一次添加 mtv 文本
                     isFirstAddMtv = false;
@@ -574,7 +569,7 @@ public class ImageEditorActivity extends Activity {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_recycle_view_filter, null);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_image_editor_recycle_view_filter, null);
             FilterHolder holder = new FilterHolder(view);
             return holder;
         }

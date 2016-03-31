@@ -272,11 +272,11 @@ public class StickerView extends ImageView {
             }
         }
 
-//        deleteBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete);
+        deleteBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete_image_editor);
         resizeBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_resize);
-//        flipVBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_flip);
+        flipVBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_flip);
         // icon_top_enable
-        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete);
+        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete_image_editor);
 
 //        deleteBitmapWidth = (int) (deleteBitmap.getWidth() * BITMAP_SCALE);
 //        deleteBitmapHeight = (int) (deleteBitmap.getHeight() * BITMAP_SCALE);

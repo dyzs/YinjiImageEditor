@@ -35,7 +35,7 @@ public class CarrotEditText extends EditText{
         this.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         this.setLines(1);
-        deleteIcon = getResources().getDrawable(R.mipmap.icon_delete);
+        deleteIcon = getResources().getDrawable(R.mipmap.icon_delete_image_editor);
         deleteIcon.setBounds(
                 0,
                 0,

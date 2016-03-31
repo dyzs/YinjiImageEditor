@@ -52,7 +52,7 @@ public class StickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_recycle_view_filter, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_image_editor_recycle_view_filter, null);
         StickerHolder holder = new StickerHolder(view);
         return holder;
     }

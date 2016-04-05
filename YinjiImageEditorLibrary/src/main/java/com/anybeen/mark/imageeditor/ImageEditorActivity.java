@@ -1,5 +1,6 @@
 package com.anybeen.mark.imageeditor;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +44,8 @@ import com.anybeen.mark.imageeditor.utils.Const;
 import com.anybeen.mark.imageeditor.utils.FontMatrixUtils;
 import com.anybeen.mark.imageeditor.utils.ToastUtil;
 import com.anybeen.mark.imageeditor.view.CarrotEditText;
+import com.anybeen.mark.imageeditor.view.CircleImageView;
+import com.anybeen.mark.imageeditor.view.CornerImageView;
 import com.anybeen.mark.imageeditor.view.CustomSeekBar;
 import com.anybeen.mark.imageeditor.view.StickerView;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
@@ -105,7 +109,7 @@ public class ImageEditorActivity extends Activity {
     private TextView ep_BtnComplete;            // 完成按钮
     private SeekBar ep_FontSize;                // 字体大小
     private CustomSeekBar ep_CsbFontColor;      // 字体颜色 seek bar
-    private ImageView ep_IvColorShow;           // 颜色展示
+    private ImageView ep_IvColorShow;     // 颜色展示
     private RadioGroup ep_rgFontGroup;          // 字体选择
     private int currentFontCheckedId = -1;
     // edit panel params
@@ -340,6 +344,7 @@ public class ImageEditorActivity extends Activity {
                 ep_OperateText.setText(m.getText());
                 ep_OperateText.setSelection(m.getText().length());   // 设置光标的位置
                 ep_IvColorShow.setBackgroundColor(m.getCurrentTextColor());
+
                 ep_CsbFontColor.setProgress(m.getColorSeekBarProgress());
                 ep_FontSize.setProgress(DensityUtils.px2dp(mContext, m.getTextSize()));
                 // ep_rgFontGroup
@@ -349,12 +354,31 @@ public class ImageEditorActivity extends Activity {
                         ((SelectableView) (ep_rgFontGroup.getChildAt(i))).setChecked(true);
                     }
                 }
+                //changePosition(currMtv);
             }
         }
     }
 
+    private int tempMtvLayoutTop;
 
-
+    private void changePosition(MovableTextView2 curMtv) {
+        // 底部和屏幕底部的size
+        int screenHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
+        int size = screenHeight - curMtv.getBottom();
+        System.out.println("layout:" + size);
+        int top = screenHeight - edit_panel.getHeight() - curMtv.getHeight() - 10;
+        // screenHeight - edit_panel.getHeight() - 10
+//                    if (size < edit_panel.getHeight()) {
+        if (curMtv.getBottom() < keyboardHeight) {
+            tempMtvLayoutTop = curMtv.getTop();
+            curMtv.layout(curMtv.getLeft(),
+                    200,
+                    curMtv.getRight(),
+                    400
+            );
+            System.out.println("layout:" + size);
+        }
+    }
 
 
 
@@ -758,6 +782,7 @@ public class ImageEditorActivity extends Activity {
         iv_main_image.setImageBitmap(copyBitmap);
         ToastUtil.makeText(mContext, "保存图片成功~~~~~~~" + imagePath);
     }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void saveBeautySentences(Canvas canvas, float scale, float leaveW, float leaveH) {
         if (mMtvLists == null || mMtvLists.size() <= 0) {
             return;
@@ -784,22 +809,59 @@ public class ImageEditorActivity extends Activity {
 //            float textViewH = mtv.getHeight() * 1.0f;
             float imgW = iv_main_image.getWidth() * 1.0f;
             float imgH = iv_main_image.getHeight() * 1.0f;
+
+            System.out.println("mtv文本：" + mtv.getText().toString());
+            String content = mtv.getText().toString();
+            System.out.println("content:" + content);
+            // content = content.replaceAll(" ", "\\s*");
+            float lineSpacingExtra = mtv.getLineSpacingExtra();
+            float lineSpacingMultiplier = mtv.getLineSpacingMultiplier();
+            System.out.println("lineSpacingExtra 行间距:" + lineSpacingExtra);
+            System.out.println("lineSpacingMultiplier 行间距倍数:" + lineSpacingMultiplier);
+            System.out.println("content replaceAll:" + content);
+
+            String[] strArr = content.split("\\n");
+
+
+
+            float textVerticalSpacing = mtv.getLetterSpacing();
             float textSize = mtv.getTextSize();
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
-            float textLength = mPaint.measureText(mtv.getText().toString());
-            // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
-            float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
-            // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
-            saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2;
-            // 得到绘制的第一个字符在 X 轴上与左边框的间距
-            float leftPadding = (textViewR - textViewL - textLength) / 2;
-            saveLeft = textViewL + leftPadding;
-            canvas.drawText(
-                    mtv.getText().toString(),
-                    saveLeft, saveBottom,
-                    mPaint
-            );
+            for(int i = 0; i < strArr.length; i ++) {
+                System.out.println("str" + i + ":" + strArr[i]);
+                mPaint.setTextSize(textSize);
+                float textLength = mPaint.measureText(strArr[i]);
+                // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
+                float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
+                // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
+                saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2 + i*textSize + i * textVerticalSpacing;
+                // 得到绘制的第一个字符在 X 轴上与左边框的间距
+                float leftPadding = (textViewR - textViewL - textLength) / 2;
+                saveLeft = textViewL + leftPadding;
+                canvas.drawText(
+                        strArr[i],
+                        saveLeft, saveBottom,
+                        mPaint
+                );
+            }
+
+//            float textSize = mtv.getTextSize();
+//            // textSize 就是文本在绘画时的高度，也是文本的大小
+//            mPaint.setTextSize(textSize);
+//            float textLength = mPaint.measureText(mtv.getText().toString());
+//            // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
+//            float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
+//            // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
+//            saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2;
+//            // 得到绘制的第一个字符在 X 轴上与左边框的间距
+//            float leftPadding = (textViewR - textViewL - textLength) / 2;
+//            saveLeft = textViewL + leftPadding;
+//            canvas.drawText(
+//                    mtv.getText().toString(),
+//                    saveLeft, saveBottom,
+//                    mPaint
+//            );
 
             // 还得保存一个 position 相对于父控件的位置的比例
             carrotInfo.text = mtv.getText().toString();

@@ -33,11 +33,6 @@ public class CustomSeekBar extends SeekBar {
 	public CustomSeekBar(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	private Drawable dot;
-	private boolean firstCalc = true;
-	private int dotWidth;
-	private int dotHeight;
-	private int SplitDot;
 
 	public void initData(ArrayList<ProgressItem> progressItemsList) {
 		this.mProgressItemsList = progressItemsList;
@@ -48,15 +43,6 @@ public class CustomSeekBar extends SeekBar {
 			int heightMeasureSpec) {
 		// TODO Auto-generated method stub
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//		if (firstCalc) {
-//			dot = getThumb();
-//			BitmapDrawable bd = (BitmapDrawable) dot;
-//			Bitmap bitmap = bd.getBitmap();
-//			dotWidth = bitmap.getWidth();
-//			dotHeight = bitmap.getHeight();
-//			System.out.println("---->" + bitmap.getWidth() + "-->" + bitmap.getHeight());
-//			firstCalc = !firstCalc;
-//		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -68,40 +54,33 @@ public class CustomSeekBar extends SeekBar {
 			int thumbOffset = getMinimumHeight();//getThumbOffset();
 			int lastProgressX = 0;
 
-
-			Rect rect = new Rect();
-			Paint rectPaint = new Paint();
-			rectPaint.setStyle(Paint.Style.STROKE);
-			rectPaint.setColor(Color.BLACK);
-			rectPaint.setTextSize(1);
-			rect.set(lastProgressX - 1,
-					thumbOffset / 2,
-					progressBarWidth + 1,
-					progressBarHeight - thumbOffset / 2 + 1
-			);
+//			Paint rectPaint = new Paint();
+//			rectPaint.setStyle(Paint.Style.STROKE);
+//			rectPaint.setColor(Color.BLACK);
+			// rectPaint.setTextSize(1);
+//			rectPaint.setStrokeWidth(1.0f);
 			// 绘制矩形边框
-			canvas.drawRect(rect, rectPaint);
-
+			// canvas.drawRect(rect, rectPaint);
 			// 绘制两边圆形
-//			float circleRadius = 15f;
-//			Paint circlePaint = new Paint();
-//			circlePaint.setColor(Color.RED);
-//			circlePaint.setTextSize(1);
-//			float circlePointX = lastProgressX + (progressBarHeight - thumbOffset + 1) / 2;
-//			float circlePointY = progressBarHeight / 2;
-//			canvas.drawCircle(circlePointX, circlePointY, circleRadius, circlePaint);
-
+			float circleRadius = thumbOffset / 2;
+			Paint circlePaint = new Paint();
+			circlePaint.setAntiAlias(true);
+			circlePaint.setStyle(Paint.Style.FILL);
+			circlePaint.setTextSize(1);
+			circlePaint.setStrokeWidth(1.0f);
+			float circlePointX = 0f, circlePointY = 0f;
 
 			int progressItemWidth, progressItemRight;
-			SplitDot = dotWidth / mProgressItemsList.size();
 			for (int i = 0; i < mProgressItemsList.size(); i++) {
 				ProgressItem progressItem = mProgressItemsList.get(i);
 				Paint progressPaint = new Paint();
 				progressPaint.setColor(getResources().getColor(
 						progressItem.color));
-
-				progressItemWidth = (int) (progressItem.progressItemPercentage
-						* progressBarWidth / 100);// - SplitDot;
+				circlePaint.setColor(getResources().getColor(	// 设置半圈的颜色
+						progressItem.color));
+				// 把宽度四舍五入，因为平分 item 后得到的是xx.xx的值，直接强转会丢失原有的宽度
+				progressItemWidth = floatToInt (progressItem.progressItemPercentage
+						* progressBarWidth / 100);
 
 				progressItemRight = lastProgressX + progressItemWidth;
 
@@ -111,18 +90,34 @@ public class CustomSeekBar extends SeekBar {
 					progressItemRight = progressBarWidth;
 				}
 				Rect progressRect = new Rect();
-//				if (i == 8) {
-//					progressRect.set(lastProgressX,
-//							thumbOffset / 2,
-//							progressItemRight - dotWidth / 2,
-//							progressBarHeight - thumbOffset / 2);
-//				}
-//				else {
-					progressRect.set(lastProgressX,
-							thumbOffset / 2,
-							progressItemRight,
-							progressBarHeight - thumbOffset / 2);
-//				}
+				int left = lastProgressX;
+				int top = thumbOffset / 2 + 1;
+				int right = progressItemRight;
+				int bottom = progressBarHeight - thumbOffset / 2 - 1;
+				if (i == 0) {
+					progressRect.set(left + thumbOffset / 2,
+							top,
+							right,
+							bottom);
+					circlePointX = left + thumbOffset / 2;
+					circlePointY = progressBarHeight / 2;
+					canvas.drawCircle(circlePointX, circlePointY, circleRadius, circlePaint);
+				}
+				else if (i == (mProgressItemsList.size() - 1)) {
+					progressRect.set(left,
+							top,
+							right - thumbOffset / 2,
+							bottom);
+					circlePointX = right - thumbOffset / 2;
+					circlePointY = progressBarHeight / 2;
+					canvas.drawCircle(circlePointX, circlePointY, circleRadius, circlePaint);
+				}
+				else {
+					progressRect.set(left,
+							top,
+							right,
+							bottom);
+				}
 				canvas.drawRect(progressRect, progressPaint);
 				lastProgressX = progressItemRight;
 			}
@@ -130,5 +125,13 @@ public class CustomSeekBar extends SeekBar {
 		}
 
 	}
-
+	private int floatToInt(float f){
+		int i = 0;
+		if(f>0) //正数
+			i = (int) ((f*10 + 5)/10);
+		else if(f<0) //负数
+			i = (int) ((f*10 - 5)/10);
+		else i = 0;
+		return i;
+	}
 }

@@ -29,8 +29,7 @@ public class CarrotEditText extends EditText{
     }
 
     private void init(Context context) {
-        // this.setBackgroundResource(R.mipmap.btn_beautiful_text_button_background_normal);
-        // this.setGravity(Gravity.CENTER_VERTICAL);
+        // this.setSingleLine();
         this.setTextColor(Color.GRAY);
         this.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
@@ -59,10 +58,6 @@ public class CarrotEditText extends EditText{
             case MotionEvent.ACTION_UP:
                 if (deleteIcon != null && event.getAction() == MotionEvent.ACTION_UP) {
                     if (touchable) {
-                        // 禁止弹出软键盘
-//                        this.clearFocus();
-//                        this.setClickable(false);
-//                        this.setFocusable(false);
                         if (getText().length() == 0) {
                             this.setText("");
                             break;

@@ -16,7 +16,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="7dp"
-        android:paddingBottom="7dp"
+        android:paddingBottom="5dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="visible"
@@ -108,28 +108,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:maxHeight="12dp"
-                android:minHeight="12dp"
+                android:maxHeight="10dp"
+                android:minHeight="10dp"
                 android:paddingLeft="0.0dip"
                 android:paddingRight="0.0dip"
                 android:max="89"
                 android:progress="0"
                 android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
                 android:thumbOffset="2.0dip"
-                android:progressDrawable="@android:color/transparent"
+                android:progressDrawable="@drawable/style_seek_bar_color"
                 />
-            <!--
-            android:progressDrawable="@drawable/style_color_border"
-            android:progressDrawable="@android:color/transparent"
-            android:progressDrawable="@drawable/shape_color_seek_bar_transparent"
-            -->
             <ImageView
                 android:id="@+id/iv_edit_panel_color_show"
                 android:layout_width="20.0dip"
                 android:layout_height="20.0dip"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/style_color_border"
+                android:src="@mipmap/pic_corner_src_image_editor"
+                android:background="@android:color/holo_red_light"
                 />
         </LinearLayout>
         <LinearLayout

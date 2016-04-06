@@ -78,38 +78,20 @@ public class CommonUtils {
 //        return 0;
 //    }
 
-    public static int matchedColor(int seekBarProgress) {
+    public static int matchProgress(int color, Context context) {
         int ret = 0;
-        if (seekBarProgress >= 0 && seekBarProgress < 10) {
-            ret = 0;
+        for (int i = 0; i < Const.COLOR_VALUES.length ; i++) {
+            if (color == context.getResources().getColor(Const.COLOR_VALUES[i])) {
+                ret = i;
+            }
         }
-        if (seekBarProgress >= 10 && seekBarProgress < 20) {
-            ret = 1;
-        }
-        if (seekBarProgress >= 20 && seekBarProgress < 30) {
-            ret = 2;
-        }
-        if (seekBarProgress >= 30 && seekBarProgress < 40) {
-            ret = 3;
-        }
-        if (seekBarProgress >= 40 && seekBarProgress < 50) {
-            ret = 4;
-        }
-        if (seekBarProgress >= 50 && seekBarProgress < 60) {
-            ret = 5;
-        }
-        if (seekBarProgress >= 60 && seekBarProgress < 70) {
-            ret = 6;
-        }
-        if (seekBarProgress >= 70 && seekBarProgress < 80) {
-            ret = 7;
-        }
-        if (seekBarProgress >= 80 && seekBarProgress < 90) {
-            ret = 8;
-        }
-        return ret;
+        return ret * 10 + 1;    // + 5
     }
 
+    public static int matchedColor(int seekBarProgress) {
+        int ret = seekBarProgress / 10;
+        return ret;
+    }
 
 
     /**

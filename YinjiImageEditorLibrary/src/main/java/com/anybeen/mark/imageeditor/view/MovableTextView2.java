@@ -45,9 +45,6 @@ public class MovableTextView2 extends EditText{
         this.setTextSize(DensityUtils.px2sp(mContext, getResources().getDimension(R.dimen.movable_text_view_default_text_size)));
         this.setTypefaceName("default");
         this.setTypeface(Typeface.DEFAULT);
-        this.setColorR(255);
-        this.setColorG(255);
-        this.setColorB(255);
         this.setMaxEms(12);
         this.setColorSeekBarProgress(79);   // progress 对应颜色的 seekBar 的值，因为 colorSeekBar 并没有颜色，只是显示的一张颜色背景
         this.setLineSpacing(DensityUtils.dp2px(mContext, DensityUtils.px2dp(mContext, 0)), 1.0f);
@@ -173,16 +170,6 @@ public class MovableTextView2 extends EditText{
         }
     }
 
-
-    // 标记当前控件是否有文本内容
-    private boolean hasContent;
-    public boolean isHasContent() {
-        return hasContent;
-    }
-    public void setHasContent(boolean hasContent) {
-        this.hasContent = hasContent;
-    }
-
     private String typefaceName;
     public String getTypefaceName() {
         return typefaceName;
@@ -190,39 +177,6 @@ public class MovableTextView2 extends EditText{
     public void setTypefaceName(String typeface) {
         this.typefaceName = typeface;
     }
-
-    private int ColorR;
-    private int ColorG;
-    private int ColorB;
-
-    public int getColorR() {
-        return ColorR;
-    }
-
-    public void setColorR(int colorR) {
-        ColorR = colorR;
-    }
-
-    public int getColorG() {
-        return ColorG;
-    }
-
-    public void setColorG(int colorG) {
-        ColorG = colorG;
-    }
-
-    public int getColorB() {
-        return ColorB;
-    }
-
-    public void setColorB(int colorB) {
-        ColorB = colorB;
-    }
-
-    // 保存当前的 mtv 对象用于只是在第一次点击的时候才自动弹出虚拟键盘
-    private boolean firstClick;   // 当前 mtv 是否已经被第一次点击了，用来判断当前view的第一次点击是否被消费了
-    public boolean getFirstClick() { return firstClick; }
-    public void setFirstClick(boolean firstClick) { this.firstClick = firstClick; }
 
 
     private int colorSeekBarProgress;
@@ -293,10 +247,6 @@ public class MovableTextView2 extends EditText{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // 计算得到父控件的宽高
-//        FrameLayout fl = (FrameLayout) this.getParent();
-//        mParentWidth = fl.getWidth();
-//        mParentHeight = fl.getHeight();
     }
     // 在编辑的改变时用，当编辑 editPanel 的大小大于 blahblah~~
     public boolean isChangePosition = false;

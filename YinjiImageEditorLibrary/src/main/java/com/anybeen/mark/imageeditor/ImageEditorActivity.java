@@ -347,9 +347,9 @@ public class ImageEditorActivity extends Activity {
                 if (distanceViewToDisplayBottom < mEditPanelHeight) {
                     System.out.println("position changed");
                     int layoutTop =  displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
-                            - mMtv.getHeight() - 10;
+                            - mMtv.getHeight() - 20;
                     int layoutBottom = displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
-                            - 10;
+                            - 20;
                     mMtv.measure(
                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -370,21 +370,6 @@ public class ImageEditorActivity extends Activity {
 //                System.out.println("position reset");
 //            }
 
-//            if (mustBeResetLayoutParams) {
-//                // 还原
-//                mMtv.measure(
-//                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-//                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-//                );
-//                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mMtv.getLayoutParams();
-//                lp.gravity = -1;
-//                lp.height = mMtv.getMeasuredHeight();
-//                lp.width = mMtv.getMeasuredWidth();
-//                lp.leftMargin = leftBeforeChange;
-//                lp.topMargin = topBeforeChange;
-//                mMtv.setLayoutParams(lp);
-//                System.out.println("position reset");
-//            }
         }
     }
 
@@ -401,8 +386,7 @@ public class ImageEditorActivity extends Activity {
                 ep_OperateText.setText(m.getText());
                 ep_OperateText.setSelection(m.getText().length());   // 设置光标的位置
                 ep_IvColorShow.setBackgroundColor(m.getCurrentTextColor());
-
-                ep_CsbFontColor.setProgress(m.getColorSeekBarProgress());
+                ep_CsbFontColor.setProgress(CommonUtils.matchProgress(m.getCurrentTextColor(), mContext));
                 ep_FontSize.setProgress(DensityUtils.px2dp(mContext, m.getTextSize()));
                 // ep_rgFontGroup
                 String fontName = m.getTypefaceName();
@@ -498,7 +482,7 @@ public class ImageEditorActivity extends Activity {
      * @details 通过参数值返回一个 {@link MovableTextView2} 对象
      * @param text          输入的文字
      * @param textSize      输入的文字大小
-     * @param rgb           输入的文字颜色的rgb
+     * @param color         输入的文字颜色的color
      * @param typefaceName  输入的文字的字体名称
      * @param typeface      输入的文字的字体
      * @param parentView
@@ -507,7 +491,7 @@ public class ImageEditorActivity extends Activity {
     private MovableTextView2 generateMtv(
             String text,
             float textSize,
-            int[] rgb,
+            int color,
             String typefaceName,
             Typeface typeface,
             final FrameLayout parentView) {
@@ -518,12 +502,26 @@ public class ImageEditorActivity extends Activity {
         if (textSize != 0.0f) {
             mtv.setTextSize(textSize);
         }
-        if (rgb != null){
-            mtv.setColorR(rgb[0]);
-            mtv.setColorG(rgb[1]);
-            mtv.setColorB(rgb[2]);
-            mtv.setTextColor(ColorUtil.getColorByRGB(rgb));
+        if (color != 0){
+            mtv.setTextColor(color);
         }
+        mtv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                resetLayoutParams(mtv, false, 0, 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mtv.setOnCustomClickListener(new MTVClickListener(mtv));
         mtv.setTypefaceName(typefaceName);
         mtv.setTypeface(typeface);
         parentView.addView(mtv);
@@ -787,10 +785,23 @@ public class ImageEditorActivity extends Activity {
         ArrayList<CarrotInfo> carrotInfoLists = FileUtils.readFileToCarrotInfoLists();
         if (carrotInfoLists == null)return;
         for (CarrotInfo carrotInfo: carrotInfoLists) {
-            //wait TODO: 2016/3/24
-//            final MovableTextView2 newAddMtv = new MovableTextView2(mContext);
-//            fl_main_content.addView(newAddMtv);
-//            mMtvLists.add(newAddMtv);
+            int top = carrotInfo.pTop;
+            int left = carrotInfo.pLeft;
+            float textSize = DensityUtils.px2sp(mContext, carrotInfo.textSize);
+            String text = carrotInfo.text;
+            String fontName = carrotInfo.typeface;
+            int color = carrotInfo.color;
+            Typeface tf = CommonUtils.getTypeface(fontName);
+            MovableTextView2 mtv = generateMtv(
+                    text,
+                    textSize,
+                    color,
+                    fontName,
+                    tf,
+                    fl_main_content
+            );
+            resetLayoutParams(mtv, true, top, left);
+            mMtvLists.add(mtv);
         }
     }
 
@@ -832,16 +843,10 @@ public class ImageEditorActivity extends Activity {
             carrotInfo = new CarrotInfo();
             mPaint.setColor(mtv.getCurrentTextColor());
             mPaint.setTypeface(mtv.getTypeface());
-            mtv.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.AT_MOST),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.AT_MOST));
-            float viewHeight = mtv.getMeasuredHeight();
-            float viewWidth = mtv.getMeasuredWidth();
             float textViewL = mtv.getLeft() * 1.0f;
             float textViewT = mtv.getTop() * 1.0f;
             float textViewR = mtv.getRight() * 1.0f;
             float textViewB = mtv.getBottom() * 1.0f;
-//            float textViewH = mtv.getHeight() * 1.0f;
             float imgW = iv_main_image.getWidth() * 1.0f;
             float imgH = iv_main_image.getHeight() * 1.0f;
 
@@ -883,34 +888,15 @@ public class ImageEditorActivity extends Activity {
                 );
             }
 
-//            float textSize = mtv.getTextSize();
-//            // textSize 就是文本在绘画时的高度，也是文本的大小
-//            mPaint.setTextSize(textSize);
-//            float textLength = mPaint.measureText(mtv.getText().toString());
-//            // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
-//            float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
-//            // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
-//            saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2;
-//            // 得到绘制的第一个字符在 X 轴上与左边框的间距
-//            float leftPadding = (textViewR - textViewL - textLength) / 2;
-//            saveLeft = textViewL + leftPadding;
-//            canvas.drawText(
-//                    mtv.getText().toString(),
-//                    saveLeft, saveBottom,
-//                    mPaint
-//            );
-
             // 还得保存一个 position 相对于父控件的位置的比例
             carrotInfo.text = mtv.getText().toString();
             carrotInfo.textSize = mtv.getTextSize();
-            carrotInfo.colorR = mtv.getColorR();
-            carrotInfo.colorG = mtv.getColorG();
-            carrotInfo.colorB = mtv.getColorB();
             carrotInfo.typeface = mtv.getTypefaceName();
             carrotInfo.pLeftScale = textViewL * 1.0f / imgW;
             carrotInfo.pTopScale = textViewT * 1.0f / imgH;
             carrotInfo.pLeft = (int) textViewL;
             carrotInfo.pTop = (int) textViewT;
+            carrotInfo.color = mtv.getCurrentTextColor();
             carrotInfoArrayList.add(carrotInfo);      // 保存了位置，颜色等属性参数
 
             // fl_main_content.removeView(mtv);
@@ -972,11 +958,6 @@ public class ImageEditorActivity extends Activity {
                 for (MovableTextView2 m : mMtvLists) {
                     if (m.isSelected()) {
                         m.setTextColor(curColor);
-                        m.setColorSeekBarProgress(progress);
-                        int[] rgb = ColorUtil.getColorRGB(curColor);
-                        m.setColorR(rgb[0]);
-                        m.setColorG(rgb[1]);
-                        m.setColorB(rgb[2]);
                     }
                 }
             }

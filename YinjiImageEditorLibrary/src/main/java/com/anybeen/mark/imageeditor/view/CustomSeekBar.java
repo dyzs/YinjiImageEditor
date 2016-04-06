@@ -2,17 +2,12 @@ package com.anybeen.mark.imageeditor.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
-
 
 import com.anybeen.mark.imageeditor.entity.ProgressItem;
 
@@ -38,6 +33,7 @@ public class CustomSeekBar extends SeekBar {
 		this.mProgressItemsList = progressItemsList;
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec,
 			int heightMeasureSpec) {
@@ -54,13 +50,19 @@ public class CustomSeekBar extends SeekBar {
 			int thumbOffset = getMinimumHeight();//getThumbOffset();
 			int lastProgressX = 0;
 
+//			Rect rect = new Rect();
 //			Paint rectPaint = new Paint();
 //			rectPaint.setStyle(Paint.Style.STROKE);
 //			rectPaint.setColor(Color.BLACK);
-			// rectPaint.setTextSize(1);
-//			rectPaint.setStrokeWidth(1.0f);
+//			rectPaint.setTextSize(1);
+//			rect.set(lastProgressX - 1,
+//					thumbOffset / 2 - 1,
+//					progressBarWidth,
+//					progressBarHeight - thumbOffset / 2
+//			);
 			// 绘制矩形边框
-			// canvas.drawRect(rect, rectPaint);
+//			canvas.drawRect(rect, rectPaint);
+
 			// 绘制两边圆形
 			float circleRadius = thumbOffset / 2;
 			Paint circlePaint = new Paint();
@@ -69,6 +71,7 @@ public class CustomSeekBar extends SeekBar {
 			circlePaint.setTextSize(1);
 			circlePaint.setStrokeWidth(1.0f);
 			float circlePointX = 0f, circlePointY = 0f;
+
 
 			int progressItemWidth, progressItemRight;
 			for (int i = 0; i < mProgressItemsList.size(); i++) {

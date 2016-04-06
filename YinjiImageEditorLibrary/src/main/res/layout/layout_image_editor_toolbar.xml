@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:background="@android:color/white"
     android:layout_alignParentTop="true"
+    android:id="@+id/layout_top_toolbar"
     android:layout_height="50dp">
 
     <ImageView

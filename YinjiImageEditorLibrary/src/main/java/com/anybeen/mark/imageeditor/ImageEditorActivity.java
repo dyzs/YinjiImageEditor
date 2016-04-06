@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -44,8 +45,6 @@ import com.anybeen.mark.imageeditor.utils.Const;
 import com.anybeen.mark.imageeditor.utils.FontMatrixUtils;
 import com.anybeen.mark.imageeditor.utils.ToastUtil;
 import com.anybeen.mark.imageeditor.view.CarrotEditText;
-import com.anybeen.mark.imageeditor.view.CircleImageView;
-import com.anybeen.mark.imageeditor.view.CornerImageView;
 import com.anybeen.mark.imageeditor.view.CustomSeekBar;
 import com.anybeen.mark.imageeditor.view.StickerView;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
@@ -54,7 +53,6 @@ import com.anybeen.mark.imageeditor.utils.DensityUtils;
 import com.anybeen.mark.imageeditor.utils.FileUtils;
 import com.anybeen.mark.imageeditor.view.MovableTextView2;
 import com.anybeen.mark.imageeditor.view.SelectableView;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 
 import java.util.ArrayList;
@@ -69,6 +67,7 @@ public class ImageEditorActivity extends Activity {
 
     private Context mContext;
     // topToolbar
+    private RelativeLayout layout_top_toolbar;
     private ImageView bt_save;
     // mainContent
     private ImageView iv_main_image;
@@ -162,6 +161,7 @@ public class ImageEditorActivity extends Activity {
         ll_base_edit_panel.setVisibility(View.INVISIBLE);
 
         // topBar
+        layout_top_toolbar = (RelativeLayout) findViewById(R.id.layout_top_toolbar);
         bt_save = (ImageView) findViewById(R.id.bt_save);
         // mainContent
 
@@ -256,6 +256,7 @@ public class ImageEditorActivity extends Activity {
 
                         createMtvOnLoading = false;
                         openKeyboardOnLoading = false;
+                        mEditPanelHeight = headHeight + keyboardHeight;
                     } else {
                         ll_base_edit_panel.setVisibility(View.VISIBLE);
                     }
@@ -312,7 +313,8 @@ public class ImageEditorActivity extends Activity {
             saveViews(canvas);
         }
     }
-
+    private int mEditPanelHeight = 0;
+    private int leftBeforeChange, topBeforeChange, bottomBeforeChange;
     private class MTVClickListener implements MovableTextView2.OnCustomClickListener {
         MovableTextView2 mMtv;
         public MTVClickListener(MovableTextView2 mtv2) {
@@ -320,14 +322,69 @@ public class ImageEditorActivity extends Activity {
         }
         @Override
         public void onCustomClick() {
+            System.out.println("mtv click....");
             // details 因为当键盘隐藏的时候，点击才显示软键盘，而软键盘打开的时候，事件已经被它的父容器
             // 消费了，所以不可能触发到点击事件
             mMtv.setSelected(true);
-            if (mCurKeyboardState == KeyboardState.STATE_HIDE) {
+            if (mCurKeyboardState == KeyboardState.STATE_HIDE) {    // 判断条件有误！需要改正
                 ll_base_edit_panel.setVisibility(View.VISIBLE);
+                // 把 MovableTextView2 的数据载入到编辑面板中
+                loadMtvDataIntoEditPanel(mMtv);
+
+                // 记录 l,t,r,b 在 resetLayoutParams 的时候使用
+                leftBeforeChange = mMtv.getLeft();
+                topBeforeChange = mMtv.getTop();
+                bottomBeforeChange = mMtv.getBottom();
+
+                // 如果高度被弹出的edit_panel挡住了，那么改变当前对象的高度
+                Rect frame = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+                int statusBarHeight = frame.top;
+                int toolBarHeight = layout_top_toolbar.getHeight();
+                int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
+                int distanceViewToDisplayBottom =
+                        displayHeight - statusBarHeight - toolBarHeight - bottomBeforeChange;
+                if (distanceViewToDisplayBottom < mEditPanelHeight) {
+                    System.out.println("position changed");
+                    int layoutTop =  displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
+                            - mMtv.getHeight() - 10;
+                    int layoutBottom = displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
+                            - 10;
+                    mMtv.measure(
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                    );
+                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mMtv.getLayoutParams();
+                    lp.gravity = -1;
+                    lp.height = mMtv.getMeasuredHeight();
+                    lp.width = mMtv.getMeasuredWidth();
+                    lp.leftMargin = leftBeforeChange;
+                    lp.topMargin = layoutTop;
+                    mMtv.setLayoutParams(lp);
+                    mMtv.isChangePosition = true;
+                }
             }
-            // 把 MovableTextView2 的数据载入到编辑面板中
-            loadMtvDataIntoEditPanel(mMtv);
+//            用于不会实现
+//            else {
+//                ll_base_edit_panel.setVisibility(View.INVISIBLE);
+//                System.out.println("position reset");
+//            }
+
+//            if (mustBeResetLayoutParams) {
+//                // 还原
+//                mMtv.measure(
+//                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//                );
+//                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mMtv.getLayoutParams();
+//                lp.gravity = -1;
+//                lp.height = mMtv.getMeasuredHeight();
+//                lp.width = mMtv.getMeasuredWidth();
+//                lp.leftMargin = leftBeforeChange;
+//                lp.topMargin = topBeforeChange;
+//                mMtv.setLayoutParams(lp);
+//                System.out.println("position reset");
+//            }
         }
     }
 
@@ -354,32 +411,9 @@ public class ImageEditorActivity extends Activity {
                         ((SelectableView) (ep_rgFontGroup.getChildAt(i))).setChecked(true);
                     }
                 }
-                //changePosition(currMtv);
             }
         }
     }
-
-    private int tempMtvLayoutTop;
-
-    private void changePosition(MovableTextView2 curMtv) {
-        // 底部和屏幕底部的size
-        int screenHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
-        int size = screenHeight - curMtv.getBottom();
-        System.out.println("layout:" + size);
-        int top = screenHeight - edit_panel.getHeight() - curMtv.getHeight() - 10;
-        // screenHeight - edit_panel.getHeight() - 10
-//                    if (size < edit_panel.getHeight()) {
-        if (curMtv.getBottom() < keyboardHeight) {
-            tempMtvLayoutTop = curMtv.getTop();
-            curMtv.layout(curMtv.getLeft(),
-                    200,
-                    curMtv.getRight(),
-                    400
-            );
-            System.out.println("layout:" + size);
-        }
-    }
-
 
 
     // ====================task line
@@ -1059,6 +1093,9 @@ public class ImageEditorActivity extends Activity {
         for (MovableTextView2 m : mMtvLists) {
             m.setSelected(false);
         }
+        // 还原位置
+        movableTextViewPositionRevert();
+        // 关闭软键盘
         hideEditPanelAndCloseKeyboard();
     }
 
@@ -1082,6 +1119,26 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
+    private void movableTextViewPositionRevert() {
+        for (MovableTextView2 m : mMtvLists) {
+            if (m.isChangePosition) {
+                // 还原 position
+                m.measure(
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                );
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) m.getLayoutParams();
+                lp.gravity = -1;
+                lp.height = m.getMeasuredHeight();
+                lp.width = m.getMeasuredWidth();
+                lp.leftMargin = leftBeforeChange;
+                lp.topMargin = topBeforeChange;
+                m.setLayoutParams(lp);
+                m.isChangePosition = false;
+            }
+        }
+    }
+
     private void resetLayoutParams(MovableTextView2 mtv, boolean isEditStateReload, int top, int left) {
         mtv.measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -1098,8 +1155,8 @@ public class ImageEditorActivity extends Activity {
             lp.leftMargin = mtv.getLeft();
             lp.topMargin = mtv.getTop();
         }
-        FrameLayout frameLayout = (FrameLayout) mtv.getParent();
-        lp.rightMargin = frameLayout.getWidth() - mtv.getMeasuredWidth();
+//        FrameLayout frameLayout = (FrameLayout) mtv.getParent();
+//        lp.rightMargin = frameLayout.getWidth() - mtv.getMeasuredWidth();
         mtv.setLayoutParams(lp);
     }
 

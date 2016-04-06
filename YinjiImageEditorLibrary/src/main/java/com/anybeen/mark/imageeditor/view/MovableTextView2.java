@@ -298,6 +298,7 @@ public class MovableTextView2 extends EditText{
 //        mParentWidth = fl.getWidth();
 //        mParentHeight = fl.getHeight();
     }
-
+    // 在编辑的改变时用，当编辑 editPanel 的大小大于 blahblah~~
+    public boolean isChangePosition = false;
 
 }

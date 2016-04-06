@@ -790,6 +790,7 @@ public class ImageEditorActivity extends Activity {
         operateComplete();
         Paint mPaint = new Paint();     // 初始化画笔
         mPaint.setAntiAlias(true);      // 设置消除锯齿
+        mPaint.setTextAlign(Paint.Align.LEFT);  // 设置从左边开始绘制
         ArrayList<CarrotInfo> carrotInfoArrayList = new ArrayList<>();
         CarrotInfo carrotInfo;
         float saveLeft, saveBottom;
@@ -834,6 +835,8 @@ public class ImageEditorActivity extends Activity {
                 float textLength = mPaint.measureText(strArr[i]);
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
+                System.out.println("textCenterVerticalBaselineY:" + textCenterVerticalBaselineY);
+
                 // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
                 saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2 + i*textSize + i * textVerticalSpacing;
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距

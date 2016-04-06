@@ -5,10 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -112,17 +116,20 @@ public class StickerView extends ImageView {
     }
 
     private void init() {
-
         dst_delete = new Rect();
         dst_resize = new Rect();
         dst_flipV = new Rect();
         dst_top = new Rect();
         localPaint = new Paint();
-        localPaint.setColor(Color.BLACK);
+        localPaint.setColor(Color.RED);
         localPaint.setAntiAlias(true);
         localPaint.setDither(true);
         localPaint.setStyle(Paint.Style.STROKE);
         localPaint.setStrokeWidth(1.0f);
+
+        localPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        // 绘制长度1的实线,再绘制长度2的空白,再绘制长度4的实线,再绘制长度8的空白,依次重复,最后一位是起始位置的偏移量。
+        localPaint.setPathEffect(new DashPathEffect(new float[]{8, 5, 8, 5}, 3));
         dm = getResources().getDisplayMetrics();
         mScreenWidth = dm.widthPixels;
         mScreenHeight = dm.heightPixels;
@@ -168,10 +175,29 @@ public class StickerView extends ImageView {
 
             if (isInEdit) {
 
-                canvas.drawLine(f1, f2, f3, f4, localPaint);
-                canvas.drawLine(f3, f4, f7, f8, localPaint);
-                canvas.drawLine(f5, f6, f7, f8, localPaint);
-                canvas.drawLine(f5, f6, f1, f2, localPaint);
+//                canvas.drawLine(f1, f2, f3, f4, localPaint);
+//                canvas.drawLine(f3, f4, f7, f8, localPaint);
+//                canvas.drawLine(f5, f6, f7, f8, localPaint);
+//                canvas.drawLine(f5, f6, f1, f2, localPaint);
+
+                // 虚线路径
+                Path dottedLinePath = new Path();
+                dottedLinePath.moveTo(f1, f2);
+                dottedLinePath.lineTo(f3, f4);
+                canvas.drawPath(dottedLinePath, localPaint);
+                dottedLinePath.moveTo(f3, f4);
+                dottedLinePath.lineTo(f7, f8);
+                canvas.drawPath(dottedLinePath, localPaint);
+                dottedLinePath.moveTo(f5, f6);
+                dottedLinePath.lineTo(f7, f8);
+                canvas.drawPath(dottedLinePath, localPaint);
+                dottedLinePath.moveTo(f5, f6);
+                dottedLinePath.lineTo(f1, f2);
+                canvas.drawPath(dottedLinePath, localPaint);
+
+
+
+
 
                 // canvas.drawBitmap(deleteBitmap, null, dst_delete, null);
                 canvas.drawBitmap(resizeBitmap, null, dst_resize, null);

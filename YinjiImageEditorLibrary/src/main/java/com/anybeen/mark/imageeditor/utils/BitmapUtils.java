@@ -60,11 +60,11 @@ public class BitmapUtils {
 	public static Bitmap loadImageByPath(final String imagePath, int reqWidth,
 			int reqHeight) {
 		File file = new File(imagePath);
-		if (file.length() < MAX_SZIE) {
+		// if (file.length() < MAX_SZIE) {
 			return getSampledBitmap(imagePath, reqWidth, reqHeight);
-		} else {// 压缩图片
-			return getImageCompress(imagePath);
-		}
+//		} else {// 压缩图片
+//			return getImageCompress(imagePath);
+//		}
 	}
 
 	public static int getOrientation(final String imagePath) {

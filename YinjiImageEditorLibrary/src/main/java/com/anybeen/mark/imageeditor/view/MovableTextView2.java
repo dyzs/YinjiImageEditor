@@ -249,6 +249,16 @@ public class MovableTextView2 extends EditText{
 
     }
     // 在编辑的改变时用，当编辑 editPanel 的大小大于 blahblah~~
-    public boolean isChangePosition = false;
+    private boolean isChangePosition = false;
+
+    public boolean getIsChangePosition() {
+        return isChangePosition;
+    }
+
+    public void setIsChangePosition(boolean isChangePosition) {
+        this.isChangePosition = isChangePosition;
+    }
+
+    public int leftBeforeChange, topBeforeChange, bottomBeforeChange;
 
 }

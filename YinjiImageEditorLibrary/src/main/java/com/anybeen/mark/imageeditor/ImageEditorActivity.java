@@ -5,15 +5,18 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,6 +63,8 @@ import java.util.ArrayList;
 public class ImageEditorActivity extends Activity {
     public static final String FILE_PATH = "albumPhotoAbsolutePath";
     public static final String IS_NEW = "isNewAddPhoto";
+    private boolean isNew = true;
+    String filePath = "";
     private ImageDataInfo mCurrDataInfo;
     private boolean stickerListShowUp = false;
     private boolean editPanelShowUp = false;
@@ -69,6 +74,7 @@ public class ImageEditorActivity extends Activity {
     // topToolbar
     private RelativeLayout layout_top_toolbar;
     private ImageView bt_save;
+    private ImageView iv_back;
     // mainContent
     private ImageView iv_main_image;
     private RecyclerView mRvFilter;
@@ -85,11 +91,8 @@ public class ImageEditorActivity extends Activity {
 
     private FrameLayout fl_main_content;
 
-
-
     private static int mCurrImgId = 0;
     public int keyboardHeight = 0;              // 记录键盘高度
-
 
     @Deprecated //未使用到
     private StickerView mCurrentView;           // 当前处于编辑状态的贴纸
@@ -97,8 +100,6 @@ public class ImageEditorActivity extends Activity {
     private ArrayList<MovableTextView2> mMtvLists;  // 存储文字列表
     private ArrayList<StickerView> mStickerViews;   // 存储贴纸列表
     private float[] scaleAndLeaveSize;              // 计算三个缩放比例
-    private FrameLayout fl_image_editor_base_layout;
-
 
     // edit panel params
     private LinearLayout ll_base_edit_panel;
@@ -108,14 +109,14 @@ public class ImageEditorActivity extends Activity {
     private TextView ep_BtnComplete;            // 完成按钮
     private SeekBar ep_FontSize;                // 字体大小
     private CustomSeekBar ep_CsbFontColor;      // 字体颜色 seek bar
-    private ImageView ep_IvColorShow;     // 颜色展示
+    private ImageView ep_IvColorShow;           // 颜色展示
     private RadioGroup ep_rgFontGroup;          // 字体选择
     private int currentFontCheckedId = -1;
+    private int mEditPanelHeight;
     // edit panel params
 
 
     private boolean openKeyboardOnLoading;
-    private boolean createMtvOnLoading;
     private boolean isFirstAddMtv;
     private KeyboardState mCurKeyboardState;
     private enum KeyboardState {
@@ -133,11 +134,8 @@ public class ImageEditorActivity extends Activity {
         mMtvLists = new ArrayList<>();
         mStickerViews = new ArrayList<>();
         openKeyboardOnLoading = true;
-        createMtvOnLoading = true;
         isFirstAddMtv = true;
 
-
-        fl_image_editor_base_layout = (FrameLayout) findViewById(R.id.fl_image_editor_base_layout);
         initView();
         // 加载图片
         loadBitmap();
@@ -163,6 +161,7 @@ public class ImageEditorActivity extends Activity {
         // topBar
         layout_top_toolbar = (RelativeLayout) findViewById(R.id.layout_top_toolbar);
         bt_save = (ImageView) findViewById(R.id.bt_save);
+        iv_back = (ImageView) findViewById(R.id.iv_back);
         // mainContent
 
         iv_main_image = (ImageView) findViewById(R.id.iv_main_image);
@@ -200,8 +199,7 @@ public class ImageEditorActivity extends Activity {
 
     }
     private void loadBitmap() {
-        boolean isNew = getIntent().getBooleanExtra(IS_NEW, true);
-        String filePath = "";
+        isNew = getIntent().getBooleanExtra(IS_NEW, true);
         if (isNew) {//根据用户操作状态（新添加大图、编辑大图），分成两个Controller处理
             filePath = getIntent().getStringExtra(FILE_PATH);
 //            addFirstMtv();
@@ -211,52 +209,43 @@ public class ImageEditorActivity extends Activity {
 //            filePath = mCurrDataInfo.metaDataPictureInfo.oriPicturePath;
         }
         loadImage(filePath);
-//        mainBitmap = loadImage();
-//        mainBitmap = BitmapUtils.loadImage(this, mCurrImgId, imageWidth, imageHeight);
-//        copyBitmap = mainBitmap.copy(Bitmap.Config.ARGB_8888, true);
-//        iv_main_image.setImageBitmap(copyBitmap);
     }
 
     private void handleListener() {
-        // 监听获取键盘高度, 只能监听到打开与关闭
+        // 监听获取键盘高度, 只能监听到打开与关闭，自定义枚举类，保存相对于的键盘状态
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
-//                System.out.println("keyboard open");
                 mCurKeyboardState = KeyboardState.STATE_OPEN;
                 if (height != 0) {
-                    if (createMtvOnLoading && openKeyboardOnLoading) {
-                        keyboardHeight = height;
-                        SystemClock.sleep(300);
-                        edit_panel = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_image_editor_edit_panel, null);
-                        ll_base_edit_panel.addView(edit_panel);
+                    keyboardHeight = height;
+                    if (editPanelGenerateState == EditPanelState.STATE_RELOAD_AND_FIRST_CLICK) {      // 数据重载&&第一次生成键盘
+                        generateEditPanel(keyboardHeight);
+                        SystemClock.sleep(100);
+                        initColorSeekBar();
+                        handleEditPanelEvent();
 
-                        ep_KeyboardOptions = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_key_board_options);
-                        ep_OperateText = (CarrotEditText) edit_panel.findViewById(R.id.et_edit_panel_text);
-                        ep_BtnComplete = (TextView) edit_panel.findViewById(R.id.iv_edit_panel_complete);
-                        ep_FontSize = (SeekBar) edit_panel.findViewById(R.id.sb_edit_panel_font_size);
-                        ep_IvColorShow = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_color_show);
-                        ep_CsbFontColor = (CustomSeekBar) edit_panel.findViewById(R.id.csb_edit_panel_font_color);
-                        ep_rgFontGroup = (RadioGroup) edit_panel.findViewById(R.id.rg_font_group);
+                        for(MovableTextView2 mtv : mMtvLists) {
+                            if (mtv.isSelected()) {
+                                loadMtvDataIntoEditPanel(mtv);
+                            }
+                        }
+                        editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
+                        openKeyboardOnLoading = false;
+                        isFirstAddMtv = false;
 
-                        // 获取编辑 panel 的头高度
-                        LinearLayout ll_edit_panel_head = (LinearLayout) edit_panel.findViewById(R.id.ll_edit_panel_head);
-                        ll_edit_panel_head.measure(0, 0);
-                        int headHeight = ll_edit_panel_head.getMeasuredHeight();
 
-                        LinearLayout.LayoutParams lps = (LinearLayout.LayoutParams) edit_panel.getLayoutParams();
-                        lps.height = headHeight + keyboardHeight;
-                        lps.gravity = Gravity.BOTTOM;
-                        edit_panel.setLayoutParams(lps);
-                        ll_base_edit_panel.setVisibility(View.VISIBLE);
-
-                        initDataToSeekBar();
+                        // TODO。。。。数据重载的时候，没做 position 的修改
+                    }
+                    if (openKeyboardOnLoading && editPanelGenerateState == EditPanelState.STATE_NEW_ADD_MTV) {
+                        generateEditPanel(keyboardHeight);
+                        SystemClock.sleep(100);
+                        initColorSeekBar();
                         handleEditPanelEvent();
                         addMovableTextView();
-
-                        createMtvOnLoading = false;
+                        editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
                         openKeyboardOnLoading = false;
-                        mEditPanelHeight = headHeight + keyboardHeight;
+                        isFirstAddMtv = false;
                     } else {
                         ll_base_edit_panel.setVisibility(View.VISIBLE);
                     }
@@ -265,22 +254,38 @@ public class ImageEditorActivity extends Activity {
 
             @Override
             public void keyBoardHide(int height) {
-//                System.out.println("keyboard hide");
                 mCurKeyboardState = KeyboardState.STATE_HIDE;
             }
         });
 
 
         bt_save.setOnClickListener(new SaveClickListener());
-        // main_radio.setOnCheckedChangeListener(new RadioGroupOnCheckChangeListener());
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         rb_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (stickerListShowUp) {
+                    stickerListShowUp = !stickerListShowUp;
+                    AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+                    return;
+                }
+
+                editPanelGenerateState = EditPanelState.STATE_NEW_ADD_MTV;
                 CommonUtils.hitKeyboardOpenOrNot(mContext);
                 if (isFirstAddMtv) {    // 表示第一次添加 mtv 文本
                     isFirstAddMtv = false;
                 } else {
                     // 设置弹出软键盘
+                    if (mMtvLists.size() > 0) {
+                        for (MovableTextView2 m : mMtvLists) {
+                            m.setSelected(false);
+                        }
+                    }
                     addMovableTextView();
                 }
             }
@@ -302,7 +307,40 @@ public class ImageEditorActivity extends Activity {
         });
     }
 
+    /**
+     * 通过软键盘弹出初始化编辑界面
+     * @param keyboardHeight
+     */
+    private void generateEditPanel(int keyboardHeight) {
+        edit_panel = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_image_editor_edit_panel, null);
+        ep_KeyboardOptions = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_key_board_options);
+        ep_OperateText = (CarrotEditText) edit_panel.findViewById(R.id.et_edit_panel_text);
+        ep_BtnComplete = (TextView) edit_panel.findViewById(R.id.iv_edit_panel_complete);
+        ep_FontSize = (SeekBar) edit_panel.findViewById(R.id.sb_edit_panel_font_size);
+        ep_FontSize.setPadding(0, 0, 0, 0);
+        ep_FontSize.setThumbOffset(0);
+        ep_IvColorShow = (ImageView) edit_panel.findViewById(R.id.iv_edit_panel_color_show);
 
+        ep_CsbFontColor = (CustomSeekBar) edit_panel.findViewById(R.id.csb_edit_panel_font_color);
+        ep_CsbFontColor.setPadding(0, 0, 0, 0);
+        ep_CsbFontColor.setThumbOffset(DensityUtils.dp2px(mContext, DensityUtils.px2dp(mContext, 5)));
+
+        ep_rgFontGroup = (RadioGroup) edit_panel.findViewById(R.id.rg_font_group);
+
+        ll_base_edit_panel.addView(edit_panel);
+
+        // 获取编辑 panel 的头高度
+        LinearLayout ll_edit_panel_head = (LinearLayout) edit_panel.findViewById(R.id.ll_edit_panel_head);
+        ll_edit_panel_head.measure(0, 0);
+        int headHeight = ll_edit_panel_head.getMeasuredHeight();
+
+        LinearLayout.LayoutParams lps = (LinearLayout.LayoutParams) edit_panel.getLayoutParams();
+        lps.height = headHeight + keyboardHeight;
+        lps.gravity = Gravity.BOTTOM;
+        edit_panel.setLayoutParams(lps);
+        ll_base_edit_panel.setVisibility(View.VISIBLE);
+        mEditPanelHeight = headHeight + keyboardHeight;
+    }
 
     private class SaveClickListener implements View.OnClickListener{
         @Override
@@ -313,8 +351,10 @@ public class ImageEditorActivity extends Activity {
             saveViews(canvas);
         }
     }
-    private int mEditPanelHeight = 0;
-    private int leftBeforeChange, topBeforeChange, bottomBeforeChange;
+    private EditPanelState editPanelGenerateState = EditPanelState.STATE_OTHER;
+    public enum EditPanelState {
+        STATE_RELOAD_AND_FIRST_CLICK, STATE_NEW_ADD_MTV, STATE_PANEL_CREATED, STATE_OTHER
+    }
     private class MTVClickListener implements MovableTextView2.OnCustomClickListener {
         MovableTextView2 mMtv;
         public MTVClickListener(MovableTextView2 mtv2) {
@@ -322,19 +362,25 @@ public class ImageEditorActivity extends Activity {
         }
         @Override
         public void onCustomClick() {
-            System.out.println("mtv click....");
-            // details 因为当键盘隐藏的时候，点击才显示软键盘，而软键盘打开的时候，事件已经被它的父容器
-            // 消费了，所以不可能触发到点击事件
             mMtv.setSelected(true);
+            /**
+             * 解决一种情况，就是重新载入的时候，控件已经生产，点击事件有，但是此时键盘并没有弹出，edit panel
+             * 也还没有生产
+             */
+            if (editPanelGenerateState == EditPanelState.STATE_OTHER) {
+                editPanelGenerateState = EditPanelState.STATE_RELOAD_AND_FIRST_CLICK;
+                // 设置弹出软键盘，好让监听器得到当前弹出的消息
+                CommonUtils.hitKeyboardOpenOrNot(mContext);
+                return;
+            }
             if (mCurKeyboardState == KeyboardState.STATE_HIDE) {    // 判断条件有误！需要改正
                 ll_base_edit_panel.setVisibility(View.VISIBLE);
                 // 把 MovableTextView2 的数据载入到编辑面板中
                 loadMtvDataIntoEditPanel(mMtv);
-
                 // 记录 l,t,r,b 在 resetLayoutParams 的时候使用
-                leftBeforeChange = mMtv.getLeft();
-                topBeforeChange = mMtv.getTop();
-                bottomBeforeChange = mMtv.getBottom();
+                mMtv.leftBeforeChange = mMtv.getLeft();
+                mMtv.topBeforeChange = mMtv.getTop();
+                mMtv.bottomBeforeChange = mMtv.getBottom();
 
                 // 如果高度被弹出的edit_panel挡住了，那么改变当前对象的高度
                 Rect frame = new Rect();
@@ -343,7 +389,7 @@ public class ImageEditorActivity extends Activity {
                 int toolBarHeight = layout_top_toolbar.getHeight();
                 int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
                 int distanceViewToDisplayBottom =
-                        displayHeight - statusBarHeight - toolBarHeight - bottomBeforeChange;
+                        displayHeight - statusBarHeight - toolBarHeight - mMtv.bottomBeforeChange;
                 if (distanceViewToDisplayBottom < mEditPanelHeight) {
                     System.out.println("position changed");
                     int layoutTop =  displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
@@ -358,18 +404,12 @@ public class ImageEditorActivity extends Activity {
                     lp.gravity = -1;
                     lp.height = mMtv.getMeasuredHeight();
                     lp.width = mMtv.getMeasuredWidth();
-                    lp.leftMargin = leftBeforeChange;
+                    lp.leftMargin = mMtv.leftBeforeChange;
                     lp.topMargin = layoutTop;
                     mMtv.setLayoutParams(lp);
-                    mMtv.isChangePosition = true;
+                    mMtv.setIsChangePosition(true);
                 }
             }
-//            用于不会实现
-//            else {
-//                ll_base_edit_panel.setVisibility(View.INVISIBLE);
-//                System.out.println("position reset");
-//            }
-
         }
     }
 
@@ -398,7 +438,6 @@ public class ImageEditorActivity extends Activity {
             }
         }
     }
-
 
     // ====================task line
     private LoadImageTask mLoadImageTask;
@@ -460,7 +499,6 @@ public class ImageEditorActivity extends Activity {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) newAddMtv.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         newAddMtv.setLayoutParams(lp);
-
         ep_OperateText.setText(newAddMtv.getText());
         ep_OperateText.setSelection(newAddMtv.getText().length());   // 设置光标的位置
         ep_IvColorShow.setBackgroundColor(newAddMtv.getCurrentTextColor());
@@ -472,7 +510,6 @@ public class ImageEditorActivity extends Activity {
                 ((SelectableView) (ep_rgFontGroup.getChildAt(i))).setChecked(true);
             }
         }
-
         fl_main_content.addView(newAddMtv);
         mMtvLists.add(newAddMtv);
         // loadMtvDataIntoEditPanel(newAddMtv);
@@ -482,7 +519,7 @@ public class ImageEditorActivity extends Activity {
      * @details 通过参数值返回一个 {@link MovableTextView2} 对象
      * @param text          输入的文字
      * @param textSize      输入的文字大小
-     * @param color         输入的文字颜色的color
+     * @param color         输入的文字颜色的 int 值
      * @param typefaceName  输入的文字的字体名称
      * @param typeface      输入的文字的字体
      * @param parentView
@@ -527,11 +564,6 @@ public class ImageEditorActivity extends Activity {
         parentView.addView(mtv);
         return mtv;
     }
-
-
-
-
-
 
     //添加表情
     private void addStickerView(int stickerIndex) {
@@ -810,17 +842,25 @@ public class ImageEditorActivity extends Activity {
      * @param canvas
      */
     private void saveViews(Canvas canvas) {
+        operateComplete();
+        // 隐藏 sticker recycle view
+        if (stickerListShowUp) {
+            stickerListShowUp = !stickerListShowUp;
+            AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+            return;
+        }
+
         float leaveH = 0f, leaveW = 0f, scale = 0f;
         scale  = scaleAndLeaveSize[0];   // 原图与ImageView的缩放比例
         leaveW = scaleAndLeaveSize[1];   // 图片自动缩放时造成的留白区域
         leaveH = scaleAndLeaveSize[2];
         canvas.scale(scale, scale);
         canvas.translate(-leaveW, -leaveH);
-        // 保存文本
-        saveBeautySentences(canvas, scale, leaveW, leaveH);
-
         // 保存贴纸
         saveSticker(canvas);
+
+        // 保存文本
+        saveBeautySentences(canvas, scale, leaveW, leaveH);
 
         // 最后生成图片
         String imagePath = FileUtils.saveBitmapToLocal(copyBitmap, mContext);
@@ -829,10 +869,7 @@ public class ImageEditorActivity extends Activity {
     }
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void saveBeautySentences(Canvas canvas, float scale, float leaveW, float leaveH) {
-        if (mMtvLists == null || mMtvLists.size() <= 0) {
-            return;
-        }
-        operateComplete();
+        if (mMtvLists == null || mMtvLists.size() <= 0) {return;}
         Paint mPaint = new Paint();     // 初始化画笔
         mPaint.setAntiAlias(true);      // 设置消除锯齿
         mPaint.setTextAlign(Paint.Align.LEFT);  // 设置从左边开始绘制
@@ -859,10 +896,7 @@ public class ImageEditorActivity extends Activity {
             System.out.println("lineSpacingExtra 行间距:" + lineSpacingExtra);
             System.out.println("lineSpacingMultiplier 行间距倍数:" + lineSpacingMultiplier);
             System.out.println("content replaceAll:" + content);
-
             String[] strArr = content.split("\\n");
-
-
 
             float textVerticalSpacing = mtv.getLetterSpacing();
             float textSize = mtv.getTextSize();
@@ -875,7 +909,6 @@ public class ImageEditorActivity extends Activity {
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
                 System.out.println("textCenterVerticalBaselineY:" + textCenterVerticalBaselineY);
-
                 // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
                 saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2 + i*textSize + i * textVerticalSpacing;
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距
@@ -898,15 +931,12 @@ public class ImageEditorActivity extends Activity {
             carrotInfo.pTop = (int) textViewT;
             carrotInfo.color = mtv.getCurrentTextColor();
             carrotInfoArrayList.add(carrotInfo);      // 保存了位置，颜色等属性参数
-
-            // fl_main_content.removeView(mtv);
+            fl_main_content.removeView(mtv);
         }
-
         FileUtils.saveSerializableCarrotLists(carrotInfoArrayList);
         System.out.println("保存文本成功~~~~~~~");
-
-//        mMtvLists.clear();
-//        mMtvLists = null;
+        mMtvLists.clear();
+        mMtvLists = null;
     }
 
     /**
@@ -929,19 +959,19 @@ public class ImageEditorActivity extends Activity {
             stickerInfo.fileAbsPath = sv.getSaveFileAbsPath();
             stickerInfo.resId = sv.getSaveResId();
             stickerInfoArrayList.add(stickerInfo);
-//            fl_main_content.removeView(sv);
+            fl_main_content.removeView(sv);
         }
         FileUtils.saveSerializableStickerLists(stickerInfoArrayList);
         System.out.println("保存贴纸成功~~~~~~~");
-//        mStickerViews.clear();
-//        mStickerViews = null;
+        mStickerViews.clear();
+        mStickerViews = null;
     }
 
     /**
      * 初始化颜色 seekBar 控件的值
      */
     private int[] colorValues = Const.COLOR_VALUES;
-    private void initDataToSeekBar() {
+    private void initColorSeekBar() {
         ep_CsbFontColor.initData(CommonUtils.getProgressItemList(colorValues));
         ep_CsbFontColor.invalidate();
     }
@@ -1099,11 +1129,10 @@ public class ImageEditorActivity extends Activity {
             CommonUtils.hitKeyboardOpenOrNot(mContext);
         }
     }
-
+    // 还原 position
     private void movableTextViewPositionRevert() {
         for (MovableTextView2 m : mMtvLists) {
-            if (m.isChangePosition) {
-                // 还原 position
+            if (m.getIsChangePosition()) {
                 m.measure(
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -1112,10 +1141,10 @@ public class ImageEditorActivity extends Activity {
                 lp.gravity = -1;
                 lp.height = m.getMeasuredHeight();
                 lp.width = m.getMeasuredWidth();
-                lp.leftMargin = leftBeforeChange;
-                lp.topMargin = topBeforeChange;
+                lp.leftMargin = m.leftBeforeChange;
+                lp.topMargin = m.topBeforeChange;
                 m.setLayoutParams(lp);
-                m.isChangePosition = false;
+                m.setIsChangePosition(false);
             }
         }
     }
@@ -1227,5 +1256,28 @@ public class ImageEditorActivity extends Activity {
                     }
                 })
                 .show();
+    }
+
+    @Override
+    public void onDestroy() {
+        try{
+            loadDialog.dismiss();
+        }catch (Exception e) {
+        }
+        super.onDestroy();
+        mMtvLists = null;
+        mStickerViews = null;
+        mCurrDataInfo = null;
+        if (mLoadImageTask != null) {
+            mLoadImageTask = null;
+        }
+        System.gc();
+    }
+
+    private void bitmapCollections() {
+        if (copyBitmap != null && !copyBitmap.isRecycled()) {
+            copyBitmap.recycle();
+            copyBitmap = null;
+        }
     }
 }

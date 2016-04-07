@@ -233,8 +233,6 @@ public class ImageEditorActivity extends Activity {
                         editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
                         openKeyboardOnLoading = false;
                         isFirstAddMtv = false;
-
-
                         // TODO。。。。数据重载的时候，没做 position 的修改
                     }
                     if (openKeyboardOnLoading && editPanelGenerateState == EditPanelState.STATE_NEW_ADD_MTV) {

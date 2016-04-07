@@ -248,7 +248,7 @@ public class MovableTextView2 extends EditText{
         super.onDraw(canvas);
 
     }
-    // 在编辑的改变时用，当编辑 editPanel 的大小大于 blahblah~~
+    // 在编辑的改变时用，当编辑 editPanel 的大小大于
     private boolean isChangePosition = false;
 
     public boolean getIsChangePosition() {

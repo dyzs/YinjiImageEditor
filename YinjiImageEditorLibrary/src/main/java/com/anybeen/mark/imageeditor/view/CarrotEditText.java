@@ -18,6 +18,7 @@ import com.anybeen.mark.imageeditor.utils.DensityUtils;
 public class CarrotEditText extends EditText{
     private Drawable deleteIcon;
     private Context mContext;
+    public static final String CLEAR_TEXT = "在此输入标注文字";
     public CarrotEditText(Context context) {
         this(context, null);
     }
@@ -65,11 +66,9 @@ public class CarrotEditText extends EditText{
                         String text = getText().toString();
                         if (text != null) {
                             this.setText("");
-                            // this.setText(text.substring(0, text.length() - 1));
-//                            this.setClickable(true);
-//                            this.setFocusable(true);
-//                            this.requestFocus();
                         }
+                    } else if (CLEAR_TEXT.equals(getText().toString())) {
+                        this.setText("");
                     }
                 }
                 break;

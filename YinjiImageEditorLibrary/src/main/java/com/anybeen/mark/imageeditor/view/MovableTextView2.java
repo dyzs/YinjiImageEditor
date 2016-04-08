@@ -38,7 +38,7 @@ public class MovableTextView2 extends EditText{
         this.setLayoutParams(layoutParams);
         this.setBackgroundDrawable(getResources().getDrawable(R.drawable.pic_bg_edit_text_9patch_3x3_image_editor));
         this.setBackgroundResource(R.drawable.shape_dotted_image_editor);
-        this.setText("在此输入标注文字");
+        this.setText(CarrotEditText.CLEAR_TEXT);
         this.setTextColor(Color.WHITE);
         this.setClickable(true);
         this.setFocusable(true);

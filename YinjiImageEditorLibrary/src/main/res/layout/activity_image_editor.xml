@@ -11,13 +11,6 @@
         android:orientation="vertical"
         android:background="@android:color/white"
         >
-        <!--android:background="#343535"-->
-        <!--<Button-->
-        <!--android:onClick="openNative"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="打开相机"-->
-        <!--/>-->
         <include layout="@layout/layout_image_editor_toolbar"/>
 
         <FrameLayout

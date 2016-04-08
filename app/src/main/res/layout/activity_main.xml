@@ -16,4 +16,12 @@
         android:background="@mipmap/ic_launcher"
         />
 
+    <com.anybeen.mark.imageeditor.view.ColorfulSeekBar
+        android:id="@+id/cs"
+        android:layout_below="@+id/iv_open_album"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:thumb="@mipmap/icon_seek_bar_thumb_image_editor"
+        android:background="@android:color/holo_purple"
+        />
 </RelativeLayout>

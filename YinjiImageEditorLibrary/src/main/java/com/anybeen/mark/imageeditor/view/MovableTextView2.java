@@ -45,7 +45,6 @@ public class MovableTextView2 extends EditText{
         this.setTextSize(DensityUtils.px2sp(mContext, getResources().getDimension(R.dimen.movable_text_view_default_text_size)));
         this.setTypefaceName("default");
         this.setTypeface(Typeface.DEFAULT);
-        this.setMaxEms(12);
         this.setColorSeekBarProgress(79);   // progress 对应颜色的 seekBar 的值，因为 colorSeekBar 并没有颜色，只是显示的一张颜色背景
         this.setLineSpacing(DensityUtils.dp2px(mContext, DensityUtils.px2dp(mContext, 0)), 1.0f);
     }

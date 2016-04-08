@@ -84,7 +84,7 @@
                 android:paddingLeft="0.0dip"
                 android:paddingRight="10.0dip"
                 android:max="50"
-                android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
+                android:thumb="@mipmap/icon_seek_bar_thumb_image_editor"
                 android:thumbOffset="0.0dip"
                 android:progressDrawable="@drawable/style_seek_bar"
                 />
@@ -114,7 +114,7 @@
                 android:paddingRight="0.0dip"
                 android:max="89"
                 android:progress="0"
-                android:thumb="@mipmap/seek_bar_diy_thumb_bkg_down"
+                android:thumb="@mipmap/icon_seek_bar_thumb_image_editor"
                 android:thumbOffset="2.0dip"
                 android:progressDrawable="@drawable/style_seek_bar_color"
                 />

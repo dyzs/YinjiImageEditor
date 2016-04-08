@@ -27,4 +27,30 @@
 
 
 
+    <!-- 灰色样式的颜色 -->
+    <color name="image_editor_bg_test">#343635</color>
+
+    <!-- 80 透明度的颜色背景 -->
+    <color name="image_editor_bg_grey">#2c2c2c</color>
+    <color name="image_editor_transparent">#00000000</color>
+    <color name="image_editor_black">#000000</color>
+    <color name="image_editor_white">#ffffff</color>
+    <color name="image_editor_orange">#ffb33a</color>
+    <color name="image_editor_wine_red">#bd081c</color>
+
+    <color name="image_editor_font_check_checked">#ffb33a</color>
+    <color name="image_editor_font_check_enable">#ffffff</color>
+    <color name="image_editor_font_check_disable">#ffffff</color>
+
+    <color name="image_editor_btn_complete_shape_res_border">#ffb33a</color>
+    <color name="image_editor_btn_complete_shape_res_bg">#00000000</color>
+
+
+    <!--字体 seek bar 的一级背景颜色-->
+    <color name="image_editor_text_size_seek_bar_background">#333333</color>
+    <color name="image_editor_text_size_seek_bar_progress">#999</color>
+    <color name="image_editor_edit_panel_bg">#666666</color>
+
+
+
 </resources>

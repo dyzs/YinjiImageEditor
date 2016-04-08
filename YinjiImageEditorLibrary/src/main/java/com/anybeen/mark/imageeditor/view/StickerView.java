@@ -30,7 +30,9 @@ import com.anybeen.mark.yinjiimageeditorlibrary.R;
 public class StickerView extends ImageView {
     private static final String TAG = "StickerView";
 
+    @Deprecated
     private Bitmap deleteBitmap;
+    @Deprecated
     private Bitmap flipVBitmap;
     private Bitmap topBitmap;
     private Bitmap resizeBitmap;
@@ -299,10 +301,12 @@ public class StickerView extends ImageView {
         }
 
         deleteBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete_image_editor);
-        resizeBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_resize);
+        // 修改大小
+        resizeBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_btn_sticker_transformation);
         flipVBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_flip);
         // icon_top_enable
-        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_delete_image_editor);
+        // 功能改为删除
+        topBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_btn_sticker_delete);
 
 //        deleteBitmapWidth = (int) (deleteBitmap.getWidth() * BITMAP_SCALE);
 //        deleteBitmapHeight = (int) (deleteBitmap.getHeight() * BITMAP_SCALE);
@@ -464,8 +468,8 @@ public class StickerView extends ImageView {
         Log.d(TAG, "midX : " + minX + " midY : " + minY);
         model.setDegree((float) Math.toRadians(rAngle));
         //TODO 占屏幕百分比
-        float precentWidth = (mBitmap.getWidth() * rScale) / mScreenWidth;
-        model.setScaling(precentWidth);
+        float percentWidth = (mBitmap.getWidth() * rScale) / mScreenWidth;
+        model.setScaling(percentWidth);
         model.setxLocation(minX / mScreenWidth);
         model.setyLocation(minY / mScreenWidth);
         model.setStickerId(stickerId);

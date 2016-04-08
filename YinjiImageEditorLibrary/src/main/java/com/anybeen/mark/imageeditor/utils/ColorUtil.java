@@ -46,7 +46,7 @@ public class ColorUtil {
 	/**
 	 * 根据RGB三色的值获取颜色
 	 * @param intRgb
-	 * @return
+	 * @return color int
 	 */
 	public static int getColorByRGB(int[] intRgb) {
 		if (intRgb.length != 3) {
@@ -60,8 +60,8 @@ public class ColorUtil {
 
 
 	/**
-	 * 将十六进制 颜色代码 转换为 int
-	 *
+	 * @details 将十六进制 颜色代码 转换为 int，用正则的方式匹配检验
+	 * @param color
 	 * @return
 	 */
 	public static int HextoColor(String color) {
@@ -70,7 +70,6 @@ public class ColorUtil {
 		if (!Pattern.matches(reg, color)) {
 			color = "#00ffffff";
 		}
-
 		return Color.parseColor(color);
 	}
 

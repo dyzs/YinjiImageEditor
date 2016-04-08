@@ -231,4 +231,37 @@ public class CommonUtils {
         scaleAndLeaveSize[2] = leaveH;      // 表示图片的Y轴留白区域
         return scaleAndLeaveSize;
     }
+
+    /**
+     * @details 四色五入的方式转换 float 值为 int 值
+     * @param f
+     * @return int
+     */
+    public static int floatToInt(float f){
+        int i;
+        if(f>0) //正数
+            i = (int) ((f*10 + 5)/10);
+        else if(f<0) //负数
+            i = (int) ((f*10 - 5)/10);
+        else i = 0;
+        return i;
+    }
+
+    /**
+     * @details 转 float 为 double
+     * @param f
+     * @return double
+     */
+    public static double float2Double(float f) {
+        return Double.parseDouble(String.valueOf(f));
+    }
+
+    /**
+     * @details 转 double 为 float
+     * @param d
+     * @return float
+     */
+    public static float double2Float(double d) {
+        return (float)d;
+    }
 }

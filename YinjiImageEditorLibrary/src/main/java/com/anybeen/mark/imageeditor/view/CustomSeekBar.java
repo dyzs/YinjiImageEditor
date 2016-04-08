@@ -94,9 +94,9 @@ public class CustomSeekBar extends SeekBar {
 				}
 				Rect progressRect = new Rect();
 				int left = lastProgressX;
-				int top = thumbOffset / 2 + 1;
+				int top = thumbOffset / 2 - 1;
 				int right = progressItemRight;
-				int bottom = progressBarHeight - thumbOffset / 2 - 1;
+				int bottom = progressBarHeight - thumbOffset / 2 + 1;
 				if (i == 0) {
 					progressRect.set(left + thumbOffset / 2,
 							top,

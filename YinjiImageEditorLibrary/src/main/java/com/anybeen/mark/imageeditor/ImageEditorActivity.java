@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.anybeen.mark.imageeditor.adapter.FilterAdapter;
 import com.anybeen.mark.imageeditor.adapter.StickerAdapter;
 import com.anybeen.mark.imageeditor.entity.CarrotInfo;
 import com.anybeen.mark.imageeditor.entity.StickerInfo;
@@ -67,7 +68,7 @@ public class ImageEditorActivity extends Activity {
     String filePath = "";
     private ImageDataInfo mCurrDataInfo;
     private boolean stickerListShowUp = false;
-    private boolean editPanelShowUp = false;
+    private boolean filterListShowUp = false;
 
 
     private Context mContext;
@@ -76,13 +77,14 @@ public class ImageEditorActivity extends Activity {
     private ImageView bt_save;
     private ImageView iv_back;
     // mainContent
-    private ImageView iv_main_image;
+    public ImageView iv_main_image;
     private RecyclerView mRvFilter;
     private RecyclerView mRvSticker;
     // bottomToolbar
     private RadioGroup main_radio;
     private RadioButton rb_word;
     private RadioButton rb_sticker;
+    private RadioButton rb_filter;
 
     @Deprecated
     private Bitmap mainBitmap;
@@ -169,17 +171,17 @@ public class ImageEditorActivity extends Activity {
         main_radio = (RadioGroup) findViewById(R.id.main_radio);
         rb_word = (RadioButton) findViewById(R.id.rb_word);
         rb_sticker = (RadioButton) findViewById(R.id.rb_sticker);
-
+        rb_filter = (RadioButton) findViewById(R.id.rb_filter);
 
         // recycle view 处理滤镜
         mRvFilter = (RecyclerView) findViewById(R.id.rv_filter_list);
         mRvFilter.setHasFixedSize(true);
-        int spacingInPixels = 10; //getResources().getDimensionPixelSize(R.dimen.space);
-        mRvFilter.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
+        // int spacingInPixels = 10; //getResources().getDimensionPixelSize(R.dimen.space);
+        // mRvFilter.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvFilter.setLayoutManager(layoutManager);
-        mRvFilter.setAdapter(new FilterAdapter(this));
+        mRvFilter.setAdapter(new FilterAdapter(mContext, ImageEditorActivity.this, copyBitmap));  //FilterAdapter(this)
         // recycle view 处理贴纸
         mRvSticker = (RecyclerView) findViewById(R.id.rv_sticker_list);
         mRvSticker.setHasFixedSize(true);
@@ -191,7 +193,7 @@ public class ImageEditorActivity extends Activity {
             @Override
             public void onStickerIndex(int position) {
                 stickerListShowUp = false;
-                AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+                AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                 addStickerView(position);
             }
         });
@@ -269,7 +271,7 @@ public class ImageEditorActivity extends Activity {
             public void onClick(View v) {
                 if (stickerListShowUp) {
                     stickerListShowUp = !stickerListShowUp;
-                    AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+                    AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                     return;
                 }
 
@@ -293,7 +295,19 @@ public class ImageEditorActivity extends Activity {
             @Override
             public void onClick(View v) {
                 stickerListShowUp = !stickerListShowUp;
-                AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+                AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+            }
+        });
+
+        rb_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stickerListShowUp) {
+                    stickerListShowUp = !stickerListShowUp;
+                    AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+                }
+                // TODO
+                AnimUtils.translationFilterX(mRvFilter, true, mContext);
             }
         });
 
@@ -422,6 +436,9 @@ public class ImageEditorActivity extends Activity {
         for (MovableTextView2 m : mMtvLists) {
             if (m.equals(currMtv)) {
                 ep_OperateText.setText(m.getText());
+                ep_OperateText.setFocusable(true);
+                ep_OperateText.setFocusableInTouchMode(true);
+                ep_OperateText.requestFocus();
                 ep_OperateText.setSelection(m.getText().length());   // 设置光标的位置
                 ep_IvColorShow.setBackgroundColor(m.getCurrentTextColor());
                 ep_CsbFontColor.setProgress(CommonUtils.matchProgress(m.getCurrentTextColor(), mContext));
@@ -498,6 +515,9 @@ public class ImageEditorActivity extends Activity {
         lp.gravity = Gravity.CENTER;
         newAddMtv.setLayoutParams(lp);
         ep_OperateText.setText(newAddMtv.getText());
+        ep_OperateText.setFocusable(true);
+        ep_OperateText.setFocusableInTouchMode(true);
+        ep_OperateText.requestFocus();
         ep_OperateText.setSelection(newAddMtv.getText().length());   // 设置光标的位置
         ep_IvColorShow.setBackgroundColor(newAddMtv.getCurrentTextColor());
         ep_CsbFontColor.setProgress(newAddMtv.getColorSeekBarProgress());
@@ -617,139 +637,114 @@ public class ImageEditorActivity extends Activity {
         stickerView.setInEdit(true);
     }
 
-    /**
-    // --- listener 底部的 RadioGroup, 切换监听
-    private class RadioGroupOnCheckChangeListener implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            switch (checkedId) {
-                case R.id.rb_word:
-                    // Show Text Editor
-                    addMovableTextView();
-                    break;
-                case R.id.rb_sticker:
-                    // Show Sticker ImageList RecycleView
-                    break;
-                case R.id.rb_filter:
-                    // Show Filter ImageList RecycleView
-                    break;
-                default:
-                    System.out.println("出现未知错误：" + checkedId);
-                    break;
-            }
-        }
-    }
-    */
-
-
     // inner class start 滤镜的处理方法，暂时不用
-    private class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-        private Context context;
-        public FilterAdapter(Context context) {
-            this.context = context;
-        }
-        @Override
-        public int getItemCount() {
-            return PhotoProcessing.FILTERS.length;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return 1;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_image_editor_recycle_view_filter, null);
-            FilterHolder holder = new FilterHolder(view);
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            FilterHolder h = (FilterHolder) holder;
-            String name = PhotoProcessing.FILTERS[position];
-            h.text.setText(name);
-            if (filterSampleIconBitmap != null && !filterSampleIconBitmap.isRecycled()) {
-                filterSampleIconBitmap = null;
-            }
-            filterSampleIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_icon_filter_sample);
-            if (position == 0) {
-                h.icon.setImageBitmap(filterSampleIconBitmap);
-            }
-            else {
-                h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
-            }
-            h.icon.setOnClickListener(new FilterClickListener(position));
-        }
-        public class FilterClickListener implements View.OnClickListener{
-            private int clickPosition;
-            public FilterClickListener(int position) {
-                this.clickPosition = position;
-            }
-            @Override
-            public void onClick(View v) {
-                FilterTask filterTask = new FilterTask();
-                filterTask.execute(clickPosition + "");
-            }
-        }
-        public class FilterHolder extends RecyclerView.ViewHolder {
-            public ImageView icon;
-            public TextView text;
-            public FilterHolder(View itemView) {
-                super(itemView);
-                this.icon = (ImageView) itemView.findViewById(R.id.icon);
-                this.text = (TextView) itemView.findViewById(R.id.text);
-            }
-        }
-    }
+//    private class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+//        private Context context;
+//        public FilterAdapter(Context context) {
+//            this.context = context;
+//        }
+//        @Override
+//        public int getItemCount() {
+//            return PhotoProcessing.FILTERS.length;
+//        }
+//
+//        @Override
+//        public int getItemViewType(int position) {
+//            return 1;
+//        }
+//
+//        @Override
+//        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            View view = LayoutInflater.from(context).inflate(R.layout.item_image_editor_recycle_view_filter, null);
+//            FilterHolder holder = new FilterHolder(view);
+//            return holder;
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+//            FilterHolder h = (FilterHolder) holder;
+//            String name = PhotoProcessing.FILTERS[position];
+//            h.text.setText(name);
+//            if (filterSampleIconBitmap != null && !filterSampleIconBitmap.isRecycled()) {
+//                filterSampleIconBitmap = null;
+//            }
+//            filterSampleIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_icon_filter_sample);
+//            if (position == 0) {
+//                h.icon.setImageBitmap(filterSampleIconBitmap);
+//            }
+//            else {
+//                h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
+//            }
+//            h.icon.setOnClickListener(new FilterClickListener(position));
+//        }
+//        public class FilterClickListener implements View.OnClickListener{
+//            private int clickPosition;
+//            public FilterClickListener(int position) {
+//                this.clickPosition = position;
+//            }
+//            @Override
+//            public void onClick(View v) {
+//                FilterTask filterTask = new FilterTask();
+//                filterTask.execute(clickPosition + "");
+//            }
+//        }
+//        public class FilterHolder extends RecyclerView.ViewHolder {
+//            public ImageView icon;
+//            public TextView text;
+//            public FilterHolder(View itemView) {
+//                super(itemView);
+//                this.icon = (ImageView) itemView.findViewById(R.id.icon);
+//                this.text = (TextView) itemView.findViewById(R.id.text);
+//            }
+//        }
+//    }
     // inner class end
-    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-        private int space;
-        public SpaceItemDecoration(int space) {
-            this.space = space;
-        }
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            if (parent.getChildPosition(view) != 0)
-                outRect.top = space;
-        }
-    }
+//    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+//        private int space;
+//        public SpaceItemDecoration(int space) {
+//            this.space = space;
+//        }
+//        @Override
+//        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//            if (parent.getChildPosition(view) != 0)
+//                outRect.top = space;
+//        }
+//    }
 
-    private class FilterTask extends AsyncTask<String, Void, Bitmap> {
-        private ProgressDialog loadDialog;
-        public FilterTask() {
-            super();
-            loadDialog = new ProgressDialog(ImageEditorActivity.this, R.style.MyDialog);
-            loadDialog.setCancelable(false);
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loadDialog.show();
-        }
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            int position = Integer.parseInt(params[0]);
-            return PhotoProcessing.filterPhoto(
-                    BitmapUtils.loadImage(ImageEditorActivity.this, mCurrImgId, fl_main_content),
-                    position
-            );
-        }
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            loadDialog.dismiss();
-            iv_main_image.setImageBitmap(result);
-            System.gc();
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            loadDialog.dismiss();
-        }
-    }
+//    public class FilterTask extends AsyncTask<String, Void, Bitmap> {
+//        private ProgressDialog loadDialog;
+//        public FilterTask() {
+//            super();
+//            loadDialog = new ProgressDialog(ImageEditorActivity.this, R.style.MyDialog);
+//            loadDialog.setCancelable(false);
+//        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loadDialog.show();
+//        }
+//        @Override
+//        protected Bitmap doInBackground(String... params) {
+//            int position = Integer.parseInt(params[0]);
+//            return PhotoProcessing.filterPhoto(
+//                    BitmapUtils.loadImage(ImageEditorActivity.this, mCurrImgId, fl_main_content),
+//                    position
+//            );
+//        }
+//        @Override
+//        protected void onPostExecute(Bitmap result) {
+//            super.onPostExecute(result);
+//            loadDialog.dismiss();
+//            iv_main_image.setImageBitmap(result);
+//            System.gc();
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            super.onCancelled();
+//            loadDialog.dismiss();
+//        }
+//    }
 
     // filter class end............................
 
@@ -844,7 +839,7 @@ public class ImageEditorActivity extends Activity {
         // 隐藏 sticker recycle view
         if (stickerListShowUp) {
             stickerListShowUp = !stickerListShowUp;
-            AnimUtils.translationX(mRvSticker, stickerListShowUp, mContext);
+            AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
             return;
         }
 
@@ -1050,7 +1045,6 @@ public class ImageEditorActivity extends Activity {
         ep_OperateText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -1058,6 +1052,13 @@ public class ImageEditorActivity extends Activity {
                 for (MovableTextView2 mtv : mMtvLists) {
                     if (mtv.isSelected()) {
                         mtv.setText(s);
+                        if (s.length() == 0) {
+                            mtv.setText(" ");
+                        }
+                        if (s.toString().contains(CarrotEditText.CLEAR_TEXT)) {
+                            ep_OperateText.setText(ep_OperateText.getText().toString().replace(CarrotEditText.CLEAR_TEXT, ""));
+                            ep_OperateText.setSelection(ep_OperateText.length());
+                        }
                     }
                 }
             }
@@ -1091,6 +1092,12 @@ public class ImageEditorActivity extends Activity {
         int listSize = mMtvLists.size();
         for(int i = 0; i < listSize; i++) {
             if (mMtvLists.get(i).getText().length() == 0) {
+                delMtv = mMtvLists.get(i);
+            }
+            if (" ".equals(mMtvLists.get(i).getText().toString())) {
+                delMtv = mMtvLists.get(i);
+            }
+            if (CarrotEditText.CLEAR_TEXT.equals(mMtvLists.get(i).getText().toString())) {
                 delMtv = mMtvLists.get(i);
             }
         }
@@ -1269,6 +1276,7 @@ public class ImageEditorActivity extends Activity {
         if (mLoadImageTask != null) {
             mLoadImageTask = null;
         }
+        bitmapCollections();
         System.gc();
     }
 
@@ -1278,4 +1286,79 @@ public class ImageEditorActivity extends Activity {
             copyBitmap = null;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     // --- listener 底部的 RadioGroup, 切换监听
+     private class RadioGroupOnCheckChangeListener implements RadioGroup.OnCheckedChangeListener {
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+    switch (checkedId) {
+    case R.id.rb_word:
+    // Show Text Editor
+    addMovableTextView();
+    break;
+    case R.id.rb_sticker:
+    // Show Sticker ImageList RecycleView
+    break;
+    case R.id.rb_filter:
+    // Show Filter ImageList RecycleView
+    break;
+    default:
+    System.out.println("出现未知错误：" + checkedId);
+    break;
+    }
+    }
+    }
+     */
 }

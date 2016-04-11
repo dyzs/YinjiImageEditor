@@ -1,10 +1,8 @@
 package com.anybeen.mark.imageeditor.adapter;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.anybeen.mark.imageeditor.ImageEditorActivity;
-import com.anybeen.mark.imageeditor.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
-import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
+import com.xinlan.imageeditlibrary.editimage.fliter.PhotoProcessing;
 
 /**
  * Created by maidou on 2016/3/28.
@@ -23,14 +19,8 @@ import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
 public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Context context;
     private Bitmap filterSampleIconBitmap;
-    private Bitmap filterCopyBitmap;
-    private Bitmap filterResultBitmap;
-
-    private ImageEditorActivity mActivity;
-    public FilterAdapter(Context context, ImageEditorActivity activity, Bitmap copyBitmap) {
+    public FilterAdapter(Context context) {
         this.context = context;
-        this.filterCopyBitmap = copyBitmap;
-        this.mActivity = activity;
     }
     @Override
     public int getItemCount() {
@@ -64,17 +54,20 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         else {
             h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
         }
-//        h.icon.setOnClickListener(new FilterClickListener(position));
+        h.icon.setOnClickListener(new FilterClickListener(position));
     }
-    public class FilterClickListener implements View.OnClickListener{
+    private class FilterClickListener implements View.OnClickListener{
         private int clickPosition;
         public FilterClickListener(int position) {
             this.clickPosition = position;
         }
         @Override
         public void onClick(View v) {
-            FilterTask filterTask = new FilterTask();
-            filterTask.execute(clickPosition + "");
+            if (mHandleFilterListener != null) {
+                mHandleFilterListener.handleFilter(clickPosition);
+            }
+//            FilterTask filterTask = new FilterTask();
+//            filterTask.execute(clickPosition + "");
         }
     }
     public class FilterHolder extends RecyclerView.ViewHolder {
@@ -87,40 +80,48 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private final class FilterTask extends AsyncTask<String, Void, Bitmap> {
-        private ProgressDialog loadDialog;
-        public FilterTask() {
-            super();
-            // warning progress use context！！！！！！
-            loadDialog = new ProgressDialog(context, R.style.MyDialog);
-            loadDialog.setCancelable(false);
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loadDialog.show();
-        }
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            int position = Integer.parseInt(params[0]);
-            return PhotoProcessing.filterPhoto(
-                    filterCopyBitmap,
-                    position
-            );
-//            return null;
-        }
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            loadDialog.dismiss();
-            mActivity.iv_main_image.setImageBitmap(result);
-            System.gc();
-        }
+    private HandleFilterListener mHandleFilterListener;
+    public HandleFilterListener getHandleFilterListener() {return mHandleFilterListener;}
+    public void setHandleFilterListener(HandleFilterListener mHandleFilterListener) {this.mHandleFilterListener = mHandleFilterListener;}
+    public interface HandleFilterListener {
+        void handleFilter(int position);
+    }
 
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            loadDialog.dismiss();
-        }
-    }// end inner class
+
+//    private final class FilterTask extends AsyncTask<String, Void, Bitmap> {
+//        private ProgressDialog loadDialog;
+//        public FilterTask() {
+//            super();
+//            // warning progress use context！！！！！！
+//            loadDialog = new ProgressDialog(context, R.style.MyDialog);
+//            loadDialog.setCancelable(false);
+//        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loadDialog.show();
+//        }
+//        @Override
+//        protected Bitmap doInBackground(String... params) {
+//            int position = Integer.parseInt(params[0]);
+//            return PhotoProcessing.filterPhoto(
+//                    filterCopyBitmap,
+//                    position
+//            );
+////            return null;
+//        }
+//        @Override
+//        protected void onPostExecute(Bitmap result) {
+//            super.onPostExecute(result);
+//            loadDialog.dismiss();
+//            iv_main_image.setImageBitmap(result);
+//            System.gc();
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            super.onCancelled();
+//            loadDialog.dismiss();
+//        }
+//    }// end inner class
 }

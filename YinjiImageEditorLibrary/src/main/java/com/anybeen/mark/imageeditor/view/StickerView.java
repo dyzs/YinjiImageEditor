@@ -18,9 +18,11 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.anybeen.mark.imageeditor.model.StickerPropertyModel;
+import com.anybeen.mark.imageeditor.utils.CommonUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
 
 
@@ -320,7 +322,6 @@ public class StickerView extends ImageView {
         topBitmapWidth = (int) (topBitmap.getWidth() * BITMAP_SCALE);
         topBitmapHeight = (int) (topBitmap.getHeight() * BITMAP_SCALE);
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = MotionEventCompat.getActionMasked(event);
@@ -360,17 +361,17 @@ public class StickerView extends ImageView {
                     handled = false;
                 }
                 break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                if (spacing(event) > pointerLimitDis) {
-                    oldDis = spacing(event);
-                    isPointerDown = true;
-                    midPointToStartPoint(event);
-                } else {
-                    isPointerDown = false;
-                }
-                isInSide = false;
-                isInResize = false;
-                break;
+//            case MotionEvent.ACTION_POINTER_DOWN:   // 双手指缩放的触点
+//                if (spacing(event) > pointerLimitDis) {
+//                    oldDis = spacing(event);
+//                    isPointerDown = true;
+//                    midPointToStartPoint(event);
+//                } else {
+//                    isPointerDown = false;
+//                }
+//                isInSide = false;
+//                isInResize = false;
+//                break;
             case MotionEvent.ACTION_MOVE:
                 //双指缩放
                 if (isPointerDown) {
@@ -414,8 +415,27 @@ public class StickerView extends ImageView {
                 } else if (isInSide) {
                     float x = event.getX(0);
                     float y = event.getY(0);
-                    //TODO 移动区域判断 不能超出屏幕
-                    matrix.postTranslate(x - lastX, y - lastY);
+                    float dx = x - lastX;
+                    float dy = y - lastY;
+                    // 移动区域判断，不能超出屏幕，因为对角线的交叉位置为中心点，so...
+                    centerPointF = new PointF();
+                    midDiagonalPoint(centerPointF);
+                    float centerPointX = centerPointF.x;
+                    float centerPointY = centerPointF.y;
+                    // 限制中心点不能超出父控件
+                    if (centerPointX < 0f) {
+                        dx = 1f;
+                    }
+                    if (centerPointY < 0f) {
+                        dy = 1f;
+                    }
+                    if (centerPointX > (float)parentWidth) {
+                        dx = -1f;
+                    }
+                    if (centerPointY > (float)parentHeight) {
+                        dy = -1f;
+                    }
+                    matrix.postTranslate(dx, dy);
                     lastX = x;
                     lastY = y;
                     invalidate();
@@ -723,5 +743,16 @@ public class StickerView extends ImageView {
 
     public void setSaveResId(int saveResId) {
         this.saveResId = saveResId;
+    }
+
+    private PointF centerPointF;
+
+    private int parentWidth = 0, parentHeight = 0;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        FrameLayout parent = (FrameLayout) this.getParent();
+        parentWidth = parent.getWidth();
+        parentHeight = parent.getHeight();
     }
 }

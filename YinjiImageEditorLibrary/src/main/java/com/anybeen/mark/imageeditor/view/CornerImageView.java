@@ -17,6 +17,10 @@ import com.anybeen.mark.yinjiimageeditorlibrary.R;
 /**
  * Created by maidou on 2016/4/1.
  * 自定义圆角图片，使用 path + 贝塞尔曲线 + clip裁剪
+ *
+ * TODO
+ * 1、添加 xml 配置方式的半径
+ * 2、半径的 get 和 set 方法，限制半径大小不超过当前控件宽度的一半
  */
 public class CornerImageView extends ImageView{
     private float measureWidth, measureHeight;

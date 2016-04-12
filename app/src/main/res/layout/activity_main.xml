@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/pic_bg_ch_style"
+    android:background="@mipmap/pic_bg_1920x1080x001"
     >
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/iv_open_album"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@mipmap/ic_launcher"
@@ -23,5 +23,12 @@
         android:layout_height="18dp"
         android:thumb="@mipmap/icon_seek_bar_thumb_image_editor"
         android:background="@android:color/holo_purple"
+        />
+
+    <com.anybeen.mark.imageeditor.view.CornerImageView
+        android:id="@+id/civ"
+        android:layout_below="@+id/cs"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         />
 </RelativeLayout>

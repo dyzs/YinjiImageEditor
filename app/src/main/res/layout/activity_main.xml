@@ -28,7 +28,7 @@
     <com.anybeen.mark.imageeditor.view.CornerImageView
         android:id="@+id/civ"
         android:layout_below="@+id/cs"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         />
 </RelativeLayout>

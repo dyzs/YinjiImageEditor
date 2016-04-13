@@ -69,14 +69,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
             cursor.close();
         }
 
-        if (ON_ALBUM_RESULT == requestCode) {
+        if (requestCode == ON_ALBUM_RESULT) {
             // 跳转到图片处理
             Intent intent = new Intent(MainActivity.this, ImageEditorActivity.class);
             intent.putExtra(ImageEditorActivity.FILE_PATH, albumPictureAbsPath);
             intent.putExtra(ImageEditorActivity.IS_NEW, true);
             MainActivity.this.startActivity(intent);
         }
-        else if (ON_ALBUM_RESULT_CORNER_IMAGE_VIEW == requestCode) {
+        else if (requestCode == ON_ALBUM_RESULT_CORNER_IMAGE_VIEW) {
             int width = civ.getWidth();
             int height = civ.getHeight();
             System.out.println("view width:" + width + "/ view height:" + height);

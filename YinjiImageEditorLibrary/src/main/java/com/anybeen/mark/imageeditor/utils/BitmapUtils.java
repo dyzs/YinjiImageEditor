@@ -107,14 +107,10 @@ public class BitmapUtils {
 		if (height > reqHeight || width > reqWidth) {
 			if (width > height) {
 				inSampleSize = (int) FloatMath
-						.floor(((float) height / reqHeight) + 0.5f); // Math.round((float)height
-																		// /
-																		// (float)reqHeight);
+						.floor(((float) height / reqHeight) + 0.5f);
 			} else {
 				inSampleSize = (int) FloatMath
-						.floor(((float) width / reqWidth) + 0.5f); // Math.round((float)width
-																	// /
-																	// (float)reqWidth);
+						.floor(((float) width / reqWidth) + 0.5f);
 			}
 		}
 		// System.out.println("inSampleSize--->"+inSampleSize);
@@ -205,6 +201,7 @@ public class BitmapUtils {
 	}
 
 	// 按大小缩放
+	@Deprecated
 	public static Bitmap getImageCompress(final String srcPath) {
 		Options newOpts = new Options();
 		// 开始读入图片，此时把options.inJustDecodeBounds 设回true了
@@ -232,9 +229,9 @@ public class BitmapUtils {
 		return compressImage(bitmap);// 压缩好比例大小后再进行质量压缩
 	}
 
-	// 图片按比例大小压缩
+	// 图片按比例大小压缩。压缩图片太占用内存，丢弃
+	@Deprecated
 	public static Bitmap compress(Bitmap image) {
-
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		image.compress(CompressFormat.JPEG, 100, baos);
 		if (baos.toByteArray().length / 1024 > 1024) {// 判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出
@@ -540,6 +537,8 @@ public class BitmapUtils {
 		Canvas canvas = new Canvas(outputBitmap);
 		canvas.drawARGB(0, 0, 0, 0);
 
+		// outputBitmap.recycle();
+
 		/**
 		 * 画笔的相关设置
 		 */
@@ -752,7 +751,7 @@ public class BitmapUtils {
 	}
 
 	/**
-	 * 绘画出字体
+	 * 绘画出字体：多行文本
 	 */
 	public static Bitmap regenerateBitmap(Bitmap srcBm, MovableTextView2 mtv) {
 		Paint paint = new Paint();
@@ -858,7 +857,13 @@ public class BitmapUtils {
 		opts.inJustDecodeBounds = false;
 		System.out.println("得到的缩放比例为：" + inSampleSize);
 		Bitmap copyImg = BitmapFactory.decodeResource(context.getResources(), resId, opts);
-		Bitmap test = BitmapFactory.decodeResource(context.getResources(), resId);
-		return test;
+		return copyImg;
+	}
+
+	public static Bitmap bitmapScaleSelf(Bitmap bitmap, float scale) {
+		Matrix matrix = new Matrix();
+		matrix.postScale(1 / scale, 1 / scale); //长和宽放大缩小的比例
+		Bitmap temp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+		return temp;
 	}
 }

@@ -193,7 +193,11 @@ public class CommonUtils {
         return typeface;
     }
 
-
+    /**
+     * 获取颜色进度
+     * @param colorValues
+     * @return
+     */
     public static ArrayList<ProgressItem> getProgressItemList(int[] colorValues) {
         ArrayList<ProgressItem> progressItemList;
         ProgressItem mProgressItem;

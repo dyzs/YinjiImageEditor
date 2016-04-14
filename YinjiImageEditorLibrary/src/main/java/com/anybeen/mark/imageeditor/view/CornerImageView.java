@@ -11,10 +11,8 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.widget.ImageView;
 
-import com.anybeen.mark.imageeditor.utils.BitmapUtils;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
 
 /**
@@ -30,8 +28,8 @@ import com.anybeen.mark.yinjiimageeditorlibrary.R;
  *
  */
 public class CornerImageView extends ImageView{
-    private float ViewWidth, ViewHeight;
-    private float mCircleRadius = 60f;          // 圆角半径
+    private float mViewWidth, mViewHeight;
+    private float mCircleRadius = 30f;          // 圆角半径
 
     private PointF LeftTopCirclePointF;         // 左上角圆心
     private PointF RightTopCirclePointF;        // 右上角圆心
@@ -47,7 +45,7 @@ public class CornerImageView extends ImageView{
     private Paint paint;
 
     private Bitmap mBitmap;         // 背景图片
-    private float mBitmapScale = 1f;// bitmap 需要缩放的比例
+    private float mBitmapScale = 0.0f;// bitmap 需要缩放的比例
     private int mPaintColor;        // 画笔颜色
     private int mPureColor = -1;    // 背景纯颜色
 
@@ -71,7 +69,7 @@ public class CornerImageView extends ImageView{
     private void init(){
         // 获取图片资源文件
         // this.setBackgroundResource(R.mipmap.pic_icon_filter_sample);
-        mPaintColor = Color.RED;
+        mPaintColor = Color.BLACK;
         rectf = new RectF();
         clipPath = new Path();
         linePath = new Path();
@@ -83,7 +81,7 @@ public class CornerImageView extends ImageView{
         RightBottomCirclePointF = new PointF();
 
         // this.setScaleType(ScaleType.FIT_XY);
-        loadBitmap();
+//        loadBitmap();
     }
 
     private void loadBitmap() {
@@ -97,8 +95,8 @@ public class CornerImageView extends ImageView{
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        ViewWidth = getMeasuredWidth() * 1.0f;
-        ViewHeight = getMeasuredHeight() * 1.0f;
+        mViewWidth = getMeasuredWidth() * 1.0f;
+        mViewHeight = getMeasuredHeight() * 1.0f;
     }
     // Path.FillType.INVERSE_EVEN_ODD : 去除交集区域
     // INVERSE_WINDING                : 去除交集区域
@@ -106,12 +104,12 @@ public class CornerImageView extends ImageView{
     // WINDING                        : 获取交集区域
     @Override
     protected void onDraw(Canvas canvas) {
-        System.out.println("onDrawing...");
+//        System.out.println("view:" + mViewWidth + "/" + mViewHeight);
         // 四个圆心赋值
         LeftTopCirclePointF.set(mCircleRadius, mCircleRadius);
-        RightTopCirclePointF.set(ViewWidth - mCircleRadius, mCircleRadius);
-        LeftBottomCirclePointF.set(mCircleRadius, ViewHeight - mCircleRadius);
-        RightBottomCirclePointF.set(ViewWidth - mCircleRadius, ViewHeight - mCircleRadius);
+        RightTopCirclePointF.set(mViewWidth - mCircleRadius, mCircleRadius);
+        LeftBottomCirclePointF.set(mCircleRadius, mViewHeight - mCircleRadius);
+        RightBottomCirclePointF.set(mViewWidth - mCircleRadius, mViewHeight - mCircleRadius);
 
         float[] mFloatPoints = new float[16];
         // A
@@ -121,30 +119,30 @@ public class CornerImageView extends ImageView{
         mFloatPoints[2] = mCircleRadius;
         mFloatPoints[3] = 0f;
         // C
-        mFloatPoints[4] = ViewWidth - mCircleRadius;
+        mFloatPoints[4] = mViewWidth - mCircleRadius;
         mFloatPoints[5] = 0f;
         // D
-        mFloatPoints[6] = ViewWidth;
+        mFloatPoints[6] = mViewWidth;
         mFloatPoints[7] = mCircleRadius;
         // E
-        mFloatPoints[8] = ViewWidth;
-        mFloatPoints[9] = ViewHeight - mCircleRadius;
+        mFloatPoints[8] = mViewWidth;
+        mFloatPoints[9] = mViewHeight - mCircleRadius;
         // F
-        mFloatPoints[10] = ViewWidth - mCircleRadius;
-        mFloatPoints[11] = ViewHeight;
+        mFloatPoints[10] = mViewWidth - mCircleRadius;
+        mFloatPoints[11] = mViewHeight;
         // G
         mFloatPoints[12] = mCircleRadius;
-        mFloatPoints[13] = ViewHeight;
+        mFloatPoints[13] = mViewHeight;
         // H
         mFloatPoints[14] = 0f;
-        mFloatPoints[15] = ViewHeight - mCircleRadius;
+        mFloatPoints[15] = mViewHeight - mCircleRadius;
         // 两条直线绘制，用 path
 
 
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2.0f);
+        paint.setStrokeWidth(2);
         paint.setColor(mPaintColor);
 
         /**
@@ -171,37 +169,37 @@ public class CornerImageView extends ImageView{
         );
 
         // 曲线到达B点，再lineTo到C
-        clipPath.lineTo(ViewWidth - mCircleRadius, 0f);
+        clipPath.lineTo(mViewWidth - mCircleRadius, 0f);
         // 曲线达到 C 点，通过贝塞尔曲线，绘制到 D 点，中心点为右上角
-        controlPointX = ViewWidth;
+        controlPointX = mViewWidth;
         controlPointY = 0f;
         clipPath.quadTo(
                 controlPointX,  // 操纵点x
                 controlPointY,  // 操纵点y
-                ViewWidth,  // 终点x
+                mViewWidth,  // 终点x
                 mCircleRadius  // 终点y
         );
         // 曲线到达 D 点，再 lineTo 到 E
-        clipPath.lineTo(ViewWidth, ViewHeight - mCircleRadius);
+        clipPath.lineTo(mViewWidth, mViewHeight - mCircleRadius);
         // 曲线达到 E 点，通过贝塞尔曲线，绘制到 F 点，中心点为右下角
-        controlPointX = ViewWidth;
-        controlPointY = ViewHeight;
+        controlPointX = mViewWidth;
+        controlPointY = mViewHeight;
         clipPath.quadTo(
                 controlPointX,  // 操纵点x
                 controlPointY,  // 操纵点y
-                ViewWidth - mCircleRadius,  // 终点x
-                ViewHeight  // 终点y
+                mViewWidth - mCircleRadius,  // 终点x
+                mViewHeight  // 终点y
         );
         // 曲线到达 F 点，再 lineTo 到 G
-        clipPath.lineTo(mCircleRadius, ViewHeight);
+        clipPath.lineTo(mCircleRadius, mViewHeight);
         // 曲线达到 G 点，通过贝塞尔曲线，绘制到 H 点，中心点为左下角
         controlPointX = 0f;
-        controlPointY = ViewHeight;
+        controlPointY = mViewHeight;
         clipPath.quadTo(
                 controlPointX,  // 操纵点x
                 controlPointY,  // 操纵点y
                 0f,  // 终点x
-                ViewHeight - mCircleRadius  // 终点y
+                mViewHeight - mCircleRadius  // 终点y
         );
         // 曲线到达 G 点，再 lineTo 到 A，完成一圈绘制
         clipPath.lineTo(0f, mCircleRadius);
@@ -217,7 +215,10 @@ public class CornerImageView extends ImageView{
             canvas.save();
             canvas.drawColor(mPureColor);
             canvas.restore();
-        } else {
+        }
+        else if (mBitmap != null) {
+            // TODO 计算图片比例等数据，不能在 setBitmap 的时候处理计算
+
             // 最终结果必须在画 bitmap 之前确定曲线，然后再 clip
             canvas.save();                                  // 保存缩放前的画布
             // 利用留白区域，平移bitmap
@@ -305,8 +306,8 @@ public class CornerImageView extends ImageView{
     }
 
     public void setCornerRadius(float radius) {
-        if (radius > Math.min(ViewWidth, ViewHeight) / 2) {
-            this.mCircleRadius = ViewWidth / 3;
+        if (radius > Math.min(mViewWidth, mViewHeight) / 2) {
+            this.mCircleRadius = mViewWidth / 3;
         }
         this.mCircleRadius  = radius;
     }
@@ -323,6 +324,15 @@ public class CornerImageView extends ImageView{
     public void setPictureBitmap(Bitmap bitmap) {
         this.mBitmap = bitmap;
         calcBitmapScale();
+    }
+
+    /**
+     * 只能设置小图片
+     * @param bitmap
+     */
+    public void setSmallBitmap(Bitmap bitmap) {
+        this.mBitmap = bitmap;
+        invalidate();
     }
 
     /**
@@ -348,27 +358,26 @@ public class CornerImageView extends ImageView{
     // 留白区域
     private float bitmapLeaveWidth = 0.0f, bitmapLeaveHeight = 0.0f;
     // 要加锁，计算完这个才 invalidate
-    private synchronized void calcBitmapScale() {
+    private void calcBitmapScale() {
         if (mBitmap != null) {
-            float[] floats = calcScale(mBitmap, this);
+            float[] floats = calcScale(mBitmap);
             mBitmapScale = floats[0];
             bitmapLeaveWidth = floats[1];
             bitmapLeaveHeight = floats[2];
+            mBitmap = bitmapScaleSelf(mBitmap);
         } else {
             mBitmapScale = 1.0f;
             bitmapLeaveWidth = 0.0f;
             bitmapLeaveHeight = 0.0f;
         }
-        mBitmap = bitmapScaleSelf(mBitmap);
-        System.out.println("mBitmapScale:" + mBitmapScale);
-        System.out.println("bitmapLeaveWidth:" + bitmapLeaveWidth);
-        System.out.println("bitmapLeaveHeight:" + bitmapLeaveHeight);
         invalidate();
     }
 
-    public float[] calcScale(Bitmap bitmap, CornerImageView view) {
-        float vWidth = view.getWidth() * 1.0f;
-        float vHeight = view.getHeight() * 1.0f;
+    public float[] calcScale(Bitmap bitmap) {
+//        float vWidth = this.getWidth() * 1.0f;
+//        float vHeight = this.getHeight() * 1.0f;
+        float vWidth = mViewWidth * 1.0f;
+        float vHeight = mViewHeight * 1.0f;
         float bitWidth = bitmap.getWidth() * 1.0f;
         float bitHeight = bitmap.getHeight() * 1.0f;
 

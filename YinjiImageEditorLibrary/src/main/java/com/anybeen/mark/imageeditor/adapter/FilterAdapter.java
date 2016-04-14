@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.anybeen.mark.imageeditor.view.CornerImageView;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
 import com.xinlan.imageeditlibrary.editimage.fliter.PhotoProcessing;
 
@@ -21,6 +21,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Bitmap filterSampleIconBitmap;
     public FilterAdapter(Context context) {
         this.context = context;
+
     }
     @Override
     public int getItemCount() {
@@ -48,12 +49,18 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             filterSampleIconBitmap = null;
         }
         filterSampleIconBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.pic_icon_filter_sample);
+        h.icon.setCornerRadius(10f);
         if (position == 0) {
-            h.icon.setImageBitmap(filterSampleIconBitmap);
+            h.icon.setSmallBitmap(filterSampleIconBitmap);
+            // h.icon.setImageBitmap(filterSampleIconBitmap);
+            // h.icon.setPictureBitmap(filterSampleIconBitmap);
         }
         else {
-            h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
+            h.icon.setSmallBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
+            // h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
+            // h.icon.setPictureBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
         }
+        h.icon.invalidate();
         h.icon.setOnClickListener(new FilterClickListener(position));
     }
     private class FilterClickListener implements View.OnClickListener{
@@ -71,15 +78,18 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
     public class FilterHolder extends RecyclerView.ViewHolder {
-        public ImageView icon;
+        public CornerImageView icon;
         public TextView text;
         public FilterHolder(View itemView) {
             super(itemView);
-            this.icon = (ImageView) itemView.findViewById(R.id.icon);
+            this.icon = (CornerImageView) itemView.findViewById(R.id.icon);
             this.text = (TextView) itemView.findViewById(R.id.text);
         }
     }
 
+    /**
+     * 处理点击事件的监听接口
+     */
     private HandleFilterListener mHandleFilterListener;
     public HandleFilterListener getHandleFilterListener() {return mHandleFilterListener;}
     public void setHandleFilterListener(HandleFilterListener mHandleFilterListener) {this.mHandleFilterListener = mHandleFilterListener;}

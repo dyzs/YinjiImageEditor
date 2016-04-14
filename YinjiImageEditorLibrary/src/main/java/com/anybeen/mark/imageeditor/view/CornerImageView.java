@@ -227,10 +227,6 @@ public class CornerImageView extends ImageView{
             canvas.restore();                               // 还原画布，否则会出现全部缩放的效果
         }
         canvas.drawPath(clipPath, paint);
-//        canvas.save();
-//        int w = this.getWidth();
-//        int h = this.getHeight();
-//        rectf.set(0, 0, w, h);
 
         /**
          * 画出四个边上的圆
@@ -292,7 +288,6 @@ public class CornerImageView extends ImageView{
         canvas.clipRegion(new Region(new Rect(300,300,400,400)));//裁剪区域实际大小为100*100
         canvas.drawColor(Color.BLACK);
         */
-//        canvas.restore();
         super.onDraw(canvas);
     }
 

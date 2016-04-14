@@ -53,14 +53,10 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (position == 0) {
             h.icon.setSmallBitmap(filterSampleIconBitmap);
             // h.icon.setImageBitmap(filterSampleIconBitmap);
-            // h.icon.setPictureBitmap(filterSampleIconBitmap);
         }
         else {
             h.icon.setSmallBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
-            // h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
-            // h.icon.setPictureBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
         }
-        h.icon.invalidate();
         h.icon.setOnClickListener(new FilterClickListener(position));
     }
     private class FilterClickListener implements View.OnClickListener{

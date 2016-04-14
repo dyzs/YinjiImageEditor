@@ -37,26 +37,31 @@
             </RelativeLayout>
             <!--Add RecycleView  android:background="@mipmap/pic_bg_ch_style"-->
         </FrameLayout>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_filter_list"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:scrollbars="none"
-            android:gravity="center"
-            android:layout_gravity="bottom"
-            android:background="@android:color/transparent"
-            android:visibility="gone"
-            />
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_sticker_list"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:scrollbars="none"
-            android:gravity="center"
-            android:layout_gravity="bottom"
-            android:background="@android:color/transparent"
-            android:visibility="visible"
-            />
+            >
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_filter_list"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:scrollbars="none"
+                android:gravity="center"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_sticker_list"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:scrollbars="none"
+                android:gravity="center"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                />
+        </FrameLayout>
         <include layout="@layout/layout_image_editor_bottom_toolbar"/>
 
     </LinearLayout>

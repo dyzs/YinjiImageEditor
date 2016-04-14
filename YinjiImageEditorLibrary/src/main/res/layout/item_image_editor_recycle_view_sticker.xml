@@ -5,17 +5,12 @@
     android:gravity="center"
     >
 
-    <!--<ImageView-->
-        <!--android:id="@+id/icon"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:scaleType="centerInside"-->
-        <!--android:background="@drawable/selector_sticker"-->
-        <!--/>-->
-    <com.anybeen.mark.imageeditor.view.CornerImageView
+    <ImageView
         android:id="@+id/icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:scaleType="centerInside"
+        android:background="@drawable/selector_sticker"
         />
 
     <TextView

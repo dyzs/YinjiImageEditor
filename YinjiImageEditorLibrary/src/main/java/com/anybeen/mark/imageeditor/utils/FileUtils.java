@@ -6,6 +6,7 @@ import android.os.Environment;
 
 
 import com.anybeen.mark.imageeditor.entity.CarrotInfo;
+import com.anybeen.mark.imageeditor.entity.FilterInfo;
 import com.anybeen.mark.imageeditor.entity.StickerInfo;
 
 import java.io.File;
@@ -237,6 +238,35 @@ public class FileUtils {
             System.out.println("error:" + e.toString());
         }
         return file;
+    }
+
+
+    public static void saveSerializableFilter(FilterInfo filterInfo) {
+        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
+        try {
+            FileOutputStream fs = new FileOutputStream(sd + "/" + "filter.txt");
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(filterInfo);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static FilterInfo readFileToFilterInfo() {
+        FilterInfo filterInfo;
+        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
+        try {
+            FileInputStream fs = new FileInputStream(sd + "/" + "filter.txt");
+            ObjectInputStream ois = new ObjectInputStream(fs);
+            filterInfo = (FilterInfo) ois.readObject();
+            ois.close();
+            return filterInfo;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }

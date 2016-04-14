@@ -157,52 +157,52 @@ public class CornerImageView extends ImageView{
         */
 
         clipPath.reset();                       // 重置
-        clipPath.moveTo(0f, mCircleRadius);     // 移动到 A 点开始，为起始点
+        clipPath.moveTo(mFloatPoints[0], mFloatPoints[1]);     // 移动到 A 点开始，为起始点
         float controlPointX = 0f;               // A 点的操纵点 X
         float controlPointY = 0f;               // A 点的操纵点 Y
         // 绘制 A 点到 B 点的贝塞尔, 中心点为左上角
         clipPath.quadTo(
-                controlPointX,  // 操纵点x
-                controlPointY,  // 操纵点y
-                mCircleRadius,  // 终点x
-                0f              // 终点y
+                controlPointX,   // 操纵点x
+                controlPointY,   // 操纵点y
+                mFloatPoints[2], // 终点x
+                mFloatPoints[3]  // 终点y
         );
 
         // 曲线到达B点，再lineTo到C
-        clipPath.lineTo(mViewWidth - mCircleRadius, 0f);
+        clipPath.lineTo(mFloatPoints[4], mFloatPoints[5]);
         // 曲线达到 C 点，通过贝塞尔曲线，绘制到 D 点，中心点为右上角
         controlPointX = mViewWidth;
         controlPointY = 0f;
         clipPath.quadTo(
-                controlPointX,  // 操纵点x
-                controlPointY,  // 操纵点y
-                mViewWidth,  // 终点x
-                mCircleRadius  // 终点y
+                controlPointX,   // 操纵点x
+                controlPointY,   // 操纵点y
+                mFloatPoints[6], // 终点x
+                mFloatPoints[7]  // 终点y
         );
         // 曲线到达 D 点，再 lineTo 到 E
-        clipPath.lineTo(mViewWidth, mViewHeight - mCircleRadius);
+        clipPath.lineTo(mFloatPoints[8], mFloatPoints[9]);
         // 曲线达到 E 点，通过贝塞尔曲线，绘制到 F 点，中心点为右下角
         controlPointX = mViewWidth;
         controlPointY = mViewHeight;
         clipPath.quadTo(
-                controlPointX,  // 操纵点x
-                controlPointY,  // 操纵点y
-                mViewWidth - mCircleRadius,  // 终点x
-                mViewHeight  // 终点y
+                controlPointX,   // 操纵点x
+                controlPointY,   // 操纵点y
+                mFloatPoints[10],// 终点x
+                mFloatPoints[11] // 终点y
         );
         // 曲线到达 F 点，再 lineTo 到 G
-        clipPath.lineTo(mCircleRadius, mViewHeight);
+        clipPath.lineTo(mFloatPoints[12], mFloatPoints[13]);
         // 曲线达到 G 点，通过贝塞尔曲线，绘制到 H 点，中心点为左下角
         controlPointX = 0f;
         controlPointY = mViewHeight;
         clipPath.quadTo(
-                controlPointX,  // 操纵点x
-                controlPointY,  // 操纵点y
-                0f,  // 终点x
-                mViewHeight - mCircleRadius  // 终点y
+                controlPointX,   // 操纵点x
+                controlPointY,   // 操纵点y
+                mFloatPoints[14],// 终点x
+                mFloatPoints[15] // 终点y
         );
         // 曲线到达 G 点，再 lineTo 到 A，完成一圈绘制
-        clipPath.lineTo(0f, mCircleRadius);
+        clipPath.lineTo(mFloatPoints[0], mFloatPoints[1]);
         clipPath.close();
         clipPath.setFillType(Path.FillType.WINDING);
         canvas.clipPath(clipPath);

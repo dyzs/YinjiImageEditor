@@ -24,6 +24,7 @@
         </activity>
 
         <activity android:name="com.anybeen.mark.imageeditor.ImageEditorActivity"/>
+        <activity android:name="com.anybeen.mark.imageeditor.ImageCardActivity"/>
 
         <!-- 字体下载服务 -->
         <service android:name="com.anybeen.mark.imageeditor.component.DownloadService" >

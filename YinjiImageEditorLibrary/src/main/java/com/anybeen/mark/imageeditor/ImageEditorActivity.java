@@ -242,7 +242,6 @@ public class ImageEditorActivity extends Activity {
                         editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
                         openKeyboardOnLoading = false;
                         isFirstAddMtv = false;
-                        // TODO。。。。数据重载的时候，没做 position 的修改
                     }
                     if (openKeyboardOnLoading && editPanelGenerateState == EditPanelState.STATE_NEW_ADD_MTV) {
                         generateEditPanel(keyboardHeight);
@@ -334,6 +333,20 @@ public class ImageEditorActivity extends Activity {
                 operateComplete();
             }
         });
+
+        iv_main_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stickerListShowUp) {
+                    stickerListShowUp = !stickerListShowUp;
+                    AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+                }
+                if (filterListShowUp) {
+                    filterListShowUp = !filterListShowUp;
+                    AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                }
+            }
+        });
     }
 
     /**
@@ -392,6 +405,14 @@ public class ImageEditorActivity extends Activity {
         }
         @Override
         public void onCustomClick() {
+            if (stickerListShowUp) {
+                stickerListShowUp = !stickerListShowUp;
+                AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+            }
+            if (filterListShowUp) {
+                filterListShowUp = !filterListShowUp;
+                AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+            }
             mMtv.setSelected(true);
             /**
              * 解决一种情况，就是重新载入的时候，控件已经生产，点击事件有，但是此时键盘并没有弹出，edit panel
@@ -1266,75 +1287,4 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     // --- listener 底部的 RadioGroup, 切换监听
-     private class RadioGroupOnCheckChangeListener implements RadioGroup.OnCheckedChangeListener {
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-    switch (checkedId) {
-    case R.id.rb_word:
-    // Show Text Editor
-    addMovableTextView();
-    break;
-    case R.id.rb_sticker:
-    // Show Sticker ImageList RecycleView
-    break;
-    case R.id.rb_filter:
-    // Show Filter ImageList RecycleView
-    break;
-    default:
-    System.out.println("出现未知错误：" + checkedId);
-    break;
-    }
-    }
-    }
-     */
 }

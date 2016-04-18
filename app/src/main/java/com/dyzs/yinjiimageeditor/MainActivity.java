@@ -9,10 +9,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
+import com.anybeen.mark.imageeditor.ImageCardActivity;
 import com.anybeen.mark.imageeditor.ImageEditorActivity;
 import com.anybeen.mark.imageeditor.utils.BitmapUtils;
+import com.anybeen.mark.imageeditor.utils.ToastUtil;
 import com.anybeen.mark.imageeditor.view.CornerImageView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -25,29 +29,39 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private static final int ON_ALBUM_RESULT_CORNER_IMAGE_VIEW = 1002;
     private String albumPictureAbsPath;
     private CornerImageView civ;
+    private CornerImageView iv_card_image;      // 打开卡片选择
     private Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+
+        // ToastUtil.makeText(mContext, "我的测试：" + android.os.Build.MODEL + "***" + android.os.Build.BRAND);
+
         findViewById(R.id.iv_open_album).setOnClickListener(this);
         civ = (CornerImageView) findViewById(R.id.civ);
         civ.setOnClickListener(this);
 
+        iv_card_image = (CornerImageView) findViewById(R.id.iv_card_image);
+        iv_card_image.setOnClickListener(this);
 
 
 
-
-
+        // 自定义toast
+        Toast toas = new Toast(mContext);
+        toas.setView(LayoutInflater.from(mContext).inflate(R.layout.layout_image_editor_pop_font_select, null));
+        toas.setDuration(Toast.LENGTH_LONG);
+        toas.show();
+        // 使用 facebook fresco
 //        SimpleDraweeView simpleDraweeView = (SimpleDraweeView) findViewById(R.id.logo_image);
 //        Uri logoUri = Uri.parse("https://raw.githubusercontent.com/liaohuqiu/fresco-docs-cn/docs/static/fresco-logo.png");
 //        simpleDraweeView.setImageURI(logoUri);
 
         SimpleDraweeView aniView = (SimpleDraweeView) findViewById(R.id.sdv_test_iv);
         // Uri aniImageUri = Uri.parse("https://camo.githubusercontent.com/588a2ef2cdcfb6c71e88437df486226dd15605b3/687474703a2f2f737261696e2d6769746875622e71696e6975646e2e636f6d2f756c7472612d7074722f73746f72652d686f7573652d737472696e672d61727261792e676966");
-        // Uri aniImageUri = Uri.parse("http://car0.autoimg.cn/upload/spec/12215/20120403075232956264.jpg");
-        Uri aniImageUri = Uri.parse("http://img3.imgtn.bdimg.com/it/u=1050619607,704139382&fm=21&gp=0.jpg");
+        Uri aniImageUri = Uri.parse("http://car0.autoimg.cn/upload/spec/12215/20120403075232956264.jpg");
+        // Uri aniImageUri = Uri.parse("http://img3.imgtn.bdimg.com/it/u=1050619607,704139382&fm=21&gp=0.jpg");
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(aniImageUri)
                 .build();
@@ -71,6 +85,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.civ:
                 intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);//调用android的图库
                 MainActivity.this.startActivityForResult(intent, MainActivity.ON_ALBUM_RESULT_CORNER_IMAGE_VIEW);
+                break;
+            case R.id.iv_card_image:
+                intent = new Intent(this, ImageCardActivity.class);
+                MainActivity.this.startActivity(intent);
                 break;
         }
 

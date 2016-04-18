@@ -33,6 +33,15 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         />
+
+    <com.anybeen.mark.imageeditor.view.CornerImageView
+        android:id="@+id/iv_card_image"
+        android:layout_toRightOf="@+id/civ"
+        android:layout_below="@+id/cs"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@android:color/holo_purple"
+        />
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_test_iv"
         android:layout_width="200dp"

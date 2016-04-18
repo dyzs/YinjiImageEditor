@@ -26,15 +26,15 @@
                 android:visibility="visible"
                 android:layout_gravity="center"
                 />
-            <RelativeLayout
-                android:visibility="invisible"
-                android:id="@+id/rl_work_panel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:layout_gravity="center"
-                >
-            </RelativeLayout>
+            <!--<RelativeLayout-->
+                <!--android:visibility="invisible"-->
+                <!--android:id="@+id/rl_work_panel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:layout_gravity="center"-->
+                <!-->-->
+            <!--</RelativeLayout>-->
             <!--Add RecycleView  android:background="@mipmap/pic_bg_ch_style"-->
         </FrameLayout>
         <FrameLayout

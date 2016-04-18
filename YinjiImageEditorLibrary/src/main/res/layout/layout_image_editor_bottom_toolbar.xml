@@ -35,7 +35,8 @@
             android:id="@+id/rb_filter"
             style="@style/image_editor_tab_bottom"
             android:textSize="0sp"
-            android:drawableTop="@drawable/btn_tab_filter_selector"
-            android:text="@string/image_editor_tab_filter" />
+            android:drawableTop="@drawable/btn_image_editor_tab_filter_selector"
+            android:layout_height="wrap_content"
+            />
     </RadioGroup>
 </LinearLayout>

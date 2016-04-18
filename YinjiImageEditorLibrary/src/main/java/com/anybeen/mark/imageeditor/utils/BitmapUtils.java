@@ -113,7 +113,7 @@ public class BitmapUtils {
 						.floor(((float) width / reqWidth) + 0.5f);
 			}
 		}
-		// System.out.println("inSampleSize--->"+inSampleSize);
+		System.out.println("inSampleSize--->" + inSampleSize);
 
 		options.inSampleSize = inSampleSize;
 		options.inJustDecodeBounds = false;

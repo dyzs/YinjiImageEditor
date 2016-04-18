@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="image_editor_tab_word">文字</string>
     <string name="image_editor_tab_sticker">贴纸</string>
-    <string name="image_editor_tab_filter">滤镜</string>
+    <string name="image_editor_tab_filter">特效</string>
 
     <string-array name="font_colors_name">
         <item>红</item>

@@ -5,18 +5,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +21,6 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -40,10 +35,10 @@ import android.widget.TextView;
 import com.anybeen.mark.imageeditor.adapter.FilterAdapter;
 import com.anybeen.mark.imageeditor.adapter.StickerAdapter;
 import com.anybeen.mark.imageeditor.entity.CarrotInfo;
+import com.anybeen.mark.imageeditor.entity.FilterInfo;
 import com.anybeen.mark.imageeditor.entity.StickerInfo;
 import com.anybeen.mark.imageeditor.utils.AnimUtils;
 import com.anybeen.mark.imageeditor.utils.BitmapUtils;
-import com.anybeen.mark.imageeditor.utils.ColorUtil;
 import com.anybeen.mark.imageeditor.utils.CommonUtils;
 import com.anybeen.mark.imageeditor.utils.Const;
 import com.anybeen.mark.imageeditor.utils.FontMatrixUtils;
@@ -57,7 +52,7 @@ import com.anybeen.mark.imageeditor.utils.DensityUtils;
 import com.anybeen.mark.imageeditor.utils.FileUtils;
 import com.anybeen.mark.imageeditor.view.MovableTextView2;
 import com.anybeen.mark.imageeditor.view.SelectableView;
-import com.xinlan.imageeditlibrary.editimage.PhotoProcessing;
+import com.xinlan.imageeditlibrary.editimage.fliter.PhotoProcessing;
 
 import java.util.ArrayList;
 
@@ -77,30 +72,27 @@ public class ImageEditorActivity extends Activity {
     private ImageView bt_save;
     private ImageView iv_back;
     // mainContent
-    public ImageView iv_main_image;
+    private ImageView iv_main_image;
     private RecyclerView mRvFilter;
     private RecyclerView mRvSticker;
     // bottomToolbar
-    private RadioGroup main_radio;
     private RadioButton rb_word;
     private RadioButton rb_sticker;
     private RadioButton rb_filter;
 
-    @Deprecated
-    private Bitmap mainBitmap;
-    private Bitmap copyBitmap;
-    private Bitmap filterSampleIconBitmap;
+    private Bitmap originalBitmap;              // 图片初始化获取的原图位图对象
+    private Bitmap copyBitmap;                  // 用来操作的 bitmap 对象
 
     private FrameLayout fl_main_content;
 
-    private static int mCurrImgId = 0;
-    public int keyboardHeight = 0;              // 记录键盘高度
+    private int keyboardHeight = 0;              // 记录键盘高度
 
     @Deprecated //未使用到
     private StickerView mCurrentView;           // 当前处于编辑状态的贴纸
 
     private ArrayList<MovableTextView2> mMtvLists;  // 存储文字列表
     private ArrayList<StickerView> mStickerViews;   // 存储贴纸列表
+    private FilterInfo mFilterInfo;                 // 存储滤镜特效
     private float[] scaleAndLeaveSize;              // 计算三个缩放比例
 
     // edit panel params
@@ -114,7 +106,7 @@ public class ImageEditorActivity extends Activity {
     private ImageView ep_IvColorShow;           // 颜色展示
     private RadioGroup ep_rgFontGroup;          // 字体选择
     private int currentFontCheckedId = -1;
-    private int mEditPanelHeight;
+    private int mEditPanelHeight = -1;
     // edit panel params
 
 
@@ -124,6 +116,8 @@ public class ImageEditorActivity extends Activity {
     private enum KeyboardState {
         STATE_OPEN, STATE_HIDE
     }
+
+    private ProgressDialog mTaskDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +129,7 @@ public class ImageEditorActivity extends Activity {
         mCurrDataInfo = new ImageDataInfo();
         mMtvLists = new ArrayList<>();
         mStickerViews = new ArrayList<>();
+        mFilterInfo = new FilterInfo();
         openKeyboardOnLoading = true;
         isFirstAddMtv = true;
 
@@ -148,11 +143,14 @@ public class ImageEditorActivity extends Activity {
 
         reloadCarrot();
 
+//        reloadFilter();
+
         registerAnim();
     }
 
     private void registerAnim() {
         mRvSticker.setTranslationX(BitmapUtils.getScreenPixels(mContext).widthPixels);
+        mRvFilter.setTranslationX(BitmapUtils.getScreenPixels(mContext).widthPixels);
     }
     private void initView() {
         fl_main_content = (FrameLayout) findViewById(R.id.fl_main_content);
@@ -168,7 +166,6 @@ public class ImageEditorActivity extends Activity {
 
         iv_main_image = (ImageView) findViewById(R.id.iv_main_image);
         // bottomToolbar
-        main_radio = (RadioGroup) findViewById(R.id.main_radio);
         rb_word = (RadioButton) findViewById(R.id.rb_word);
         rb_sticker = (RadioButton) findViewById(R.id.rb_sticker);
         rb_filter = (RadioButton) findViewById(R.id.rb_filter);
@@ -176,12 +173,22 @@ public class ImageEditorActivity extends Activity {
         // recycle view 处理滤镜
         mRvFilter = (RecyclerView) findViewById(R.id.rv_filter_list);
         mRvFilter.setHasFixedSize(true);
-        // int spacingInPixels = 10; //getResources().getDimensionPixelSize(R.dimen.space);
-        // mRvFilter.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRvFilter.setLayoutManager(layoutManager);
-        mRvFilter.setAdapter(new FilterAdapter(mContext, ImageEditorActivity.this, copyBitmap));  //FilterAdapter(this)
+        LinearLayoutManager lmFilter = new LinearLayoutManager(mContext);
+        lmFilter.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRvFilter.setLayoutManager(lmFilter);
+        FilterAdapter fa = new FilterAdapter(this);
+        fa.setHandleFilterListener(new FilterAdapter.HandleFilterListener() {
+            @Override
+            public void handleFilter(int position) {
+                filterListShowUp = false;
+                AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                FilterTask filterTask = new FilterTask();
+                filterTask.execute(position + "");
+
+            }
+        });
+        mRvFilter.setAdapter(fa);
+
         // recycle view 处理贴纸
         mRvSticker = (RecyclerView) findViewById(R.id.rv_sticker_list);
         mRvSticker.setHasFixedSize(true);
@@ -198,12 +205,12 @@ public class ImageEditorActivity extends Activity {
             }
         });
         mRvSticker.setAdapter(sa);
-
     }
     private void loadBitmap() {
         isNew = getIntent().getBooleanExtra(IS_NEW, true);
         if (isNew) {//根据用户操作状态（新添加大图、编辑大图），分成两个Controller处理
             filePath = getIntent().getStringExtra(FILE_PATH);
+//            filePath = new String(filePath.getBytes(UTF-8));
 //            addFirstMtv();
         } else {
 //            mCurrDataInfo = (ImageDataInfo) getIntent().getSerializableExtra("DataInfo");
@@ -226,10 +233,10 @@ public class ImageEditorActivity extends Activity {
                         SystemClock.sleep(100);
                         initColorSeekBar();
                         handleEditPanelEvent();
-
                         for(MovableTextView2 mtv : mMtvLists) {
                             if (mtv.isSelected()) {
                                 loadMtvDataIntoEditPanel(mtv);
+                                editingChangePosition(mtv);
                             }
                         }
                         editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
@@ -245,7 +252,6 @@ public class ImageEditorActivity extends Activity {
                         addMovableTextView();
                         editPanelGenerateState = EditPanelState.STATE_PANEL_CREATED;
                         openKeyboardOnLoading = false;
-                        isFirstAddMtv = false;
                     } else {
                         ll_base_edit_panel.setVisibility(View.VISIBLE);
                     }
@@ -274,6 +280,11 @@ public class ImageEditorActivity extends Activity {
                     AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                     return;
                 }
+                if (filterListShowUp) {
+                    filterListShowUp = !filterListShowUp;
+                    AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                    return;
+                }
 
                 editPanelGenerateState = EditPanelState.STATE_NEW_ADD_MTV;
                 CommonUtils.hitKeyboardOpenOrNot(mContext);
@@ -294,6 +305,11 @@ public class ImageEditorActivity extends Activity {
         rb_sticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (filterListShowUp) {
+                    filterListShowUp = !filterListShowUp;
+                    AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                    return;
+                }
                 stickerListShowUp = !stickerListShowUp;
                 AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
             }
@@ -305,9 +321,10 @@ public class ImageEditorActivity extends Activity {
                 if (stickerListShowUp) {
                     stickerListShowUp = !stickerListShowUp;
                     AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+                    return;
                 }
-                // TODO
-                AnimUtils.translationFilterX(mRvFilter, true, mContext);
+                filterListShowUp = !filterListShowUp;
+                AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
             }
         });
 
@@ -359,6 +376,7 @@ public class ImageEditorActivity extends Activity {
         public void onClick(View v) {
             // 在图片全部逻辑加载完成后，计算图片加载后与屏幕的缩放比与留白区域
             calcScaleAndLeaveSize();
+            // TODO 图片保存的时候~~
             Canvas canvas = new Canvas(copyBitmap);
             saveViews(canvas);
         }
@@ -389,38 +407,7 @@ public class ImageEditorActivity extends Activity {
                 ll_base_edit_panel.setVisibility(View.VISIBLE);
                 // 把 MovableTextView2 的数据载入到编辑面板中
                 loadMtvDataIntoEditPanel(mMtv);
-                // 记录 l,t,r,b 在 resetLayoutParams 的时候使用
-                mMtv.leftBeforeChange = mMtv.getLeft();
-                mMtv.topBeforeChange = mMtv.getTop();
-                mMtv.bottomBeforeChange = mMtv.getBottom();
-
-                // 如果高度被弹出的edit_panel挡住了，那么改变当前对象的高度
-                Rect frame = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-                int statusBarHeight = frame.top;
-                int toolBarHeight = layout_top_toolbar.getHeight();
-                int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
-                int distanceViewToDisplayBottom =
-                        displayHeight - statusBarHeight - toolBarHeight - mMtv.bottomBeforeChange;
-                if (distanceViewToDisplayBottom < mEditPanelHeight) {
-                    System.out.println("position changed");
-                    int layoutTop =  displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
-                            - mMtv.getHeight() - 20;
-                    int layoutBottom = displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
-                            - 20;
-                    mMtv.measure(
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                    );
-                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mMtv.getLayoutParams();
-                    lp.gravity = -1;
-                    lp.height = mMtv.getMeasuredHeight();
-                    lp.width = mMtv.getMeasuredWidth();
-                    lp.leftMargin = mMtv.leftBeforeChange;
-                    lp.topMargin = layoutTop;
-                    mMtv.setLayoutParams(lp);
-                    mMtv.setIsChangePosition(true);
-                }
+                editingChangePosition(mMtv);
             }
         }
     }
@@ -454,6 +441,42 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
+    /**
+     * 编辑中如果需要改变位置，则改变
+     * @param mtv
+     */
+    private void editingChangePosition(MovableTextView2 mtv) {
+        // 记录 l,t,r,b 在 resetLayoutParams 的时候使用
+        mtv.leftBeforeChange = mtv.getLeft();
+        mtv.topBeforeChange = mtv.getTop();
+        mtv.bottomBeforeChange = mtv.getBottom();
+
+        // 如果高度被弹出的edit_panel挡住了，那么改变当前对象的高度
+        Rect frame = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        int toolBarHeight = layout_top_toolbar.getHeight();
+        int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
+        int distanceViewToDisplayBottom =
+                displayHeight - statusBarHeight - toolBarHeight - mtv.bottomBeforeChange;
+        if (distanceViewToDisplayBottom < mEditPanelHeight) {
+            int layoutTop =  displayHeight - mEditPanelHeight - statusBarHeight - toolBarHeight
+                    - mtv.getHeight() - 20;
+            mtv.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mtv.getLayoutParams();
+            lp.gravity = -1;
+            lp.height = mtv.getMeasuredHeight();
+            lp.width = mtv.getMeasuredWidth();
+            lp.leftMargin = mtv.leftBeforeChange;
+            lp.topMargin = layoutTop;
+            mtv.setLayoutParams(lp);
+            mtv.setIsChangePosition(true);
+        }
+    }
+
     // ====================task line
     private LoadImageTask mLoadImageTask;
     public void loadImage(String filepath) {
@@ -463,30 +486,79 @@ public class ImageEditorActivity extends Activity {
         mLoadImageTask = new LoadImageTask();
         mLoadImageTask.execute(filepath);
     }
-    private ProgressDialog loadDialog;
+
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadDialog = new ProgressDialog(ImageEditorActivity.this);
-            loadDialog.setCancelable(false);
-            loadDialog.setMessage("图片加载中...");
-            loadDialog.show();
+            mTaskDialog = new ProgressDialog(ImageEditorActivity.this);
+            mTaskDialog.setCancelable(false);
+            mTaskDialog.setMessage("图片加载中...");
+            mTaskDialog.show();
         }
         @Override
         protected Bitmap doInBackground(String... params) {
             int displayWidth = BitmapUtils.getScreenPixels(mContext).widthPixels;
             int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
-            copyBitmap = BitmapUtils.loadImageByPath(params[0], displayWidth, displayHeight).copy(Bitmap.Config.RGB_565, true);
+            if (originalBitmap != null && originalBitmap.isRecycled()) {
+                originalBitmap.recycle();
+                originalBitmap = null;
+            }
+            originalBitmap = BitmapUtils.getSampledBitmap(params[0], displayWidth, displayHeight);
+            copyBitmap = originalBitmap.copy(Bitmap.Config.RGB_565, true);
             return copyBitmap;
         }
         @Override
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
             iv_main_image.setImageBitmap(result);
-            loadDialog.dismiss();
+            mTaskDialog.dismiss();
+            FilterInfo tempFilterInfo = FileUtils.readFileToFilterInfo();
+            if (tempFilterInfo != null) {
+                SystemClock.sleep(100);
+                mFilterInfo = tempFilterInfo;
+                // 生成滤镜特效
+                FilterTask filterTask = new FilterTask();
+                filterTask.execute(tempFilterInfo.filterIndex + "");
+            }
         }
     }// end inner class
+
+    // inner class start 滤镜的处理方法
+    public class FilterTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mTaskDialog = new ProgressDialog(ImageEditorActivity.this);
+            mTaskDialog.setCancelable(false);
+            mTaskDialog.setMessage("图片处理中...");
+            mTaskDialog.show();
+        }
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            int position = Integer.parseInt(params[0]);
+            if (copyBitmap != null && !copyBitmap.isRecycled()) {
+                copyBitmap.isRecycled();
+                copyBitmap = null;
+            }
+            copyBitmap = PhotoProcessing.filterPhoto(
+                    originalBitmap.copy(Bitmap.Config.RGB_565, true),
+                    position
+            );
+            mFilterInfo.filterCount += 1;
+            mFilterInfo.filterIndex = position;
+            mFilterInfo.filterNameCh = PhotoProcessing.FILTERS[position];
+            mFilterInfo.filterNameEn = PhotoProcessing.FILTERS_NAME_EN[position];
+            return copyBitmap;
+        }
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            mTaskDialog.dismiss();
+            iv_main_image.setImageBitmap(result);
+        }
+    }
+    // filter class end............................
 
     /**
      * 添加一个文本控件
@@ -511,9 +583,6 @@ public class ImageEditorActivity extends Activity {
             }
         });
         newAddMtv.setOnCustomClickListener(new MTVClickListener(newAddMtv));
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) newAddMtv.getLayoutParams();
-        lp.gravity = Gravity.CENTER;
-        newAddMtv.setLayoutParams(lp);
         ep_OperateText.setText(newAddMtv.getText());
         ep_OperateText.setFocusable(true);
         ep_OperateText.setFocusableInTouchMode(true);
@@ -531,6 +600,21 @@ public class ImageEditorActivity extends Activity {
         fl_main_content.addView(newAddMtv);
         mMtvLists.add(newAddMtv);
         // loadMtvDataIntoEditPanel(newAddMtv);
+        // 重置 position
+        newAddMtv.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        );
+        FrameLayout.LayoutParams llp = (FrameLayout.LayoutParams) newAddMtv.getLayoutParams();
+        int displayHeight = BitmapUtils.getScreenPixels(mContext).heightPixels;
+        Rect frame = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        int toolBarHeight = layout_top_toolbar.getHeight();
+        llp.topMargin = displayHeight - mEditPanelHeight -
+                statusBarHeight - toolBarHeight - 20 - newAddMtv.getMeasuredHeight();
+        llp.gravity = Gravity.CENTER_HORIZONTAL;
+        newAddMtv.setLayoutParams(llp);
     }
 
     /**
@@ -588,8 +672,6 @@ public class ImageEditorActivity extends Activity {
         if (mStickerViews.size() > 5) {return;}
         final StickerView stickerView = new StickerView(this);
         stickerView.setImageResource(Const.STICKERS_VALUES[stickerIndex]);
-        // maidou add
-        // stickerView.setBitmapReloadMatrix(reloadMatrix);
         stickerView.setOperationListener(new StickerView.OperationListener() {
             @Override
             public void onDeleteClick() {
@@ -602,6 +684,16 @@ public class ImageEditorActivity extends Activity {
                 mCurrentView.setInEdit(false);
                 mCurrentView = stickerView;
                 mCurrentView.setInEdit(true);
+                if (stickerListShowUp) {
+                    stickerListShowUp = !stickerListShowUp;
+                    AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+                    return;
+                }
+                if (filterListShowUp) {
+                    filterListShowUp = !filterListShowUp;
+                    AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                    return;
+                }
             }
 
             @Override
@@ -636,117 +728,6 @@ public class ImageEditorActivity extends Activity {
         mCurrentView = stickerView;
         stickerView.setInEdit(true);
     }
-
-    // inner class start 滤镜的处理方法，暂时不用
-//    private class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-//        private Context context;
-//        public FilterAdapter(Context context) {
-//            this.context = context;
-//        }
-//        @Override
-//        public int getItemCount() {
-//            return PhotoProcessing.FILTERS.length;
-//        }
-//
-//        @Override
-//        public int getItemViewType(int position) {
-//            return 1;
-//        }
-//
-//        @Override
-//        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(context).inflate(R.layout.item_image_editor_recycle_view_filter, null);
-//            FilterHolder holder = new FilterHolder(view);
-//            return holder;
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-//            FilterHolder h = (FilterHolder) holder;
-//            String name = PhotoProcessing.FILTERS[position];
-//            h.text.setText(name);
-//            if (filterSampleIconBitmap != null && !filterSampleIconBitmap.isRecycled()) {
-//                filterSampleIconBitmap = null;
-//            }
-//            filterSampleIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.pic_icon_filter_sample);
-//            if (position == 0) {
-//                h.icon.setImageBitmap(filterSampleIconBitmap);
-//            }
-//            else {
-//                h.icon.setImageBitmap(PhotoProcessing.filterPhoto(filterSampleIconBitmap, position));
-//            }
-//            h.icon.setOnClickListener(new FilterClickListener(position));
-//        }
-//        public class FilterClickListener implements View.OnClickListener{
-//            private int clickPosition;
-//            public FilterClickListener(int position) {
-//                this.clickPosition = position;
-//            }
-//            @Override
-//            public void onClick(View v) {
-//                FilterTask filterTask = new FilterTask();
-//                filterTask.execute(clickPosition + "");
-//            }
-//        }
-//        public class FilterHolder extends RecyclerView.ViewHolder {
-//            public ImageView icon;
-//            public TextView text;
-//            public FilterHolder(View itemView) {
-//                super(itemView);
-//                this.icon = (ImageView) itemView.findViewById(R.id.icon);
-//                this.text = (TextView) itemView.findViewById(R.id.text);
-//            }
-//        }
-//    }
-    // inner class end
-//    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-//        private int space;
-//        public SpaceItemDecoration(int space) {
-//            this.space = space;
-//        }
-//        @Override
-//        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//            if (parent.getChildPosition(view) != 0)
-//                outRect.top = space;
-//        }
-//    }
-
-//    public class FilterTask extends AsyncTask<String, Void, Bitmap> {
-//        private ProgressDialog loadDialog;
-//        public FilterTask() {
-//            super();
-//            loadDialog = new ProgressDialog(ImageEditorActivity.this, R.style.MyDialog);
-//            loadDialog.setCancelable(false);
-//        }
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            loadDialog.show();
-//        }
-//        @Override
-//        protected Bitmap doInBackground(String... params) {
-//            int position = Integer.parseInt(params[0]);
-//            return PhotoProcessing.filterPhoto(
-//                    BitmapUtils.loadImage(ImageEditorActivity.this, mCurrImgId, fl_main_content),
-//                    position
-//            );
-//        }
-//        @Override
-//        protected void onPostExecute(Bitmap result) {
-//            super.onPostExecute(result);
-//            loadDialog.dismiss();
-//            iv_main_image.setImageBitmap(result);
-//            System.gc();
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            super.onCancelled();
-//            loadDialog.dismiss();
-//        }
-//    }
-
-    // filter class end............................
 
     /**
      * @details 计算得到原图图片相对于屏幕的缩放比例和最后缩放后的留白区域
@@ -785,6 +766,16 @@ public class ImageEditorActivity extends Activity {
                     mCurrentView.setInEdit(false);
                     mCurrentView = stickerView;
                     mCurrentView.setInEdit(true);
+                    if (stickerListShowUp) {
+                        stickerListShowUp = !stickerListShowUp;
+                        AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+                        return;
+                    }
+                    if (filterListShowUp) {
+                        filterListShowUp = !filterListShowUp;
+                        AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
+                        return;
+                    }
                 }
                 @Override
                 public void onTop(StickerView stickerView) {
@@ -830,6 +821,18 @@ public class ImageEditorActivity extends Activity {
         }
     }
 
+    private Bitmap reloadFilter(Bitmap bitmap) {
+        mFilterInfo = FileUtils.readFileToFilterInfo();
+        if (mFilterInfo.filterIndex != -1) {
+            // 生成滤镜
+            return PhotoProcessing.filterPhoto(
+                    bitmap.copy(Bitmap.Config.RGB_565, true),
+                    mFilterInfo.filterIndex
+            );
+        }
+        return null;
+    }
+
     /**
      * @details 保存贴纸和文本
      * @param canvas
@@ -840,6 +843,11 @@ public class ImageEditorActivity extends Activity {
         if (stickerListShowUp) {
             stickerListShowUp = !stickerListShowUp;
             AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
+            return;
+        }
+        if (filterListShowUp) {
+            filterListShowUp = !filterListShowUp;
+            AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
             return;
         }
 
@@ -855,11 +863,21 @@ public class ImageEditorActivity extends Activity {
         // 保存文本
         saveBeautySentences(canvas, scale, leaveW, leaveH);
 
+        // 保存特效
+        saveFilter();
+
         // 最后生成图片
         String imagePath = FileUtils.saveBitmapToLocal(copyBitmap, mContext);
         iv_main_image.setImageBitmap(copyBitmap);
         ToastUtil.makeText(mContext, "保存图片成功~~~~~~~" + imagePath);
     }
+
+    private void saveFilter() {
+        if (mFilterInfo == null)return;
+        FileUtils.saveSerializableFilter(mFilterInfo);
+        mFilterInfo = null;
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void saveBeautySentences(Canvas canvas, float scale, float leaveW, float leaveH) {
         if (mMtvLists == null || mMtvLists.size() <= 0) {return;}
@@ -1170,8 +1188,6 @@ public class ImageEditorActivity extends Activity {
             lp.leftMargin = mtv.getLeft();
             lp.topMargin = mtv.getTop();
         }
-//        FrameLayout frameLayout = (FrameLayout) mtv.getParent();
-//        lp.rightMargin = frameLayout.getWidth() - mtv.getMeasuredWidth();
         mtv.setLayoutParams(lp);
     }
 
@@ -1188,47 +1204,6 @@ public class ImageEditorActivity extends Activity {
     }
 
     private void showDownloadFontDialog(String fontSize, final SelectableView selectableView, final RadioGroup rg_font_group) {
-//        new MaterialDialog.Builder(ImageEditorActivity.this)
-//                .title(R.string.no_font_file_title)
-//                .content(ImageEditorActivity.this.getResources().getString(R.string.no_font_file_content))
-//                .positiveText("下载")
-//                .negativeText("算了")
-//                .callback(new MaterialDialog.ButtonCallback() {
-//                    @Override
-//                    public void onPositive(MaterialDialog dialog) {
-//                        super.onPositive(dialog);
-//                        if (!CommonUtils.isNetAvailable(ImageEditorActivity.this)) {
-//                            ToastUtil.makeText(ImageEditorActivity.this, getResources().getString(R.string.net_unavailable));
-//                            return;
-//                        }
-//                        selectableView.downloadFont(new SelectableView.OnDownloadCompleteListener() {
-//                            @Override
-//                            public void onDownloadComplete() {
-//                                Typeface typeface = selectableView.getFontType();
-//                                if (typeface != null) {
-//                                    selectableView.invalidate();
-//                                    selectableView.initView();
-//                                    selectableView.setChecked(true);
-//                                    changeTypeface(typeface, selectableView.getTag().toString());
-//                                    currentFontCheckedId = rg_font_group.getCheckedRadioButtonId();
-//                                }
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onNegative(MaterialDialog dialog) {
-//                        super.onNegative(dialog);
-//                        rg_font_group.check(currentFontCheckedId);
-//                    }
-//                })
-//                .cancelListener(new DialogInterface.OnCancelListener() {
-//                    @Override
-//                    public void onCancel(DialogInterface dialog) {
-//                        rg_font_group.check(currentFontCheckedId);
-//                    }
-//                })
-//                .show();
                 new ProgressDialog.Builder(ImageEditorActivity.this)
                 .setTitle(R.string.no_font_file_title)
                 .setMessage(ImageEditorActivity.this.getResources().getString(R.string.no_font_file_content))
@@ -1266,7 +1241,7 @@ public class ImageEditorActivity extends Activity {
     @Override
     public void onDestroy() {
         try{
-            loadDialog.dismiss();
+            mTaskDialog.dismiss();
         }catch (Exception e) {
         }
         super.onDestroy();
@@ -1285,10 +1260,11 @@ public class ImageEditorActivity extends Activity {
             copyBitmap.recycle();
             copyBitmap = null;
         }
+        if (originalBitmap != null && originalBitmap.isRecycled()) {
+            originalBitmap.recycle();
+            originalBitmap = null;
+        }
     }
-
-
-
 
 
 

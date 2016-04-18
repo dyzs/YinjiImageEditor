@@ -105,7 +105,7 @@ public class MovableTextView2 extends EditText{
             // 如果 left 超出了当前的宽度的一半，则不继续移动
             if (l < limitLeft || t < 0 || r > mParentWidth + limitRight || b > mParentHeight) {
 //                this.layout(limitLeft, t, r, b);
-                // LogUtil.w(MovableTextView2.this, "不可继续移动");
+//                // LogUtil.w(MovableTextView2.this, "不可继续移动");
                 break;
             }
 

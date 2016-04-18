@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by maidou on 2016/4/12.
  */
 public class FilterInfo implements java.io.Serializable {
-    public int filterIndex = -1;        // 滤镜库索引（自定义唯一标识）
+    public int filterIndex = 0;         // 滤镜库索引（自定义唯一标识）0表示原图，可以不用做特效
     public String filterNameCh = "";    // 中文名称
     public String filterNameEn = "";    // 英文名称
     public int filterCount = 0;         // 操作次数
@@ -34,17 +34,6 @@ public class FilterInfo implements java.io.Serializable {
         } catch (JSONException e) {
             System.out.println("filter json parse error");
         }
-    }
-
-    public void toStringFilterInfo() {
-        System.out.println(
-                "filterInfo[" +
-                        "filterIndex:" + filterIndex + "," +
-                        "filterNameCh:" + filterNameCh + "," +
-                        "filterNameEn:" + filterNameEn + "," +
-                        "filterCount:" + filterCount +
-                        "]"
-        );
     }
 
 

@@ -115,6 +115,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
             cursor.close();
         }
 
+        System.out.println("view width:");
+
         if (requestCode == ON_ALBUM_RESULT) {
             // 跳转到图片处理
             Intent intent = new Intent(MainActivity.this, ImageEditorActivity.class);

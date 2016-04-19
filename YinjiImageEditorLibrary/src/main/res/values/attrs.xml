@@ -11,4 +11,12 @@
         <attr name="barMargin" format="dimension"/>
         <attr name="maxValue" format="integer"/>
     </declare-styleable>
+
+
+    <!--圆角图片的属性声明-->
+    <declare-styleable name="CornerImageView">
+        <attr name="circleRadius" format="dimension" />
+        <attr name="paintColor" format="color" />
+        <attr name="pureColor" format="color" />
+    </declare-styleable>
 </resources>

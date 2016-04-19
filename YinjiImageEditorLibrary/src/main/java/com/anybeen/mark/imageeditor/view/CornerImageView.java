@@ -1,6 +1,7 @@
 package com.anybeen.mark.imageeditor.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -31,9 +32,13 @@ public class CornerImageView extends ImageView{
     private float mViewWidth, mViewHeight;
     private float mCircleRadius = 30f;          // 圆角半径
 
+    @Deprecated
     private PointF LeftTopCirclePointF;         // 左上角圆心
+    @Deprecated
     private PointF RightTopCirclePointF;        // 右上角圆心
+    @Deprecated
     private PointF LeftBottomCirclePointF;      // 左下角圆心
+    @Deprecated
     private PointF RightBottomCirclePointF;     // 右下角圆心
 
 
@@ -44,32 +49,42 @@ public class CornerImageView extends ImageView{
     private RectF rectf;
     private Paint paint;
 
-    private Bitmap mBitmap;         // 背景图片
-    private float mBitmapScale = 0.0f;// bitmap 需要缩放的比例
-    private int mPaintColor;        // 画笔颜色
-    private int mPureColor = -1;    // 背景纯颜色
+    private Bitmap mBitmap;             // 背景图片
+    private float mBitmapScale = 0.0f;  // bitmap 需要缩放的比例
+    private int mPaintColor;            // 画笔颜色
+    private int mPureColorBg = -1;      // 背景纯颜色
 
     /**
      *
      * @param context
      */
     public CornerImageView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
     public CornerImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
-    public CornerImageView(Context context, AttributeSet attrs,
-                           int defStyle) {
-        super(context, attrs, defStyle);
-        init();
+    public CornerImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(attrs);
     }
-    private void init(){
+
+    private void init(AttributeSet attrs){
+        System.out.println("Init cornerImageView....");
+        mBitmapScale = 0.0f;
+
+        // 需要声明的 xml 属性
+        mCircleRadius = 30f;
+        mPureColorBg = -1;
+        mPaintColor = Color.BLACK;
+
+        TypedArray ta = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.CornerImageView, 0, 0);
+        mCircleRadius = ta.getDimension(R.styleable.CornerImageView_circleRadius, mCircleRadius);
+        mPureColorBg = ta.getColor(R.styleable.CornerImageView_pureColor, mPureColorBg);
+        mPaintColor = ta.getColor(R.styleable.CornerImageView_paintColor, mPaintColor);
+
         // 获取图片资源文件
         // this.setBackgroundResource(R.mipmap.pic_icon_filter_sample);
-        mPaintColor = Color.BLACK;
         rectf = new RectF();
         clipPath = new Path();
         linePath = new Path();
@@ -210,15 +225,14 @@ public class CornerImageView extends ImageView{
 
 
         // 如果设置了颜色，那么就取代背景图片
-        if (mPureColor != -1) {
+        if (mPureColorBg != -1) {
             // 设置颜色
             canvas.save();
-            canvas.drawColor(mPureColor);
+            canvas.drawColor(mPureColorBg);
             canvas.restore();
         }
         else if (mBitmap != null) {
             // TODO 计算图片比例等数据，不能在 setBitmap 的时候处理计算
-
             // 最终结果必须在画 bitmap 之前确定曲线，然后再 clip
             canvas.save();                                  // 保存缩放前的画布
             // 利用留白区域，平移bitmap
@@ -308,12 +322,12 @@ public class CornerImageView extends ImageView{
     }
 
     public void setPureColor(int color) {
-        this.mPureColor = color;
+        this.mPureColorBg = color;
         invalidate();
     }
 
     /**
-     * 添加 bitmap 对象，设置图片
+     * 添加 bitmap 对象，设置图片，计算图片缩放比例，计算图片偏移量
      * @param bitmap
      */
     public void setPictureBitmap(Bitmap bitmap) {
@@ -322,7 +336,7 @@ public class CornerImageView extends ImageView{
     }
 
     /**
-     * 只能设置小图片
+     * 设置小图片
      * @param bitmap
      */
     public void setSmallBitmap(Bitmap bitmap) {

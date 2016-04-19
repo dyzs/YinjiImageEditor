@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_bright"
@@ -32,6 +33,8 @@
         android:layout_below="@+id/cs"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        app:circleRadius="20dp"
+        app:pureColor="@android:color/darker_gray"
         />
 
     <com.anybeen.mark.imageeditor.view.CornerImageView
@@ -40,7 +43,8 @@
         android:layout_below="@+id/cs"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@android:color/holo_purple"
+        app:circleRadius="35dp"
+        app:pureColor="@android:color/darker_gray"
         />
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_test_iv"

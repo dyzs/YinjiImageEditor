@@ -71,6 +71,10 @@ public class CornerImageView extends ImageView{
 
     private void init(AttributeSet attrs){
         System.out.println("Init cornerImageView....");
+
+        System.out.println("Init cornerImageView....");
+        System.out.println("Init cornerImageView....");
+
         mBitmapScale = 0.0f;
 
         // 需要声明的 xml 属性

@@ -919,38 +919,35 @@ public class ImageEditorActivity extends Activity {
             float imgW = iv_main_image.getWidth() * 1.0f;
             float imgH = iv_main_image.getHeight() * 1.0f;
 
-            System.out.println("mtv文本：" + mtv.getText().toString());
             String content = mtv.getText().toString();
             System.out.println("content:" + content);
             // content = content.replaceAll(" ", "\\s*");
-            float lineSpacingMultiplier = mtv.getLineSpacingMultiplier();
-            System.out.println("width:" + (textViewB - textViewT));
-            System.out.println("lineSpacingMultiplier 行间距倍数px:" + DensityUtils.dp2px(mContext, lineSpacingMultiplier));
             String[] strArr = content.split("\\n");
 
             float textVerticalSpacing = mtv.getLetterSpacing();
+            // 文字高度
             float textSize = mtv.getTextSize();
-            System.out.println("textSize:" + textSize);
+            // 文字间的间距
+            float spacing = (textViewB - textViewT - textSize * (strArr.length)) / (strArr.length + 1);
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
-            mPaint.setTextAlign(Paint.Align.LEFT);
             for(int i = 0; i < strArr.length; i ++) {
                 mPaint.setTextSize(textSize);
                 float textLength = mPaint.measureText(strArr[i]);
+                // 得到绘制的第一个字符在 X 轴上与左边框的间距
+                float leftPadding = (textViewR - textViewL - textLength) / 2;
+                System.out.println("textLength:" + textLength);
+                System.out.println("leftPadding:" + leftPadding);
+                System.out.println("留白:" + (textViewR - textViewL - textLength));
+                saveLeft = textViewL + leftPadding;
+
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
-                System.out.println("textCenterVerticalBaselineY:" + textCenterVerticalBaselineY);
-                // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
-                float spacing = (textViewB - textViewT - textSize * (strArr.length)) / (strArr.length + 1);
-                System.out.println("spacing:" + spacing);
+                // 画笔实际绘画的 Y 坐标：top + baseLine + 字体间距 + 字体高度
                 saveBottom = textViewT
                         + textCenterVerticalBaselineY
                         + spacing * (i + 1)
                         + textSize * i;
-
-                // 得到绘制的第一个字符在 X 轴上与左边框的间距
-                float leftPadding = (textViewR - textViewL - textLength) / 2;
-                saveLeft = textViewL + leftPadding;
                 canvas.drawText(
                         strArr[i],
                         saveLeft, saveBottom,
@@ -1093,6 +1090,7 @@ public class ImageEditorActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 for (MovableTextView2 mtv : mMtvLists) {
                     if (mtv.isSelected()) {
                         mtv.setText(s);
@@ -1109,7 +1107,6 @@ public class ImageEditorActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 

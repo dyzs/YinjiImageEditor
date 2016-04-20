@@ -1090,7 +1090,6 @@ public class ImageEditorActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 for (MovableTextView2 mtv : mMtvLists) {
                     if (mtv.isSelected()) {
                         mtv.setText(s);

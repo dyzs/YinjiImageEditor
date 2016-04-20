@@ -39,12 +39,12 @@
         </FrameLayout>
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="56dp"
             >
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_filter_list"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:scrollbars="none"
                 android:gravity="center"
                 android:layout_gravity="bottom"
@@ -54,7 +54,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_sticker_list"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:scrollbars="none"
                 android:gravity="center"
                 android:layout_gravity="bottom"

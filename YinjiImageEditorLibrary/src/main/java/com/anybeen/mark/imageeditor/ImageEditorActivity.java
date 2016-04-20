@@ -922,6 +922,8 @@ public class ImageEditorActivity extends Activity {
             String content = mtv.getText().toString();
             System.out.println("content:" + content);
             // content = content.replaceAll(" ", "\\s*");
+
+            String contentNull = content.replaceAll(" ","\\s#*");
             String[] strArr = content.split("\\n");
 
             float textVerticalSpacing = mtv.getLetterSpacing();
@@ -932,14 +934,15 @@ public class ImageEditorActivity extends Activity {
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
             for(int i = 0; i < strArr.length; i ++) {
+                System.out.println("值为：" + strArr[i]);
                 mPaint.setTextSize(textSize);
                 float textLength = mPaint.measureText(strArr[i]);
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距
                 float leftPadding = (textViewR - textViewL - textLength) / 2;
                 System.out.println("textLength:" + textLength);
                 System.out.println("leftPadding:" + leftPadding);
-                System.out.println("留白:" + (textViewR - textViewL - textLength));
-                saveLeft = textViewL + leftPadding;
+                System.out.println("不计算留白:" + 1.0f);
+                saveLeft = textViewL + 1.0f;//leftPadding;
 
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);

@@ -923,26 +923,31 @@ public class ImageEditorActivity extends Activity {
             String content = mtv.getText().toString();
             System.out.println("content:" + content);
             // content = content.replaceAll(" ", "\\s*");
-            float lineSpacingExtra = mtv.getLineSpacingExtra();
             float lineSpacingMultiplier = mtv.getLineSpacingMultiplier();
-            System.out.println("lineSpacingExtra 行间距:" + lineSpacingExtra);
-            System.out.println("lineSpacingMultiplier 行间距倍数:" + lineSpacingMultiplier);
-            System.out.println("content replaceAll:" + content);
+            System.out.println("width:" + (textViewB - textViewT));
+            System.out.println("lineSpacingMultiplier 行间距倍数px:" + DensityUtils.dp2px(mContext, lineSpacingMultiplier));
             String[] strArr = content.split("\\n");
 
             float textVerticalSpacing = mtv.getLetterSpacing();
             float textSize = mtv.getTextSize();
+            System.out.println("textSize:" + textSize);
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
+            mPaint.setTextAlign(Paint.Align.LEFT);
             for(int i = 0; i < strArr.length; i ++) {
-                System.out.println("str" + i + ":" + strArr[i]);
                 mPaint.setTextSize(textSize);
                 float textLength = mPaint.measureText(strArr[i]);
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);
                 System.out.println("textCenterVerticalBaselineY:" + textCenterVerticalBaselineY);
                 // 画笔实际绘画的 Y 坐标：baseLine + top + y轴上的间距
-                saveBottom = textCenterVerticalBaselineY + textViewT + (textViewB - textViewT - textSize) / 2 + i*textSize + i * textVerticalSpacing;
+                float spacing = (textViewB - textViewT - textSize * (strArr.length)) / (strArr.length + 1);
+                System.out.println("spacing:" + spacing);
+                saveBottom = textViewT
+                        + textCenterVerticalBaselineY
+                        + spacing * (i + 1)
+                        + textSize * i;
+
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距
                 float leftPadding = (textViewR - textViewL - textLength) / 2;
                 saveLeft = textViewL + leftPadding;
@@ -963,12 +968,12 @@ public class ImageEditorActivity extends Activity {
             carrotInfo.pTop = (int) textViewT;
             carrotInfo.color = mtv.getCurrentTextColor();
             carrotInfoArrayList.add(carrotInfo);      // 保存了位置，颜色等属性参数
-            fl_main_content.removeView(mtv);
+            // fl_main_content.removeView(mtv);
         }
         FileUtils.saveSerializableCarrotLists(carrotInfoArrayList);
         System.out.println("保存文本成功~~~~~~~");
-        mMtvLists.clear();
-        mMtvLists = null;
+        // mMtvLists.clear();
+        // mMtvLists = null;
     }
 
     /**

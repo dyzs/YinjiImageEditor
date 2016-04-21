@@ -921,28 +921,34 @@ public class ImageEditorActivity extends Activity {
 
             String content = mtv.getText().toString();
             System.out.println("content:" + content);
-            // content = content.replaceAll(" ", "\\s*");
-
-            String contentNull = content.replaceAll(" ","\\s#*");
+            int index = content.lastIndexOf("\n");
+            System.out.println("content length:" + content.length());
+            System.out.println("index:" + index);
+            // String contentNull = content.replaceAll(" ","\\s#*");
             String[] strArr = content.split("\\n");
+            ArrayList<String> al = new ArrayList<>();
+            for (String str : strArr) {
+                al.add(str);
+            }
+            if (index != -1 && content.length() == index + 1) {
+                // 表示相同的那个啥的，表示最后一个字符是换行
+                al.add("");
+                System.out.println("al size:" + al.size());
+            }
 
-            float textVerticalSpacing = mtv.getLetterSpacing();
             // 文字高度
             float textSize = mtv.getTextSize();
             // 文字间的间距
             float spacing = (textViewB - textViewT - textSize * (strArr.length)) / (strArr.length + 1);
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
-            for(int i = 0; i < strArr.length; i ++) {
-                System.out.println("值为：" + strArr[i]);
+            for(int i = 0; i < al.size(); i ++) {
                 mPaint.setTextSize(textSize);
                 float textLength = mPaint.measureText(strArr[i]);
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距
-                float leftPadding = (textViewR - textViewL - textLength) / 2;
-                System.out.println("textLength:" + textLength);
-                System.out.println("leftPadding:" + leftPadding);
-                System.out.println("不计算留白:" + 1.0f);
-                saveLeft = textViewL + 1.0f;//leftPadding;
+                float leftPadding = 1.0f;
+//                float leftPadding = (textViewR - textViewL - textLength) / 2;
+                saveLeft = textViewL + leftPadding;
 
                 // 计算得到当前画笔绘制规则的 baseLine，用来准确计算
                 float textCenterVerticalBaselineY = FontMatrixUtils.calcTextCenterVerticalBaselineY(mPaint);

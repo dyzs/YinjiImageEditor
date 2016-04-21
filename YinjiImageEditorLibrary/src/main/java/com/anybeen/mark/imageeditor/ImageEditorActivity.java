@@ -939,10 +939,10 @@ public class ImageEditorActivity extends Activity {
             // 文字高度
             float textSize = mtv.getTextSize();
             // 文字间的间距
-            float spacing = (textViewB - textViewT - textSize * (strArr.length)) / (strArr.length + 1);
+            float spacing = (textViewB - textViewT - textSize * (al.size())) / (al.size() + 1);
             // textSize 就是文本在绘画时的高度，也是文本的大小
             mPaint.setTextSize(textSize);
-            for(int i = 0; i < al.size(); i ++) {
+            for(int i = 0; i < strArr.length; i ++) {
                 mPaint.setTextSize(textSize);
                 float textLength = mPaint.measureText(strArr[i]);
                 // 得到绘制的第一个字符在 X 轴上与左边框的间距

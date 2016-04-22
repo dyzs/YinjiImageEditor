@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="56dp"
     android:layout_height="56dp"
     android:padding="3dp"
-    android:gravity="center"
+    android:gravity="center|center_horizontal"
     >
 
     <!--<ImageView-->
@@ -20,12 +21,22 @@
 
     <TextView
         android:id="@+id/text"
-        android:layout_below="@+id/icon"
         android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:textColor="@android:color/holo_blue_bright"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="字体大小"
-        android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/image_editor_white"
+        android:textSize="11sp"
+        android:gravity="top|center_horizontal"
+        android:text="字体"
+        android:background="@drawable/shape_gradient_tv_filter"
+        android:visibility="visible" />
+
+    <com.anybeen.mark.imageeditor.view.CornerImageView
+        android:id="@+id/select_state"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerInside"
+        app:pureColor="@android:color/holo_blue_bright"
+        android:visibility="invisible"
+        />
 </RelativeLayout>

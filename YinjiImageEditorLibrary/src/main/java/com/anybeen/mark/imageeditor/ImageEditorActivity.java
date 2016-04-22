@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -76,9 +78,7 @@ public class ImageEditorActivity extends Activity {
     private RecyclerView mRvFilter;
     private RecyclerView mRvSticker;
     // bottomToolbar
-    private RadioButton rb_word;
-    private RadioButton rb_sticker;
-    private RadioButton rb_filter;
+    private ImageButton rb_word, rb_sticker, rb_filter;
 
     private Bitmap originalBitmap;              // 图片初始化获取的原图位图对象
     private Bitmap copyBitmap;                  // 用来操作的 bitmap 对象
@@ -166,9 +166,9 @@ public class ImageEditorActivity extends Activity {
 
         iv_main_image = (ImageView) findViewById(R.id.iv_main_image);
         // bottomToolbar
-        rb_word = (RadioButton) findViewById(R.id.rb_word);
-        rb_sticker = (RadioButton) findViewById(R.id.rb_sticker);
-        rb_filter = (RadioButton) findViewById(R.id.rb_filter);
+        rb_word = (ImageButton) findViewById(R.id.rb_word);
+        rb_sticker = (ImageButton) findViewById(R.id.rb_sticker);
+        rb_filter = (ImageButton) findViewById(R.id.rb_filter);
 
         // recycle view 处理滤镜
         mRvFilter = (RecyclerView) findViewById(R.id.rv_filter_list);
@@ -200,6 +200,7 @@ public class ImageEditorActivity extends Activity {
             @Override
             public void onStickerIndex(int position) {
                 stickerListShowUp = false;
+                setViewRes(stickerListShowUp, rb_sticker);
                 AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                 addStickerView(position);
             }
@@ -276,11 +277,13 @@ public class ImageEditorActivity extends Activity {
             public void onClick(View v) {
                 if (stickerListShowUp) {
                     stickerListShowUp = !stickerListShowUp;
+                    setViewRes(stickerListShowUp, rb_sticker);
                     AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                     return;
                 }
                 if (filterListShowUp) {
                     filterListShowUp = !filterListShowUp;
+                    setViewRes(filterListShowUp, rb_filter);
                     AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
                     return;
                 }
@@ -306,10 +309,12 @@ public class ImageEditorActivity extends Activity {
             public void onClick(View v) {
                 if (filterListShowUp) {
                     filterListShowUp = !filterListShowUp;
+                    setViewRes(filterListShowUp, rb_filter);
                     AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
                     return;
                 }
                 stickerListShowUp = !stickerListShowUp;
+                setViewRes(stickerListShowUp, rb_sticker);
                 AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
             }
         });
@@ -319,10 +324,12 @@ public class ImageEditorActivity extends Activity {
             public void onClick(View v) {
                 if (stickerListShowUp) {
                     stickerListShowUp = !stickerListShowUp;
+                    setViewRes(stickerListShowUp, rb_sticker);
                     AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                     return;
                 }
                 filterListShowUp = !filterListShowUp;
+                setViewRes(filterListShowUp, rb_filter);
                 AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
             }
         });
@@ -339,10 +346,12 @@ public class ImageEditorActivity extends Activity {
             public void onClick(View v) {
                 if (stickerListShowUp) {
                     stickerListShowUp = !stickerListShowUp;
+                    setViewRes(stickerListShowUp, rb_sticker);
                     AnimUtils.translationStickerX(mRvSticker, stickerListShowUp, mContext);
                 }
                 if (filterListShowUp) {
                     filterListShowUp = !filterListShowUp;
+                    setViewRes(filterListShowUp, rb_filter);
                     AnimUtils.translationFilterX(mRvFilter, filterListShowUp, mContext);
                 }
             }
@@ -920,7 +929,7 @@ public class ImageEditorActivity extends Activity {
             float imgH = iv_main_image.getHeight() * 1.0f;
 
             String content = mtv.getText().toString();
-            System.out.println("content:" + content);
+            System.out.println("content:" + content.indexOf("\t"));
             int index = content.lastIndexOf("\n");
             System.out.println("content length:" + content.length());
             System.out.println("index:" + index);
@@ -1295,6 +1304,17 @@ public class ImageEditorActivity extends Activity {
             originalBitmap.recycle();
             originalBitmap = null;
         }
+    }
+
+    private void setViewRes(boolean state, ImageButton view) {
+        int resId = 0;
+        if (rb_sticker.equals(view)) {
+            resId = state ? R.mipmap.btn_image_editor_tab_sticker_pressed : R.mipmap.btn_image_editor_tab_sticker_normal;
+        }
+        if (rb_filter.equals(view)) {
+            resId = state ? R.mipmap.btn_image_editor_tab_filter_pressed : R.mipmap.btn_image_editor_tab_filter_normal;
+        }
+        view.setImageResource(resId);
     }
 
 }

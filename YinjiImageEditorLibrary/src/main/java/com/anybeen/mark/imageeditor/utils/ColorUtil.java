@@ -99,4 +99,13 @@ public class ColorUtil {
 		return new int[]{R(color), G(color), B(color)};
 	}
 
+
+	/**
+	 * 十六进制的颜色值转 int
+	 * @param color
+	 * @return
+	 */
+	public static int getColorFromString(String color) {
+		return Color.parseColor(color);
+	}
 }

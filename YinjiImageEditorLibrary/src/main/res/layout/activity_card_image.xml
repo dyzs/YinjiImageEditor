@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <com.anybeen.mark.imageeditor.view.CornerImageView
-        android:id="@+id/test"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:src="@android:color/holo_purple"
-        />
+
+    <include layout="@layout/layout_image_editor_toolbar"/>
+
+    <!-- 主要的内容，分三层：bitmap底层，中间为模板图，最上面为文字和贴纸 -->
+    <include layout="@layout/layout_card_image_content" />
+
+    <!--底部列表,先注释掉-->
+    <include layout="@layout/layout_card_image_bottom_bar"/>
 </LinearLayout>

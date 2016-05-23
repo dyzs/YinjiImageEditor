@@ -3,58 +3,118 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright"
+    android:background="#55ffffff"
     >
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    <TextView
+        android:text="@string/hello_world"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 
     <ImageView
         android:id="@+id/iv_open_album"
-        android:layout_centerHorizontal="true"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@mipmap/ic_launcher"
-        android:scaleType="fitXY"
-        />
-
-    <com.anybeen.mark.imageeditor.view.ColorfulSeekBar
-        android:id="@+id/cs"
-        android:layout_below="@+id/iv_open_album"
         android:layout_width="match_parent"
-        android:layout_height="18dp"
-        android:thumb="@mipmap/icon_seek_bar_thumb_image_editor"
-        android:background="@android:color/holo_purple"
+        android:layout_height="50dp"
+        android:src="@mipmap/ic_launcher"
         />
 
     <com.anybeen.mark.imageeditor.view.CornerImageView
         android:id="@+id/civ"
-        android:layout_below="@+id/cs"
+        android:layout_below="@+id/iv_open_album"
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:circleRadius="20dp"
-        app:pureColor="@android:color/darker_gray"
+        android:visibility="visible"
         />
 
     <com.anybeen.mark.imageeditor.view.CornerImageView
         android:id="@+id/iv_card_image"
         android:layout_toRightOf="@+id/civ"
-        android:layout_below="@+id/cs"
+        android:layout_below="@+id/iv_open_album"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:circleRadius="35dp"
         app:pureColor="@android:color/darker_gray"
+        android:visibility="visible"
+        />
+    <Button
+        android:id="@+id/iv_card_image_reload"
+        android:layout_toRightOf="@+id/iv_card_image"
+        android:layout_below="@+id/iv_open_album"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:text="重载贴纸"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:visibility="visible"
         />
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_test_iv"
-        android:layout_width="200dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
         android:layout_below="@id/civ"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:scaleType="fitXY"
         fresco:placeholderImage="@android:color/holo_purple"
+        android:visibility="visible"
         />
 
+    <Button
+        android:id="@+id/btn_test_choose_pic"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/sdv_test_iv"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:text="测试选择多张图片"
+        android:background="@android:color/holo_purple"
+        android:visibility="visible"
+        />
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/test_rect"-->
+        <!--android:layout_below="@+id/iv_open_album"-->
+        <!--android:layout_marginTop="70dp"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="170dp"-->
+        <!-->-->
+    <!--</FrameLayout>-->
+
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/test_rect2"-->
+        <!--android:layout_below="@+id/iv_open_album"-->
+        <!--android:layout_marginLeft="210dp"-->
+        <!--android:layout_width="130dp"-->
+        <!--android:layout_height="150dp"-->
+        <!-->-->
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/test_rect3"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginLeft="100dp"-->
+        <!--android:layout_marginBottom="60dp"-->
+        <!--android:layout_width="230dp"-->
+        <!--android:layout_height="150dp"-->
+        <!-->-->
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/imageBackground"-->
+        <!--android:layout_below="@+id/iv_open_album"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@mipmap/temp_test_test"-->
+        <!-->-->
+    <!--</FrameLayout>-->
+    <com.anybeen.mark.imageeditor.view.SampleColorProgressBar
+        android:id="@+id/test_progress"
+        android:layout_below="@+id/btn_test_choose_pic"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:visibility="visible"
+        />
 </RelativeLayout>

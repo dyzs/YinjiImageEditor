@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="popupwindow_anim_style">
+    <!-- 指定显示的动画xml -->
+    <item name="android:windowEnterAnimation">@anim/show_from_bottom</item>
+    <!-- 指定消失的动画xml -->
+    <item name="android:windowExitAnimation">@anim/hide_to_bottom</item>
+    </style>
+
+    <!--SuperCheckbox的样式-->
+    <style name="SuperCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/selector_item_checked</item>
+    </style>
+
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- toolbar（actionbar）颜色 -->
+        <!-- 状态栏颜色 -->
+        <!--<item name="colorPrimaryDark">#3A5FCD</item>
+        &lt;!&ndash; 窗口的背景颜色 &ndash;&gt;
+        <item name="android:windowBackground">@android:color/white</item>-->
+        <!-- SearchView -->
+        <!--<item name="Custom"></item>-->
+    </style>
+
+</resources>

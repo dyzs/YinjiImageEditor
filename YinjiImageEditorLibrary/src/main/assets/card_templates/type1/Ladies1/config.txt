@@ -1,0 +1,23 @@
+﻿{
+"shapes":[{"left":100, "top":150, "right":230, "bottom":300, "width":130, "height":150, "angle":"180"}]
+,"modelName":"美女1"
+,"description":"这是一个穿着海军服的美女"
+,"category":"beauty ladies"
+,"shapeCount":"2"
+,"orientation":"1"
+
+
+,"stickerCount":"3"
+,"carrotCount":"5"
+
+,"sampleName":"ladies1Sample.jpg"
+,"templateName":"ladies1Template.jpg"
+
+
+,"backgroundColor":"#FFF000"
+
+
+
+
+
+}

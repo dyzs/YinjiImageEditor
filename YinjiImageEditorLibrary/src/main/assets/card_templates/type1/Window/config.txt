@@ -1,0 +1,19 @@
+﻿{
+"shapes":[{"left":32, "top":32, "right":688, "bottom":915, "width":656, "height":883, "angle":"180"}]
+,"modelName":"真.测试模板"
+,"description":"测试测试啦啦啦"
+,"category":"nature"
+,"shapeCount":"2"
+,"orientation":"1"
+
+
+,"stickerCount":"3"
+,"carrotCount":"5"
+
+,"sampleName":"windowSample.png"
+,"templateName":"windowTemplate.png"
+
+,"backgroundColor":"#000FFF"
+
+
+}

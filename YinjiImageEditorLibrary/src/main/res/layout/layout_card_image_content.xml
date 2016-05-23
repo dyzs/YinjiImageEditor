@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:id="@+id/fl_base_content"
+    >
+
+    <!-- bitmap 层，需要自定义 -->
+    <FrameLayout
+        android:id="@+id/rl_bitmap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_magenta"
+        >
+        <!--<com.anybeen.mark.imageeditor.view.CornerImageView-->
+            <!--android:id="@+id/test1"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:src="@android:color/holo_purple"-->
+            <!--/>-->
+
+        <!--<com.anybeen.mark.imageeditor.view.CornerImageView-->
+            <!--android:id="@+id/test2"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:layout_below="@+id/test1"-->
+            <!--android:src="@android:color/holo_purple"-->
+            <!--/>-->
+
+        <!--<com.anybeen.mark.imageeditor.view.CornerImageView-->
+            <!--android:id="@+id/test3"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="150dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:src="@android:color/holo_purple"-->
+            <!--/>-->
+    </FrameLayout>
+
+    <!-- 模板图层 -->
+    <ImageView
+        android:id="@+id/iv_templates_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        />
+
+    <!--文字和贴纸层-->
+    <FrameLayout
+        android:id="@+id/fl_sticker_and_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        >
+    </FrameLayout>
+
+    <com.anybeen.mark.imageeditor.view.CardImageViewGroup
+        android:id="@+id/test_card_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        >
+    </com.anybeen.mark.imageeditor.view.CardImageViewGroup>
+</FrameLayout>

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -49,7 +50,6 @@ import com.anybeen.mark.imageeditor.view.CarrotEditText;
 import com.anybeen.mark.imageeditor.view.CustomSeekBar;
 import com.anybeen.mark.imageeditor.view.StickerView;
 import com.anybeen.mark.yinjiimageeditorlibrary.R;
-import com.anybeen.mark.imageeditor.entity.ImageDataInfo;
 import com.anybeen.mark.imageeditor.utils.DensityUtils;
 import com.anybeen.mark.imageeditor.utils.FileUtils;
 import com.anybeen.mark.imageeditor.view.MovableTextView2;
@@ -63,7 +63,6 @@ public class ImageEditorActivity extends Activity {
     public static final String IS_NEW = "isNewAddPhoto";
     private boolean isNew = true;
     String filePath = "";
-    private ImageDataInfo mCurrDataInfo;
     private boolean stickerListShowUp = false;
     private boolean filterListShowUp = false;
 
@@ -126,7 +125,6 @@ public class ImageEditorActivity extends Activity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setContentView(R.layout.activity_image_editor);
         mContext = this;
-        mCurrDataInfo = new ImageDataInfo();
         mMtvLists = new ArrayList<>();
         mStickerViews = new ArrayList<>();
         mFilterInfo = new FilterInfo();
@@ -1287,7 +1285,6 @@ public class ImageEditorActivity extends Activity {
         super.onDestroy();
         mMtvLists = null;
         mStickerViews = null;
-        mCurrDataInfo = null;
         if (mLoadImageTask != null) {
             mLoadImageTask = null;
         }

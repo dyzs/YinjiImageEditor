@@ -57,16 +57,6 @@ public class BitmapUtils {
 
 	public static final long MAX_SZIE = 1024 * 512;// 500KB
 
-	public static Bitmap loadImageByPath(final String imagePath, int reqWidth,
-			int reqHeight) {
-		File file = new File(imagePath);
-		// if (file.length() < MAX_SZIE) {
-			return getSampledBitmap(imagePath, reqWidth, reqHeight);
-//		} else {// 压缩图片
-//			return getImageCompress(imagePath);
-//		}
-	}
-
 	public static int getOrientation(final String imagePath) {
 		int rotate = 0;
 		try {
@@ -92,6 +82,12 @@ public class BitmapUtils {
 		return rotate;
 	}
 
+	/**
+	 * @param filePath	this is a file absolute path
+	 * @param reqWidth	bitmap can be scale according this params
+	 * @param reqHeight bitmap can be scale according this params
+	 * @return
+	 */
 	public static Bitmap getSampledBitmap(String filePath, int reqWidth,
 			int reqHeight) {
 		Options options = new Options();
@@ -113,7 +109,7 @@ public class BitmapUtils {
 						.floor(((float) width / reqWidth) + 0.5f);
 			}
 		}
-		System.out.println("inSampleSize--->" + inSampleSize);
+		// System.out.println("inSampleSize--->" + inSampleSize);
 
 		options.inSampleSize = inSampleSize;
 		options.inJustDecodeBounds = false;
@@ -860,10 +856,220 @@ public class BitmapUtils {
 		return copyImg;
 	}
 
-	public static Bitmap bitmapScaleSelf(Bitmap bitmap, float scale) {
-		Matrix matrix = new Matrix();
-		matrix.postScale(1 / scale, 1 / scale); //长和宽放大缩小的比例
-		Bitmap temp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-		return temp;
+	public synchronized static Bitmap getRightSizeBitmap(String fileAbsPath, int targetWidth, int targetHeight) {
+		Options options = new Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(fileAbsPath, options);
+		final int bitHeight = options.outHeight;
+		final int bitWidth = options.outWidth;
+		int inSampleSize = 1;
+		Bitmap bitmap;
+		if (bitHeight > targetHeight || bitWidth > targetWidth) {
+			if (bitWidth > bitHeight) {
+				inSampleSize = (int) FloatMath
+						.floor(((float) bitHeight / targetHeight) + 0.5f);
+				System.out.println("this way" + inSampleSize);
+			} else {
+				inSampleSize = (int) FloatMath
+						.floor(((float) bitWidth / targetWidth) + 0.5f);
+			}
+			options.inSampleSize = inSampleSize;
+			options.inJustDecodeBounds = false;
+			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+		}
+		else {
+			// 放大 bitmap
+			float tempScale = 1f;
+			if (bitWidth > bitHeight) {
+				if (targetWidth > targetHeight) {
+					tempScale = (bitHeight * 1.0f / (targetHeight * 1.0f));
+				} else {
+					tempScale = (bitWidth * 1.0f / (targetWidth * 1.0f));
+				}
+			} else if (bitWidth <= bitHeight) {
+				if (targetWidth > targetHeight) {
+					tempScale = (bitWidth * 1.0f / (targetWidth * 1.0f));
+				} else {
+					tempScale = (bitHeight * 1.0f / (targetHeight * 1.0f));
+				}
+			}
+			bitmap = BitmapFactory.decodeFile(fileAbsPath).copy(Bitmap.Config.RGB_565, true);
+			Matrix matrix = new Matrix();
+			matrix.postScale(1 / tempScale, 1 / tempScale); //长和宽放大缩小的比例
+			// resize bitmap
+			bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+		}
+		return bitmap;
 	}
+
+
+
 }
+
+
+/**
+ * 使用 ExifInterface 旋转 bitmap
+ *
+Bitmap bitmap =null;
+int scallType = 0;
+try {
+		ExifInterface exifInterface = new ExifInterface(file.getPath());
+		int result = exifInterface.getAttributeInt(
+		ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+		int rotate = 0;
+		switch(result) {
+		case ExifInterface.ORIENTATION_ROTATE_90:
+		rotate = 90;
+		break;
+		case ExifInterface.ORIENTATION_ROTATE_180:
+		rotate = 180;
+		break;
+		case ExifInterface.ORIENTATION_ROTATE_270:
+		rotate = 270;
+		break;
+default:
+		break;
+		}
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.RGB_565;
+		// 初めのデコードはサイズ取得のみ
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(filePath, options);
+		if (options.outWidth < 0 || options.outHeight < 0) {
+		return null;
+		}
+
+		scallType = genScallType(context, options);
+
+		options.inJustDecodeBounds = false;
+		bitmap=  BitmapFactory.decodeFile(filePath, options);
+		if(rotate > 0) {
+		Matrix matrix = new Matrix();
+		matrix.setRotate(rotate);
+		Bitmap rotateBitmap = Bitmap.createBitmap(
+		bitmap, 0, 0, options.outWidth, options.outHeight, matrix, true);
+		if(rotateBitmap != null) {
+		bitmap.recycle();
+		bitmap = rotateBitmap;
+		}
+		}
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+
+*/
+
+
+
+
+
+
+
+
+//		// 都等于的情况
+//		if (bitHeight == targetHeight && bitWidth == targetWidth) {
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:1");
+//		}
+//
+//		// 有一边大于一边等于的情况
+//		else if (bitHeight > targetHeight && bitWidth == targetWidth || bitHeight == targetHeight && bitWidth > targetWidth) {
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:2");
+//		}
+//
+//		// 都大于的情况, 需要按比例缩小
+//		else if (bitHeight > targetHeight && bitWidth > targetWidth) {
+//			if (bitWidth > bitHeight) {
+//				inSampleSize = (int) FloatMath
+//						.floor(((float) bitHeight / targetHeight) + 0.5f);
+//			} else {
+//				inSampleSize = (int) FloatMath
+//						.floor(((float) bitWidth / targetWidth) + 0.5f);
+//			}
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:3");
+//		}
+//
+//		// bit 高大于 req 高, 宽小于 req 宽系列
+//		else if (bitHeight > targetHeight && bitWidth < targetWidth) {
+//			// 按照宽度放大
+//			inSampleSize = (int) FloatMath
+//					.floor(((float) targetWidth / bitWidth) + 0.5f);
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:4");
+//		}
+//
+//		// bit 高小于 req 高, 宽大于 req 高系列
+//		else if (bitHeight < targetHeight && bitWidth > targetWidth) {
+//			// 按照高度放大
+//			inSampleSize = (int) FloatMath
+//					.floor(((float) targetHeight / bitHeight) + 0.5f);
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:5");
+//		}
+//
+//		// ------------------------大于等于情况完成
+//		// 剩下完全小于的情况
+//		else if (bitHeight < targetHeight && bitWidth < targetWidth) {
+//			float tempScale6 = 1f;
+//			System.out.println("getFixedSizeBitmap:6");
+//			if (bitWidth == bitHeight) {
+//				if (targetWidth > targetHeight) {
+//					tempScale6 = (bitWidth * 1.0f / (targetWidth * 1.0f));
+//				} else {
+//					tempScale6 = (bitHeight * 1.0f / (targetHeight * 1.0f));
+//				}
+//			}
+//			else if (bitWidth > bitHeight) {
+//				tempScale6 = (bitHeight * 1.0f / (targetHeight * 1.0f));
+//			} else {
+//				tempScale6 = (bitWidth * 1.0f / (targetWidth * 1.0f));
+//			}
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath).copy(Bitmap.Config.RGB_565, true);
+//			Matrix matrix = new Matrix();
+//			matrix.postScale(1 / tempScale6, 1 / tempScale6); //长和宽放大缩小的比例
+//			// resize bitmap
+//			bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+//		}
+//
+//
+//
+//		// 完全包含在内, 但是有一边相等的情况
+//		else if (bitHeight < targetHeight && bitWidth == targetWidth) {
+//			inSampleSize = (int) FloatMath
+//					.floor(((float) targetHeight / bitHeight) + 0.5f);
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:7");
+//		}
+//
+//		else if (bitHeight == targetHeight && bitWidth < targetWidth){
+//			inSampleSize = (int) FloatMath
+//					.floor(((float) targetWidth / bitWidth) + 0.5f);
+//			options.inSampleSize = inSampleSize;
+//			options.inJustDecodeBounds = false;
+//			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
+//			System.out.println("getFixedSizeBitmap:8");
+//		}
+//
+//		else {
+//			System.out.println("getFixedSizeBitmap:9");
+//			System.out.println("error load image");
+//			bitmap = null;
+//		}
+
+//		else if (bitWidth < targetWidth && bitHeight > targetHeight) {
+//
+//		}

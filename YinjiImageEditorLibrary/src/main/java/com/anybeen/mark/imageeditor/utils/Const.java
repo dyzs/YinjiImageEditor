@@ -13,6 +13,18 @@ public interface Const {
     // sd 卡根目录
     String SDCARD_ROOT = Environment.getExternalStorageDirectory().getPath();
 
+    // assets 根目录前缀
+    String ASSETS_PREFIX = "asset://";
+
+    // http 前缀
+    String HTTP_PREFIX = "http://";
+
+    // Content provider 前缀
+    String PROVIDER_PREFIX = "content://";
+
+    // res 前缀
+    String RES_PREFIX = "res://";
+
     // 文件根目录前缀
     String FILE_PREFIX = "file://";
 
@@ -107,4 +119,107 @@ public interface Const {
 //    int KEYBOARD_STATE_OPEN = 1;
 //    int KEYBOARD_STATE_HIDE = 0;
 
+    // ------------Card_Template----------------separator line-------------------------------
+    String MARK_CATEGORY_CARD_TEMPLATES = "1006";
+    String FILE_CACHE = SDCARD_ROOT + File.separator + "Android" + File.separator + "data"
+            + File.separator + "com.anybeen.mark.app" + File.separator + "files" + File.separator;
+
+    String FILE_TEMP = SDCARD_ROOT + "/YinJiEditor/";
+
+    // 卡片文件夹：/YinJiEditor/card_templates/
+    String CARD_TEMPLATES = FILE_TEMP + "card_templates" + File.separator;
+
+    // 卡片模板 sample 文件夹
+    String C_SAMPLE = "sample" + File.separator;
+    // 卡片模板 templates 文件夹
+    String C_TEMPLATE = "template" + File.separator;
+    /**
+     * 卡片对应的 params 文件夹
+     * tomato.txt      content:json 格式{"category":"大自然","name":"","type":"1","orientation":"vertical"}
+     */
+    String C_CONFIG = "config.txt";
+
+    // 复制相册选择的图片到此目录下,再加载
+    String C_TEMP_PIC_FOLDER = CARD_TEMPLATES + "tempPicFolder" + File.separator;
+
+
+    // 卡片的悬浮贴纸  包含：matrix.txt      sticker1.png        sticker2.jpg
+    String C_STICKER = "stickers" + File.separator;
+    // 卡片的悬浮文本  包含：carrot.txt
+    String C_CARROT = "carrot" + File.separator;
+
+
+    // 卡片包含的子图片个数选择不同的模板
+    String CARD_TYPE_ZERO_FOLDER = "type0" + File.separator;
+    String CARD_TYPE_ONE_FOLDER = "type1" + File.separator;
+    String CARD_TYPE_TWO_FOLDER = "type2" + File.separator;
+    String CARD_TYPE_THREE_FOLDER = "type3" + File.separator;
+    String CARD_TYPE_FOUR_FOLDER = "type4" + File.separator;
+    String[] CARD_TYPE_FOLDER = {
+            CARD_TYPE_ZERO_FOLDER,
+            CARD_TYPE_ONE_FOLDER,
+            CARD_TYPE_TWO_FOLDER,
+            CARD_TYPE_THREE_FOLDER,
+            CARD_TYPE_FOUR_FOLDER
+    };
+
+    // 卡片包含的子图片个数
+    String CARD_TYPE_ZERO_PIC = "0";
+    String CARD_TYPE_ONE_PIC = "1";
+    String CARD_TYPE_TWO_PIC = "2";
+    String CARD_TYPE_THREE_PIC = "3";
+    String CARD_TYPE_FOUR_PIC = "4";
+    String[] CARD_TYPE = {
+            CARD_TYPE_ZERO_PIC,
+            CARD_TYPE_ONE_PIC,
+            CARD_TYPE_TWO_PIC,
+            CARD_TYPE_THREE_PIC,
+            CARD_TYPE_FOUR_PIC
+    };
+
+
+    String CARD_CATEGORY_NATURE = "大自然";
+    String CARD_CATEGORY_FRESH = "清新";
+    String CARD_CATEGORY_CLASSICAL = "古典";
+    String[] CARD_CATEGORY = {
+            CARD_CATEGORY_NATURE,
+            CARD_CATEGORY_FRESH,
+            CARD_CATEGORY_CLASSICAL
+    };
+
+    String CARD_ORIENTATION_VERTICAL = "横版";
+    String CARD_ORIENTATION_HORIZONTAL = "竖版";
+    String[] CARD_ORIENTATION = {
+            CARD_ORIENTATION_VERTICAL,
+            CARD_ORIENTATION_HORIZONTAL
+    };
+
+
+    String[] TEST_PIC = {
+            Const.SDCARD_ROOT + "/saves/testPic001.jpg",
+            Const.SDCARD_ROOT + "/saves/testPic002.jpg",
+            Const.SDCARD_ROOT + "/saves/testPic003.jpg",
+            Const.SDCARD_ROOT + "/saves/testPic004.jpg"
+    };
+
+    String PICS_LIST = "pics_list";
+
+    String C_IMAGE_EDIT_TYPE = "imageEditType";
+    String C_IMAGE_EDIT_TYPE_NEW_ADD = "cardImageForNewAdd";
+    String C_IMAGE_EDIT_TYPE_RE_EDIT = "cardImageForReEdit";
+
+    String TEMPLATE_PIC_LOAD_MORE_IN_ASSETS = "asset:///card_templates/pic_templates_more.png";
+
+    String C_ZIP_COPYDIR = CARD_TEMPLATES + "";
+
+
+    // ------------Card_Template----------------separator line-------------------------------
+
+
+    /**
+     * 国家代码:en ch zh-CN en-US zh-TW en ca da fa   and so on
+     * for (String str : mContext.getAssets().getLocales()) {
+     *     System.out.println("str:" + str);
+     * }
+     */
 }

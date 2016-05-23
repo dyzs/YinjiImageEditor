@@ -46,4 +46,22 @@
     <!-- selectView params -->
     <color name="common_red">#bd081c</color>
     <color name="grey_bg">#f2f2f2</color>
+
+
+    <!-- 定制自己的颜色规则 -->
+    <color name="color_transparent">#00000000</color>
+    <color name="color_black">#FF000000</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="color_red">#FFFF0000</color>
+    <color name="color_magenta">#FFFF00FF</color>
+    <color name="color_cyan">#FF00FFFF</color>
+    <color name="color_yellow">#FFFFFF00</color>
+    <color name="color_blue">#FF0000FF</color>
+    <color name="color_green">#FF00FF00</color>
+    <color name="color_grey">#FF888888</color>
+    <color name="color_light_grey">#FFCCCCCC</color>
+    <color name="color_dark_grey">#FF444444</color>
+
+
+
 </resources>

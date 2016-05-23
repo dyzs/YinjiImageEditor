@@ -1,13 +1,21 @@
 package com.anybeen.mark.imageeditor.utils;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Environment;
 
 
+import com.anybeen.mark.imageeditor.entity.CardDataInfo;
+import com.anybeen.mark.imageeditor.entity.CardInnerPicShapeInfo;
+import com.anybeen.mark.imageeditor.entity.CardTemplateInfo;
 import com.anybeen.mark.imageeditor.entity.CarrotInfo;
 import com.anybeen.mark.imageeditor.entity.FilterInfo;
 import com.anybeen.mark.imageeditor.entity.StickerInfo;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +29,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- * Created by Abner on 15/9/22.
- * QQ 230877476
- * Email nimengbo@gmail.com
- * github https://github.com/nimengbo
+ *
  */
 public class FileUtils {
 
@@ -32,9 +37,9 @@ public class FileUtils {
 
     private static Context mContext;
 
-    private static final String APP_DIR = "Abner";
+    private static final String APP_DIR = "NiKlaus";
 
-    private static final String TEMP_DIR = "Abner/.TEMP";
+    private static final String TEMP_DIR = "NiKlaus/.TEMP";
 
     public static FileUtils getInstance(Context context) {
         if (instance == null) {
@@ -132,8 +137,8 @@ public class FileUtils {
     private FileUtils() {
         // 创建应用内容目录
         if (isSDCanWrite()) {
-            creatSDDir(APP_DIR);
-            creatSDDir(TEMP_DIR);
+            createSDDir(APP_DIR);
+            createSDDir(TEMP_DIR);
         }
     }
 
@@ -142,7 +147,7 @@ public class FileUtils {
      *
      * @param dirName
      */
-    public File creatSDDir(String dirName) {
+    public File createSDDir(String dirName) {
         File dir = new File(getLocalPath() + dirName);
         dir.mkdirs();
         return dir;
@@ -269,4 +274,414 @@ public class FileUtils {
         return null;
     }
 
+
+    /**
+     * 传入一个文件夹名称，获取里面的卡片模板
+     * @param fileName
+     * @param context
+     * @return
+     */
+    public static ArrayList<String> getImageUrlFromAssetsFile(String fileName, Context context) {
+        ArrayList<String> list = new ArrayList<>();
+        AssetManager am = context.getResources().getAssets();
+        try {
+            String[] strArr = am.list(fileName);
+            if (strArr != null && strArr.length != 0) {
+                for (String str : strArr) {
+                    list.add(str);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return list;
+    }
+
+    /**
+     * 获取卡片的文件目录下的模板名称列表
+     * CARD_TEMPLATES
+     * card_templates_sample
+     * @return sample:1001xxx_image_xxx.png
+     */
+    @Deprecated
+    public synchronized static ArrayList<String> readCardFileNameFromFilesDir(String fileName) {
+        File file = new File(Const.FILE_CACHE + File.separator + fileName);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        ArrayList<String> list = null;
+        if (file.isDirectory()) {
+            list = new ArrayList<>();
+            File[] filesArr = file.listFiles();
+            for (int i = 0; i < filesArr.length; i ++) {
+                System.out.println("fileName:" + filesArr[i].getName());
+                if (filesArr[i].isFile() && checkCardSuffix(filesArr[i].getName())) {
+                    list.add(filesArr[i].getName());
+                }
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * @details card template folder who read from absolute path 读取绝对路径下的文件夹，表示各个卡片模板的文件夹
+     * @param fileAbsPath
+     * @return fileNameList. the abs path isn't any one of child directory while if return null
+     */
+    public static ArrayList<String> readListFromCardTemplatesDir(String fileAbsPath) {
+        File file = new File(fileAbsPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        ArrayList<String> list = null;
+        if (file.isDirectory()) {
+            list = new ArrayList<>();
+            File[] fileNamesArr = file.listFiles();
+            if (fileNamesArr == null) {
+                return list;
+            }
+            for (int i = 0; i < fileNamesArr.length; i ++) {
+                // System.out.println("模板的文件夹名称:" + fileNamesArr[i].getName());
+                if (fileNamesArr[i].isDirectory()) {
+                    list.add(fileNamesArr[i].getName());
+                }
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 校验文件夹下的文件是否为图片文件
+     * @param filename
+     * @return
+     */
+    public static boolean checkCardSuffix(String filename) {
+        String suffix = filename.substring(filename.lastIndexOf("."));
+        boolean ret;
+        System.out.println("suffix:" + suffix);
+        if (suffix.equals(".png")) {
+            ret = true;
+        }
+        else if (suffix.equals(".jpg")) {
+            ret = true;
+        }
+        else if (suffix.equals(".jpeg")) {
+            ret = true;
+        }
+        else {
+            ret = false;
+        }
+        return ret;
+    }
+
+    /**
+     * @details parse file config.txt, rebuild the card template after get params
+     * @param configAbsUrl the absolute path include file name & file suffix
+     */
+    public synchronized static CardTemplateInfo parseTemplateConfig(String configAbsUrl) {
+        try {
+            File file = new File(configAbsUrl);
+            InputStream is = new FileInputStream(file);
+            CardTemplateInfo info = new CardTemplateInfo();
+            byte[] bytes = new byte[1024];
+            int length;
+            StringBuffer sb = new StringBuffer();
+            while ((length = is.read(bytes)) != -1) {
+                // 以前在这出现乱码问题，后来在这设置了编码格式
+                // @Warning txt 文档录入的是 GBK 格式, fuck off,改 txt 为 utf-8 保存
+                sb.append(new String(bytes, 0, length,"utf-8"));
+            }
+            is.close();
+            // System.out.println("StringBuffer:" + sb.toString());
+            JSONObject jsonObject = new JSONObject(sb.toString());
+            info.modelName = jsonObject.getString("modelName");
+            info.description = jsonObject.getString("description");
+            info.category = jsonObject.getString("category");
+            info.shapeCount = jsonObject.getString("category");
+            info.orientation = jsonObject.getString("orientation");
+            info.stickerCount = jsonObject.getString("stickerCount");
+            info.carrotCount = jsonObject.getString("carrotCount");
+            info.sampleName = jsonObject.getString("sampleName");
+            info.templateName = jsonObject.getString("templateName");
+            info.backgroundColor = Color.parseColor(jsonObject.getString("backgroundColor"));
+
+            // 解析 jsonArray
+            JSONArray jsonArray = (JSONArray) jsonObject.get("shapes");
+            JSONObject obj;
+            CardInnerPicShapeInfo shapeInfo;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                obj = (JSONObject) jsonArray.get(i);
+                shapeInfo = new CardInnerPicShapeInfo();
+                shapeInfo.left = obj.getInt("left");
+                shapeInfo.top = obj.getInt("top");
+                shapeInfo.right = obj.getInt("right");
+                shapeInfo.bottom = obj.getInt("bottom");
+                shapeInfo.width = obj.getInt("width");
+                shapeInfo.height = obj.getInt("height");
+                info.innerPicShapeInfoList.add(shapeInfo);
+            }
+            return info;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("解析 Config 文件出错");
+            return null;
+        }
+    }
+
+    @Deprecated // 暂时不用
+    public synchronized static JSONObject parseConfigFileToJsonObj(String configAbsUrl) {
+        JSONObject jsonObject;
+        try {
+            File file = new File(configAbsUrl);
+            InputStream is = new FileInputStream(file);
+            byte[] bytes = new byte[1024 * 2];
+            int length;
+            StringBuffer sb = new StringBuffer();
+            while ((length = is.read(bytes)) != -1) {
+                //以前在这出现乱码问题，后来在这设置了编码格式
+                sb.append(new String(bytes, 0, length,"UTF-8"));
+            }
+            is.close();
+            jsonObject = new JSONObject(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("解析 Config 文件出错");
+            return null;
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 通过 url 复制图片到新的文件夹下 tempFolder
+     * @param fromUrls
+     * @param toAbsPath
+     * @return
+     */
+    public static ArrayList<String> copyFilesToNewFolderByUrl(ArrayList<String> fromUrls, String toAbsPath) {
+        if (fromUrls == null)return null;
+        File terminalPath = new File(toAbsPath);
+        if (!terminalPath.exists()) {
+            terminalPath.mkdir();
+        }
+        ArrayList<String> ret = new ArrayList<>();
+        for (int i = 0; i < fromUrls.size(); i ++) {
+            ret.add(copyFileToFolder(fromUrls.get(i), toAbsPath));
+        }
+        return ret;
+    }
+
+    /**
+     * @param from fileAbsPath,include file suffix
+     * @param toPath file directory
+     */
+    public synchronized static String copyFileToFolder(String from, String toPath) {
+        try {
+            File terminalPath = new File(toPath);
+            if (!terminalPath.exists()) {
+                terminalPath.mkdir();
+            }
+            File file = new File(from);
+            String toName = System.currentTimeMillis() + file.getName();// 加上一个时间毫秒
+            String terminal = toPath + toName;
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = new FileOutputStream(terminal);
+            byte[] bytes = new byte[1024 * 2];
+            int len = -1;
+            while((len = fis.read(bytes)) != -1){
+                fos.write(bytes, 0, len);
+            }
+            fis.close();
+            fos.close();
+            return terminal;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("copy failed...");
+            return null;
+        }
+    }
+
+    public static void deleteFileFromStringArr(String[] deleteUrls) {
+        File file;
+        for (int i = 0; i < deleteUrls.length; i++) {
+            file = new File(deleteUrls[i]);
+            file.delete();
+        }
+    }
+
+
+    /**
+     *
+     * @param filePath  ep:card_templates
+     * @return
+     */
+    public static String[] getFileNameListFromAssetsDir(Context context, String filePath) {
+        AssetManager assetManager = context.getAssets();
+        String[] ret = null;
+        try {
+//            for (int i = 0; i < assetManager.list(filePath).length; i++) {
+//                System.out.println("str:" + assetManager.list("card_templates")[i]);
+//            }
+            ret = assetManager.list(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return ret;
+        }
+    }
+
+
+    /**
+     * 序列化保存 CardDataInfo
+     */
+    public static void saveSerializableCardDataInfo(CardDataInfo dataInfo) {
+        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
+        try {
+            FileOutputStream fs = new FileOutputStream(sd + "/" + "cardDataInfo.txt");
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(dataInfo);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static CardDataInfo readFileToCardDataInfo() {
+        CardDataInfo dataInfo;
+        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
+        try {
+            FileInputStream fs = new FileInputStream(sd + "/" + "cardDataInfo.txt");
+            ObjectInputStream ois = new ObjectInputStream(fs);
+            dataInfo = (CardDataInfo) ois.readObject();
+            ois.close();
+            return dataInfo;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 复制后缀名为 .zip 的文件到指定目录下
+     * @param filename
+     * @param fileAbsolutePath
+     */
+    public static void copyZipFile(Context context, String filename, String fileAbsolutePath) {
+        File file = new File(fileAbsolutePath);
+        if (!file.exists() && !file.isDirectory()) {file.mkdirs();}
+        try {
+            String tempName = filename + ".zip";
+            InputStream is = context.getAssets().open("temp/" + tempName);
+            OutputStream os = new FileOutputStream(fileAbsolutePath + "/" + tempName);
+            byte[] bytes = new byte[1024];
+            int len = -1;
+            while ((len = is.read(bytes)) != -1) {
+                os.write(bytes, 0, len);
+            }
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void unZipFile(){
+        String sd = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String path = sd + "/YinJiEditor/Window.zip";
+        String unPath = sd + "/YinJiEditor";
+        try {
+            ZipUtils.UnZipFolder(path, unPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void test () {
+        for (int n = 0; n < 10000; n ++) {
+            if (n % 1 == 0 && n % 2 == 1 && n % 3 == 0 && n % 4 == 1 &&
+                    n % 5 == 4 && n % 6 == 3 && n % 7 ==0 && n % 8 ==1 && n % 9 == 0) {
+                System.out.println("i value=" + n);
+                return;
+            }
+        }
+    }
+
 }
+
+
+//// 解析 json
+//JSONArray jsonArray = (JSONArray) jsonObject.get("shapes");
+//JSONObject obj;0.
+//ArrayList<CardInnerPicShapeInfo> list = new ArrayList<>();
+//CardInnerPicShapeInfo shapeInfo;
+//for (int i = 0; i < jsonArray.length(); i++) {
+//        obj = (JSONObject) jsonArray.get(i);
+//        shapeInfo = new CardInnerPicShapeInfo();
+//        shapeInfo.left = obj.getInt("left");
+//        shapeInfo.top = obj.getInt("top");
+//        shapeInfo.width = obj.getInt("width");
+//        shapeInfo.height = obj.getInt("height");
+//        list.add(shapeInfo);
+//        }
+//        return list;

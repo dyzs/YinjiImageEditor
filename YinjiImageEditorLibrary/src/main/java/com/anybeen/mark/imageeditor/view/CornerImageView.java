@@ -26,7 +26,6 @@ import com.anybeen.mark.yinjiimageeditorlibrary.R;
  * 2、半径的 get 和 set 方法，限制半径大小不超过当前控件宽度的一半
  *
  * @warning 可以再 xml 中配置 src 或者 bg，但是一定得是透明的，可以设置一个透明的有边框的 shape 资源文件
- *
  */
 public class CornerImageView extends ImageView{
     private float mViewWidth, mViewHeight;
@@ -70,7 +69,7 @@ public class CornerImageView extends ImageView{
     }
 
     private void init(AttributeSet attrs){
-        System.out.println("Init cornerImageView....");
+        // System.out.println("Init cornerImageView....");
         mBitmapScale = 0.0f;
 
         // 需要声明的 xml 属性
@@ -409,4 +408,19 @@ public class CornerImageView extends ImageView{
         return temp;
     }
 
+    public float getViewWidth() {
+        return mViewWidth;
+    }
+
+    public void setViewWidth(float width) {
+        this.mViewWidth = width;
+    }
+
+    public float getViewHeight() {
+        return mViewHeight;
+    }
+
+    public void setViewHeight(float height) {
+        this.mViewHeight = height;
+    }
 }

@@ -1,1 +1,1 @@
-include ':app', ':YinjiImageEditorLibrary'
+include ':app', ':YinjiImageEditorLibrary', ':MulitPhoto'

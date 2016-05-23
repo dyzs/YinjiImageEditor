@@ -1,0 +1,19 @@
+﻿{
+"shapes":[{"left":50, "top":300, "right":350, "bottom":600, "width":300, "height":300, "angle":"180"}]
+,"modelName":"塔"
+,"description":"铁塔铁塔铁塔"
+,"category":"nature"
+,"shapeCount":"2"
+,"orientation":"1"
+
+
+,"stickerCount":"3"
+,"carrotCount":"5"
+
+,"sampleName":"muiltShapeSample.png"
+,"templateName":"muiltShapeTemplate.png"
+
+,"backgroundColor":"#000FFF"
+
+
+}

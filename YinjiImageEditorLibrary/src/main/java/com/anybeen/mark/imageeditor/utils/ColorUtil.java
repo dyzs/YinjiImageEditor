@@ -64,7 +64,7 @@ public class ColorUtil {
 	 * @param color
 	 * @return
 	 */
-	public static int HextoColor(String color) {
+	public static int HexToColor(String color) {
 		// #ff00CCFF
 		String reg = "#[a-f0-9A-F]{8}";
 		if (!Pattern.matches(reg, color)) {

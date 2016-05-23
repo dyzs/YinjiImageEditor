@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_back_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="选取照片"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/selector_top_ok"
+            android:minHeight="30dp"
+            android:minWidth="50dp"
+            android:padding="8dp"
+            android:text="完成(3/9)"
+            android:textColor="#ffffff"
+            android:textSize="14dp"/>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/common_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.4dp"
+        android:background="@color/common_divider" />
+
+            <GridView
+                android:id="@+id/gv_photo_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:horizontalSpacing="2dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="3"
+                android:paddingBottom="50dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:paddingTop="2dp"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="2dp"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/footer_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="#DCffffff">
+
+        <Button
+            android:id="@+id/btn_dir"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:drawablePadding="4dp"
+            android:drawableRight="@mipmap/icon_subscript"
+            android:ellipsize="end"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:singleLine="true"
+            android:text="所有图片"
+            android:textAllCaps="false"
+            android:textColor="#000"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+</RelativeLayout>

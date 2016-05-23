@@ -239,10 +239,6 @@ public class StickerView extends ImageView {
     // 获取当前贴纸的 bitmap 对象
     public Bitmap getBitmap() {return mBitmap;}
 
-    // 设置保存时的同步缩放，解决缩放问题
-    public void setSaveScale(float scale) {
-
-    }
     // maidou add end-----------------------------------------
 
 

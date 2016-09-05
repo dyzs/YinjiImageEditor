@@ -46,7 +46,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private CornerImageView iv_card_image;      // 打开卡片选择
     private Context mContext;
 
-    private SampleColorProgressBar test_progress;
 
 
     private FrameLayout test_rect, test_rect2, test_rect3;
@@ -116,39 +115,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         copyResToFilesDir();
 
 
-        test_progress = (SampleColorProgressBar) findViewById(R.id.test_progress);
-        test_progress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public synchronized void onClick(View v) {
-                ToastUtil.makeText(mContext, "click");
-                new Thread(){
-                    @Override
-                    public void run() {
-                        for (int i = 0; i <= 100; i++) {
-                            SystemClock.sleep(20);
-                            Message msg = Message.obtain();
-                            msg.what = 1001;
-                            msg.obj = i;
-                            mHandler.sendMessage(msg);
-                        }
-                    }
-                }.start();
-            }
-        });
     }
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1001:
-                    test_progress.setProgress((Integer) msg.obj);
-                    break;
-            }
-        }
-    };
-
 
 
 

@@ -856,46 +856,60 @@ public class BitmapUtils {
 		return copyImg;
 	}
 
-	public synchronized static Bitmap getRightSizeBitmap(String fileAbsPath, int targetWidth, int targetHeight) {
+	public synchronized static Bitmap getRightSizeBitmap(String fileAbsPath, int requireWidth, int requireHeight) {
 		Options options = new Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(fileAbsPath, options);
-		final int bitHeight = options.outHeight;
-		final int bitWidth = options.outWidth;
+		final int bitmapHeight = options.outHeight;
+		final int bitmapWidth = options.outWidth;
 		int inSampleSize = 1;
 		Bitmap bitmap;
-		if (bitHeight > targetHeight || bitWidth > targetWidth) {
-			if (bitWidth > bitHeight) {
+		float tempScale = 1f;
+		if (bitmapHeight > requireHeight || bitmapWidth > requireWidth) {
+			if (bitmapWidth >= requireWidth && bitmapHeight < requireHeight) {
+				// 按照高度倍数放大
+				tempScale = (requireHeight * 1.0f / (bitmapHeight * 1.0f));
+				Bitmap tempBit = BitmapFactory.decodeFile(fileAbsPath);
+				bitmap = tempBit.copy(Bitmap.Config.RGB_565, true);
+				Matrix matrix = new Matrix();
+				matrix.postScale(tempScale, tempScale); //长和宽放大缩小的比例
+				// resize bitmap
+				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+				return bitmap;
+			}
+			else if (bitmapHeight >= requireHeight && bitmapWidth < requireWidth) {
+				// 按照宽度的倍数放大
+				tempScale = (requireWidth * 1.0f / (bitmapWidth * 1.0f));
+				Bitmap tempBit = BitmapFactory.decodeFile(fileAbsPath);
+				bitmap = tempBit.copy(Bitmap.Config.RGB_565, true);
+				Matrix matrix = new Matrix();
+				matrix.postScale(tempScale, tempScale);
+				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+				return bitmap;
+			}
+
+			// 当存在都大于模板的时候, 选择用 options 来进行缩放, 防止图片像素过大导致不崩溃
+			else if (bitmapWidth > bitmapHeight) {
 				inSampleSize = (int) FloatMath
-						.floor(((float) bitHeight / targetHeight) + 0.5f);
-				System.out.println("this way" + inSampleSize);
+						.floor(((float) bitmapHeight / requireHeight) + 0.5f);
 			} else {
 				inSampleSize = (int) FloatMath
-						.floor(((float) bitWidth / targetWidth) + 0.5f);
+						.floor(((float) bitmapWidth / requireWidth) + 0.5f);
 			}
 			options.inSampleSize = inSampleSize;
 			options.inJustDecodeBounds = false;
 			bitmap = BitmapFactory.decodeFile(fileAbsPath, options);
 		}
-		else {
+		else {	// bitmap 宽高都小于 require 宽高, 表示 bitmap 完全被 require 包裹
 			// 放大 bitmap
-			float tempScale = 1f;
-			if (bitWidth > bitHeight) {
-				if (targetWidth > targetHeight) {
-					tempScale = (bitHeight * 1.0f / (targetHeight * 1.0f));
-				} else {
-					tempScale = (bitWidth * 1.0f / (targetWidth * 1.0f));
-				}
-			} else if (bitWidth <= bitHeight) {
-				if (targetWidth > targetHeight) {
-					tempScale = (bitWidth * 1.0f / (targetWidth * 1.0f));
-				} else {
-					tempScale = (bitHeight * 1.0f / (targetHeight * 1.0f));
-				}
-			}
-			bitmap = BitmapFactory.decodeFile(fileAbsPath).copy(Bitmap.Config.RGB_565, true);
+			// 通过宽高比来判断是哪个缩放比例
+			float scaleWidth = (requireWidth * 1.0f) / (bitmapWidth * 1.0f);
+			float scaleHeight = (requireHeight * 1.0f) / (bitmapHeight * 1.0f);
+			tempScale = scaleWidth > scaleHeight ? scaleWidth : scaleHeight;
+			Bitmap tempBit = BitmapFactory.decodeFile(fileAbsPath);
+			bitmap = tempBit.copy(Bitmap.Config.RGB_565, true);
 			Matrix matrix = new Matrix();
-			matrix.postScale(1 / tempScale, 1 / tempScale); //长和宽放大缩小的比例
+			matrix.postScale(tempScale, tempScale); //长和宽放大缩小的比例
 			// resize bitmap
 			bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 		}

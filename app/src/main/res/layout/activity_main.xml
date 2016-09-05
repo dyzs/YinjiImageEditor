@@ -25,7 +25,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:circleRadius="20dp"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.anybeen.mark.imageeditor.view.CornerImageView
@@ -36,13 +36,13 @@
         android:layout_height="100dp"
         app:circleRadius="35dp"
         app:pureColor="@android:color/darker_gray"
-        android:visibility="visible"
+        android:visibility="gone"
         />
     <Button
         android:id="@+id/iv_card_image_reload"
         android:layout_toRightOf="@+id/iv_card_image"
         android:layout_below="@+id/iv_open_album"
-        android:layout_width="60dp"
+        android:layout_width="80dp"
         android:layout_height="50dp"
         android:text="重载贴纸"
         android:textSize="15sp"
@@ -52,13 +52,13 @@
         />
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/sdv_test_iv"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="20dp"
         android:layout_below="@id/civ"
         android:layout_margin="20dp"
         android:scaleType="fitXY"
         fresco:placeholderImage="@android:color/holo_purple"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <Button
@@ -70,7 +70,7 @@
         android:scaleType="fitXY"
         android:text="测试选择多张图片"
         android:background="@android:color/holo_purple"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <!--<FrameLayout-->
@@ -110,11 +110,4 @@
         <!--android:background="@mipmap/temp_test_test"-->
         <!-->-->
     <!--</FrameLayout>-->
-    <com.anybeen.mark.imageeditor.view.SampleColorProgressBar
-        android:id="@+id/test_progress"
-        android:layout_below="@+id/btn_test_choose_pic"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:visibility="visible"
-        />
 </RelativeLayout>

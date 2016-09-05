@@ -382,8 +382,6 @@ public class CornerImageView extends ImageView{
     }
 
     public float[] calcScale(Bitmap bitmap) {
-//        float vWidth = this.getWidth() * 1.0f;
-//        float vHeight = this.getHeight() * 1.0f;
         float vWidth = mViewWidth * 1.0f;
         float vHeight = mViewHeight * 1.0f;
         float bitWidth = bitmap.getWidth() * 1.0f;

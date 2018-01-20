@@ -110,4 +110,11 @@
         <!--android:background="@mipmap/temp_test_test"-->
         <!-->-->
     <!--</FrameLayout>-->
+
+    <Button
+        android:id="@+id/start_float_window"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Float Window" >
+    </Button>
 </RelativeLayout>

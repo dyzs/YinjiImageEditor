@@ -32,6 +32,7 @@ import com.anybeen.multiphoto.GlideImageLoader;
 import com.anybeen.multiphoto.ImageItem;
 import com.anybeen.multiphoto.ImagePicker;
 import com.anybeen.multiphoto.PhotoMutiSelectActivity;
+import com.dyzs.yinjiimageeditor.floating.FloatWindowService;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -61,6 +62,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         mContext = this;
+
+        Button startFloatWindow = (Button) findViewById(R.id.start_float_window);
+        startFloatWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FloatWindowService.class);
+                startService(intent);
+                finish();
+            }
+        });
+
 
         findViewById(R.id.iv_open_album).setOnClickListener(this);
 
